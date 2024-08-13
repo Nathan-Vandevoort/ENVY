@@ -54,6 +54,7 @@ class Ingester:
 
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
+        success = await self.add_to_db(new_job)
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)
