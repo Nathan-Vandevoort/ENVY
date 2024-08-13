@@ -2,6 +2,7 @@ from enums import Purpose, Status, Condition
 import json
 from envyLib.envy_utils import DummyLogger
 import logging
+from datetime import datetime
 
 
 class Job:
@@ -23,6 +24,9 @@ class Job:
         self.environment = {}
         self.dependencies = []
         self.parameters = {}
+        self.metadata = {
+            'Creation_Time': datetime.now()
+        }
 
     def set_purpose(self, purpose: Purpose) -> None:
         self.purpose = purpose
@@ -86,6 +90,15 @@ class Job:
             'Dependencies': self.dependencies,
             'Parameters': self.parameters
         }
+
+    def set_meta(self, key: str, value: any) -> bool:
+        if key not in self.metadata:
+            return False
+        self.metadata[key] = value
+        return True
+
+    def get_meta(self) -> dict:
+        return self.metadata
 
     def __str__(self):
         return self.name

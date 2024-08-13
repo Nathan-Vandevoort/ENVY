@@ -11,6 +11,6 @@ __version__ = "1.0.0"
 
 class Config:
     DISCOVERYPORT = 37020
-    ENVYPATH = 'Z:/school/__ENVY__/__ENVYTEST__/'
+    ENVYPATH = 'Z:/school/ENVY/__ENVYTEST__/'
     TIMEOUT = 5
-    REPOPATH = 'Z:/school/__ENVY__/'
+    REPOPATH = 'Z:/school/ENVY/'
