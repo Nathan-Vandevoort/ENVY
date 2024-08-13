@@ -1,5 +1,5 @@
 import os, json, asyncio
-from job import Job
+import job
 import logging
 from envyLib.envy_utils import DummyLogger
 
@@ -18,6 +18,11 @@ class Ingester:
     def set_db(self, db):
         self.logger.debug(f'Set Database -> {db}')
         self.db = db
+        #  todo finish this
+
+    async def add_to_db(self, job_to_add: job.Job):
+        self.logger.debug(f'adding {job_to_add} to database')
+        #  todo finish this
 
     async def start(self):
         self.logger.debug('Started envyJobs.ingester.Ingester')
@@ -42,9 +47,12 @@ class Ingester:
             self.logger.warning(f'{job_path} is not a valid job file (not a .json file)')
             return False
 
+        job_as_dict = None
         with open(job_path, 'r') as job_file:
             job_as_dict = json.load(job_file)
             job_file.close()
+
+        new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
 
     async def check_for_new_jobs(self) -> list:

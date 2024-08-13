@@ -25,7 +25,8 @@ class Job:
         self.dependencies = []
         self.parameters = {}
         self.metadata = {
-            'Creation_Time': datetime.now()
+            'Creation_Time': None,
+            'Contributors': []
         }
 
     def set_purpose(self, purpose: Purpose) -> None:
@@ -88,10 +89,28 @@ class Job:
             'Type': self.type,
             'Environment': self.environment,
             'Dependencies': self.dependencies,
-            'Parameters': self.parameters
+            'Parameters': self.parameters,
+            'Metadata': self.metadata
         }
 
-    def set_meta(self, key: str, value: any) -> bool:
+    def set_meta(self, metadata: dict = None) -> None:
+        if not metadata:
+            self.metadata = {
+                'Creation_Time': datetime.now(),
+                'Contributors': [__file__]
+            }
+            return
+
+        else:
+            self.metadata = metadata
+            self.meta_add_contributor()
+            return
+
+    def meta_add_contributor(self):
+        contributors = self.metadata['Contributors']
+        contributors.append(__file__)
+
+    def set_meta_value(self, key: str, value: any) -> bool:
         if key not in self.metadata:
             return False
         self.metadata[key] = value
@@ -124,9 +143,14 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
         logger.warning(f'Type key cannot be found in {job_as_dict}')
         raise IndexError(f'Type key cannot be found in {job_as_dict}')
 
+    if 'Metadata' not in job_as_dict:
+        logger.warning(f'Type Metadata cannot be found in {job_as_dict}')
+        raise IndexError(f'Type Metadata cannot be found in {job_as_dict}')
+
     name = job_as_dict['Name']
     purpose = job_as_dict['Purpose']
     job_type = job_as_dict['Type']
+    metadata = job_as_dict['Metadata']
 
     environment = None
     dependencies = None
@@ -147,5 +171,6 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     new_job.set_environment(environment)
     new_job.set_dependencies(dependencies)
     new_job.set_parameters(parameters)
+    new_job.set_meta(metadata=metadata)
 
     return new_job
