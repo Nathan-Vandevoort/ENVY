@@ -30,7 +30,7 @@ class DB:
     def configure_db(self):
         self.logger.info('configuring database')
         list_of_tables = self.cursor.execute("""
-        SELECT name FROM sqlite_master WHERE type='table' AND tableName='jobs';
+        SELECT name FROM sqlite_master WHERE type='table' AND name='jobs';
         """).fetchall()
 
         if list_of_tables == []:
@@ -40,7 +40,7 @@ class DB:
             """)
 
         list_of_tables = self.cursor.execute("""
-                SELECT name FROM sqlite_master WHERE type='table' AND tableName='tasks';
+                SELECT name FROM sqlite_master WHERE type='table' AND name='tasks';
                 """).fetchall()
 
         if list_of_tables == []:
@@ -48,6 +48,10 @@ class DB:
             self.cursor.execute("""
                         CREATE TABLE tasks(job_id, task_id, purpose, type, frame, status, environment, dependencies, parameters)
                         """)
+
+    def start(self):
+        self.connect()
+        self.configure_db()
 
     def add_job(self, job: j.Job) -> bool:
         name = str(job)
@@ -64,10 +68,10 @@ class DB:
         # create job
         try:
             self.logger.info(f'Creating Job: ({name})')
-            self.cursor.execute(f"""
-            INSERT INTO JOB VALUES
-            ({name}, {identifier}, {purpose}, {job_type}, {metadata}, {frame_range}, {Status.PENDING}, {environment}, {dependencies}, {parameters})
-            """)
+            self.cursor.execute(
+                "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (name, identifier, purpose, job_type, metadata, frame_range, Status.PENDING, environment, dependencies, parameters)
+            )
         except Exception as e:
             self.logger.error(f'Failed to create job {job} for reason: {e}')
             return False

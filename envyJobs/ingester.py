@@ -2,18 +2,15 @@ import os, json, asyncio
 import job
 import logging
 from envyLib.envy_utils import DummyLogger
+from config import Config
 
 
 class Ingester:
     def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
         self.running = False
-        self.path = None
+        self.path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs')
         self.db = None
-
-    def set_path(self, path: str):
-        self.logger.debug(f'Set path -> {path}')
-        self.path = path
 
     def set_db(self, db):
         self.logger.debug(f'Set Database -> {db}')
@@ -37,6 +34,7 @@ class Ingester:
             self.logger.info(f'New jobs found {new_jobs}')
             for job in new_jobs:
                 await self.ingest(job)
+                os.remove(os.path.join(self.path, job))
 
     async def ingest(self, job_path: str) -> bool:
         file, ext = os.path.splitext(job_path)
@@ -58,3 +56,23 @@ class Ingester:
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)
         return new_jobs
+
+if __name__ == '__main__':
+    from envyDB import db
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(__name__)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
+
+    loop = asyncio.new_event_loop()
+
+    ingester = Ingester(logger=logger)
+    my_db = db.DB(logger=logger)
+    my_db.start()
+    ingester.set_db(my_db)
+    loop.create_task(ingester.start())
+    loop.run_forever()

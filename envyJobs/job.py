@@ -163,6 +163,9 @@ class Job:
             json.dump(self.as_dict(), job_file)
             job_file.close()
 
+    def as_sqlite_compliant(self):
+        # todo do this serialize all dicts
+
 
     def __str__(self):
         return self.name
