@@ -3,6 +3,9 @@ import json
 from envyLib.envy_utils import DummyLogger
 import logging
 from datetime import datetime
+from envyLib import envy_utils as eutils
+import os
+from config import Config
 
 
 class Job:
@@ -21,17 +24,16 @@ class Job:
         self.name = name
         self.purpose = None
         self.type = None
+        self.id = eutils.get_hash(os.getlogin() + name + str(datetime.now()))
 
-        self.start = 1001
-        self.end = 1100
-        self.increment = 1.0
+        self.range = ""
 
         self.environment = {}
         self.dependencies = []
         self.parameters = {}
 
         self.metadata = {
-            'Creation_Time': None,
+            'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
             'Contributors': []
         }
 
@@ -93,9 +95,8 @@ class Job:
             'Name': self.name,
             'Purpose': self.purpose,
             'Type': self.type,
-            'Start': self.start,
-            'End': self.end,
-            'Increment': self.increment,
+            'ID': self.id,
+            'Range': self.range,
             'Environment': self.environment,
             'Dependencies': self.dependencies,
             'Parameters': self.parameters,
@@ -106,7 +107,7 @@ class Job:
     def set_meta(self, metadata: dict = None) -> None:
         if not metadata:
             self.metadata = {
-                'Creation_Time': datetime.now(),
+                'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
                 'Contributors': [__file__]
             }
             return
@@ -126,26 +127,42 @@ class Job:
         self.metadata[key] = value
         return True
 
-    def set_start(self, start: int) -> None:
-        self.start = start
-
-    def get_start(self) -> int:
-        return self.start
-
-    def set_end(self, end: int) -> None:
-        self.end = end
-
-    def get_end(self) -> int:
-        return self.end
-
-    def set_increment(self, increment: float) -> None:
-        self.increment = increment
-
-    def get_increment(self) -> float:
-        return self.increment
-
     def get_meta(self) -> dict:
         return self.metadata
+
+    def set_range(self, range: str) -> None:
+        self.range = range
+
+    def get_range(self) -> str:
+        return self.range
+
+    def add_range(self, start: int, end: int, increment: int) -> None:
+        self.range += f' {start}-{end}:{increment}'
+
+    def set_id(self, new_id: str) -> None:
+        self.id = new_id
+
+    def get_id(self) -> str:
+        return self.id
+
+    def range_as_list(self) -> list:
+        ranges = self.range.lstrip().split(' ')
+        return_list = []
+        for frame_range in ranges:
+            range_split = frame_range.split('-')
+            start = int(range_split[0])
+            range_split = range_split[1].split(':')
+            end = int(range_split[0])
+            increment = int(range_split[1])
+            return_list.extend(range(start, end, increment))
+        return return_list
+
+    def write(self) -> None:
+        write_path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y")}.json')
+        with open(write_path, 'w') as job_file:
+            json.dump(self.as_dict(), job_file)
+            job_file.close()
+
 
     def __str__(self):
         return self.name
@@ -175,25 +192,20 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
         logger.warning(f'Metadata cannot be found in {job_as_dict}')
         raise IndexError(f'Metadata cannot be found in {job_as_dict}')
 
-    if 'Start' not in job_as_dict:
-        logger.warning(f'Start cannot be found in {job_as_dict}')
-        raise IndexError(f'Start cannot be found in {job_as_dict}')
+    if 'Range' not in job_as_dict:
+        logger.warning(f'Range cannot be found in {job_as_dict}')
+        raise IndexError(f'Range cannot be found in {job_as_dict}')
 
-    if 'End' not in job_as_dict:
-        logger.warning(f'End cannot be found in {job_as_dict}')
-        raise IndexError(f'End Metadata cannot be found in {job_as_dict}')
-
-    if 'Increment' not in job_as_dict:
-        logger.warning(f'Increment cannot be found in {job_as_dict}')
-        raise IndexError(f'Increment cannot be found in {job_as_dict}')
+    if 'ID' not in job_as_dict:
+        logger.warning(f'ID cannot be found in {job_as_dict}')
+        raise IndexError(f'ID cannot be found in {job_as_dict}')
 
     name = job_as_dict['Name']
     purpose = job_as_dict['Purpose']
     job_type = job_as_dict['Type']
     metadata = job_as_dict['Metadata']
-    start = job_as_dict['Start']
-    end = job_as_dict['End']
-    increment = job_as_dict['Increment']
+    new_range = job_as_dict['Range']
+    new_id = job_as_dict['ID']
 
     environment = None
     dependencies = None
@@ -215,8 +227,7 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     new_job.set_dependencies(dependencies)
     new_job.set_parameters(parameters)
     new_job.set_meta(metadata=metadata)
-    new_job.set_start(start)
-    new_job.set_end(end)
-    new_job.set_increment(increment)
+    new_job.set_range(new_range)
+    new_job.set_id(new_id)
 
     return new_job

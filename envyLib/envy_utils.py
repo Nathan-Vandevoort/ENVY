@@ -331,13 +331,15 @@ async def async_exec(s: str) -> None:
         await coroutine
 
 
-def get_hash() -> str:
+def get_hash(s: str = None) -> str:
     """
     generates the authentication hash out of username
     :return: (str) hash
     """
     import hashlib
     username = os.getlogin().upper()
+    if s:
+        username = s.upper()
     h = hashlib.new('sha256')
     h.update(username.encode())
     return h.hexdigest()
@@ -362,3 +364,7 @@ def insert_self_in_function(function: str) -> str:
     else:
         openIndex = function.find('(')
         return function[:openIndex + 1] + 'self, ' + function[openIndex + 1:]
+
+
+def make_job_directories():
+    os.makedirs(os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs'))

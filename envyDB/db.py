@@ -2,6 +2,11 @@ import sqlite3, os, logging
 from config import Config
 from envyLib.envy_utils import DummyLogger
 from envyJobs import job as j
+from envyJobs.enums import Status
+
+"""
+'select id from JOBS where id=?', (identifier,) match by ID
+"""
 
 
 class DB:
@@ -23,29 +28,60 @@ class DB:
         return True
 
     def configure_db(self):
-        # todo implement startup configuration
         self.logger.info('configuring database')
+        list_of_tables = self.cursor.execute("""
+        SELECT name FROM sqlite_master WHERE type='table' AND tableName='jobs';
+        """).fetchall()
+
+        if list_of_tables == []:
+            self.logger.info('jobs table not found creating jobs table')
+            self.cursor.execute("""
+            CREATE TABLE jobs(name, id, purpose, type, metadata, range, status, environment, dependencies, parameters)
+            """)
+
+        list_of_tables = self.cursor.execute("""
+                SELECT name FROM sqlite_master WHERE type='table' AND tableName='tasks';
+                """).fetchall()
+
+        if list_of_tables == []:
+            self.logger.info('tasks table not found creating tasks table')
+            self.cursor.execute("""
+                        CREATE TABLE tasks(job_id, task_id, purpose, type, frame, status, environment, dependencies, parameters)
+                        """)
 
     def add_job(self, job: j.Job) -> bool:
         name = str(job)
+        identifier = job.get_id()
         purpose = job.get_purpose()
         job_type = job.get_type()
         metadata = job.get_meta()
-        start = job.get_start()
-        end = job.get_end()
-        increment = job.get_increment()
+        frames = job.range_as_list()
+        frame_range = job.get_range()
+        environment = job.get_environment()
+        dependencies = job.get_dependencies()
+        parameters = job.get_parameters()
 
-        """
-        plan:
-            1. check if a job with that name already exists
-                a. if True:
-                    then append the current job information onto that job if they are the same purpose
-                    probably have some sort of append_to_job method
-                b. if False:
-                    Then create a new job
-            2. check the frame range of the job and create a row in the job table for each frame / increment
-            
-        """
+        # create job
+        try:
+            self.logger.info(f'Creating Job: ({name})')
+            self.cursor.execute(f"""
+            INSERT INTO JOB VALUES
+            ({name}, {identifier}, {purpose}, {job_type}, {metadata}, {frame_range}, {Status.PENDING}, {environment}, {dependencies}, {parameters})
+            """)
+        except Exception as e:
+            self.logger.error(f'Failed to create job {job} for reason: {e}')
+            return False
 
-        self.logger.info(f'Creating Job: ({name})')
-        pass
+        data = []
+        for i, frame in enumerate(frames):
+            data.append(
+                (identifier, i, purpose, job_type, frame, Status.PENDING, environment, dependencies, parameters))
+
+        self.cursor.executemany(
+            """
+            INSERT INTO tasks VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            data
+        )
+
+        self.connection.commit()

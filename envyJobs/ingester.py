@@ -18,12 +18,10 @@ class Ingester:
     def set_db(self, db):
         self.logger.debug(f'Set Database -> {db}')
         self.db = db
-        #  todo finish this
 
     async def add_to_db(self, job_to_add: job.Job):
         self.logger.debug(f'adding {job_to_add} to database')
         self.db.add_job(job_to_add)
-        #  todo finish this
 
     async def start(self):
         self.logger.debug('Started envyJobs.ingester.Ingester')
@@ -38,7 +36,7 @@ class Ingester:
 
             self.logger.info(f'New jobs found {new_jobs}')
             for job in new_jobs:
-                success = await self.ingest(job)
+                await self.ingest(job)
 
     async def ingest(self, job_path: str) -> bool:
         file, ext = os.path.splitext(job_path)
@@ -55,7 +53,7 @@ class Ingester:
 
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
-        success = await self.add_to_db(new_job)
+        await self.add_to_db(new_job)
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)
