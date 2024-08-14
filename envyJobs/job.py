@@ -21,9 +21,15 @@ class Job:
         self.name = name
         self.purpose = None
         self.type = None
+
+        self.start = 1001
+        self.end = 1100
+        self.increment = 1.0
+
         self.environment = {}
         self.dependencies = []
         self.parameters = {}
+
         self.metadata = {
             'Creation_Time': None,
             'Contributors': []
@@ -87,11 +93,15 @@ class Job:
             'Name': self.name,
             'Purpose': self.purpose,
             'Type': self.type,
+            'Start': self.start,
+            'End': self.end,
+            'Increment': self.increment,
             'Environment': self.environment,
             'Dependencies': self.dependencies,
             'Parameters': self.parameters,
             'Metadata': self.metadata
         }
+        return return_dict
 
     def set_meta(self, metadata: dict = None) -> None:
         if not metadata:
@@ -115,6 +125,24 @@ class Job:
             return False
         self.metadata[key] = value
         return True
+
+    def set_start(self, start: int) -> None:
+        self.start = start
+
+    def get_start(self) -> int:
+        return self.start
+
+    def set_end(self, end: int) -> None:
+        self.end = end
+
+    def get_end(self) -> int:
+        return self.end
+
+    def set_increment(self, increment: float) -> None:
+        self.increment = increment
+
+    def get_increment(self) -> float:
+        return self.increment
 
     def get_meta(self) -> dict:
         return self.metadata
@@ -144,13 +172,28 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
         raise IndexError(f'Type key cannot be found in {job_as_dict}')
 
     if 'Metadata' not in job_as_dict:
-        logger.warning(f'Type Metadata cannot be found in {job_as_dict}')
-        raise IndexError(f'Type Metadata cannot be found in {job_as_dict}')
+        logger.warning(f'Metadata cannot be found in {job_as_dict}')
+        raise IndexError(f'Metadata cannot be found in {job_as_dict}')
+
+    if 'Start' not in job_as_dict:
+        logger.warning(f'Start cannot be found in {job_as_dict}')
+        raise IndexError(f'Start cannot be found in {job_as_dict}')
+
+    if 'End' not in job_as_dict:
+        logger.warning(f'End cannot be found in {job_as_dict}')
+        raise IndexError(f'End Metadata cannot be found in {job_as_dict}')
+
+    if 'Increment' not in job_as_dict:
+        logger.warning(f'Increment cannot be found in {job_as_dict}')
+        raise IndexError(f'Increment cannot be found in {job_as_dict}')
 
     name = job_as_dict['Name']
     purpose = job_as_dict['Purpose']
     job_type = job_as_dict['Type']
     metadata = job_as_dict['Metadata']
+    start = job_as_dict['Start']
+    end = job_as_dict['End']
+    increment = job_as_dict['Increment']
 
     environment = None
     dependencies = None
@@ -172,5 +215,8 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     new_job.set_dependencies(dependencies)
     new_job.set_parameters(parameters)
     new_job.set_meta(metadata=metadata)
+    new_job.set_start(start)
+    new_job.set_end(end)
+    new_job.set_increment(increment)
 
     return new_job

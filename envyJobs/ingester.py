@@ -22,6 +22,7 @@ class Ingester:
 
     async def add_to_db(self, job_to_add: job.Job):
         self.logger.debug(f'adding {job_to_add} to database')
+        self.db.add_job(job_to_add)
         #  todo finish this
 
     async def start(self):

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-envyJobs.__init__.py: A library for creating managing and distributing envy jobs
+envyDB.__init__.py: A library for creating managing and distributing envy jobs
 """
 
 __author__ = "Nathan Vandevoort"
