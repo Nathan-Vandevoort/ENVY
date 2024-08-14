@@ -24,7 +24,7 @@ class Job:
         self.name = name
         self.purpose = None
         self.type = None
-        self.id = eutils.get_hash(os.getlogin() + name + str(datetime.now()))
+        self.id = hash(os.getlogin() + name + str(datetime.now())) % (10 ** 10)
 
         self.range = ""
 
@@ -152,7 +152,7 @@ class Job:
             range_split = frame_range.split('-')
             start = int(range_split[0])
             range_split = range_split[1].split(':')
-            end = int(range_split[0])
+            end = int(range_split[0]) + 1
             increment = int(range_split[1])
             return_list.extend(range(start, end, increment))
         return return_list
@@ -164,7 +164,30 @@ class Job:
             job_file.close()
 
     def as_sqlite_compliant(self):
-        # todo do this serialize all dicts
+        return_dict = self.as_dict()
+        name = return_dict['Name']
+        purpose = return_dict['Purpose']
+        job_type = return_dict['Type']
+        job_id = return_dict['ID']
+        job_range = return_dict['Range']
+        environment = json.dumps(return_dict['Environment'])
+        parameters = json.dumps(return_dict['Parameters'])
+        metadata = json.dumps(return_dict['Metadata'])
+        dependencies = json.dumps(return_dict['Dependencies'])
+
+        return_dict = {
+            'Name': name,
+            'Purpose': purpose,
+            'Type': job_type,
+            'ID': job_id,
+            'Range': job_range,
+            'Environment': environment,
+            'Parameters': parameters,
+            'Metadata': metadata,
+            'Dependencies': dependencies
+        }
+
+        return return_dict
 
 
     def __str__(self):

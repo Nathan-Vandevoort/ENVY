@@ -5,7 +5,7 @@ from envyLib.envy_utils import DummyLogger
 from config import Config
 
 
-class Ingester:
+class Ingestor:
     def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
         self.running = False
@@ -21,7 +21,7 @@ class Ingester:
         self.db.add_job(job_to_add)
 
     async def start(self):
-        self.logger.debug('Started envyJobs.ingester.Ingester')
+        self.logger.debug('Started envyJobs.ingester.Ingestor')
         self.running = True
         while self.running:
             await asyncio.sleep(2)  # let other coroutines run
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     loop = asyncio.new_event_loop()
 
-    ingester = Ingester(logger=logger)
+    ingester = Ingestor(logger=logger)
     my_db = db.DB(logger=logger)
     my_db.start()
     ingester.set_db(my_db)
