@@ -3,6 +3,9 @@ from queue import Queue
 from networkUtils.purpose import Purpose
 from envyLib import envy_utils as eutils
 import networkUtils.message as m
+from envyJobs import scheduler, ingestor
+from envyDB import db
+from envyJobs.enums import Status
 
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
@@ -38,6 +41,9 @@ class Server:
 
         # -------------------- directories ------------------------------------
         self.server_directory = configs.ENVYPATH + 'Connections/'
+
+        # -------------------- Job --------------------------------------
+        self.job_scheduler = scheduler.Scheduler(self, self.event_loop, logger=self.logger)
 
     async def check_passkey(self, path, request_headers):
         passkey = request_headers.get('Passkey')
@@ -145,11 +151,20 @@ class Server:
     # do from incoming connection
     async def client_consumer(self, message: m.Message | m.FunctionMessage):
         purpose = message.get_purpose()
+
+        if purpose == Purpose.FUNCTION_MESSAGE:
+            if not isinstance(message, m.FunctionMessage):
+                self.logger.error(f"Message ({message}) is not a FunctionMessage")
+                return False
+
+            success = await self.execute(message)
+            return success
+
         # if request is never executed
         return False
 
     async def execute(self, message: m.FunctionMessage) -> bool:
-        self.logger.debug(f'executing {message}')
+        self.logger.info(f'executing {message}')
         function = message.as_function()
         try:
             await self.async_exec('await SRV.' + function)
@@ -192,7 +207,9 @@ class Server:
         self.logger.debug(f"Registering client: {client}")
         self.clients[client] = {
             'IP': ip,
-            'Socket': websocket
+            'Socket': websocket,
+            'Status': Status.IDLE,
+            'Job': None
         }
         update_clients_file(self.server_directory, self.clients)
         await SRV.send_clients_to_console(self)
@@ -226,6 +243,9 @@ class Server:
         try:
             self.server = await websockets.serve(self.handler, self.my_ip, self.port, process_request=self.check_passkey)
             self.write_server_file()
+            scheduler_task = self.event_loop.create_task(self.job_scheduler.start())
+            scheduler_task.set_name('Scheduler.start()')
+            self.tasks.append(scheduler_task)
             self.running = True
             await self.server.wait_closed()
         except OSError:

@@ -1,4 +1,4 @@
-from enums import Purpose, Status, Condition
+from envyJobs.enums import Purpose, Status, Condition
 import json
 from envyLib.envy_utils import DummyLogger
 import logging
@@ -36,6 +36,7 @@ class Job:
             'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
             'Contributors': []
         }
+
 
     def set_purpose(self, purpose: Purpose) -> None:
         self.purpose = purpose
@@ -142,8 +143,8 @@ class Job:
     def set_id(self, new_id: str) -> None:
         self.id = new_id
 
-    def get_id(self) -> str:
-        return self.id
+    def get_id(self) -> int:
+        return int(self.id)
 
     def range_as_list(self) -> list:
         ranges = self.range.lstrip().split(' ')
@@ -189,12 +190,31 @@ class Job:
 
         return return_dict
 
-
     def __str__(self):
         return self.name
 
     def __format__(self, format_spec):
         return self.name
+
+
+class Task(Job):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.__delattr__('range')
+        self.executor = None
+        self.frame = None
+
+    def set_frame(self, frame: int) -> None:
+        self.frame = frame
+
+    def get_frame(self) -> int:
+        return self.frame
+
+    def set_executor(self, executor: str) -> None:
+        self.executor = executor
+
+    def get_executor(self) -> str:
+        return self.executor
 
 
 def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
@@ -255,5 +275,30 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     new_job.set_meta(metadata=metadata)
     new_job.set_range(new_range)
     new_job.set_id(new_id)
+
+    return new_job
+
+
+def job_from_sqlite(job_as_sql_tuple: tuple, logger: logging.Logger = None) -> Job:
+    logger = logger or DummyLogger()
+
+    logger.debug('Building Job from sql tuple')
+
+    job_id, name, purpose, job_type, metadata, job_range, status, environment, dependencies, parameters = job_as_sql_tuple
+
+    metadata = json.loads(metadata)
+    environment = json.loads(environment)
+    dependencies = json.loads(dependencies)
+    parameters = json.loads(parameters)
+
+    new_job = Job(name)
+    new_job.set_purpose(purpose)
+    new_job.set_type(job_type)
+    new_job.set_environment(environment)
+    new_job.set_dependencies(dependencies)
+    new_job.set_parameters(parameters)
+    new_job.set_meta(metadata=metadata)
+    new_job.set_range(job_range)
+    new_job.set_id(job_id)
 
     return new_job

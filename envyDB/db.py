@@ -86,14 +86,26 @@ class DB:
         self.connection.commit()
         return True
 
-    def get_tasks_from_job_id(self, job_id: int):
-        query = """
-        SELECT *
+    def get_tasks_from_job_id(self, job_id: int, column: str = '*') -> list:
+        query = f"""
+        SELECT {column}
         FROM tasks
         WHERE Job_Id = ?
         """
-        self.cursor.execute(query, (job_id,))
+        self.cursor.execute(query, (job_id, ))
         tasks = self.cursor.fetchall()
+        tasks = [task[0] for task in tasks]
+        return tasks
+
+    def get_tasks_by_status(self, job_id: int, status: Status, column: str = '*') -> list:
+        query = f"""
+        SELECT {column}
+        FROM tasks
+        WHERE Job_Id = ? AND Status = ?
+        """
+        self.cursor.execute(query, (job_id, status))
+        tasks = self.cursor.fetchall()
+        tasks = [task[0] for task in tasks]
         return tasks
 
     def update_task_status(self, task_id: int, status: Status):
@@ -143,3 +155,21 @@ class DB:
 
         self.connection.commit()
         return True
+
+    def get_jobs_by_status(self, status: Status):
+        self.logger.debug(f'DB: selecting jobs by status {status}')
+        query = """
+        SELECT *
+        FROM jobs
+        WHERE Status = ?
+        """
+        matching_jobs = self.cursor.execute(query, (status, )).fetchall()
+        return matching_jobs
+
+
+if __name__ == '__main__':
+    import time
+    new_db = DB()
+    new_db.connect()
+    test_id = 4050259621
+    print(list(new_db.get_tasks_by_status(test_id, Status.PENDING, column='Task_Id')))

@@ -1,5 +1,5 @@
 import os, json, asyncio
-import job
+import envyJobs.job as job
 import logging
 from envyLib.envy_utils import DummyLogger
 from config import Config

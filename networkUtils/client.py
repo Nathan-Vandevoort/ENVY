@@ -8,7 +8,7 @@ import networkUtils.message as m
 
 class Client:
 
-    def __init__(self, receive_queue: Queue, event_loop, logger: logging.Logger = None):
+    def __init__(self, receive_queue: Queue, event_loop, send_queue: Queue, logger: logging.Logger = None):
         self.logger = logger or eutils.DummyLogger()
         self.hostname = socket.gethostname()
         self.my_ip = socket.gethostbyname(self.hostname)
@@ -21,6 +21,8 @@ class Client:
         self.hash = eutils.get_hash()
 
         self.receive_queue = receive_queue
+
+        self.send_queue = send_queue
 
         self.event_loop = event_loop
 
@@ -103,6 +105,27 @@ class Client:
             logger.debug('Connection Closed Successfully')
             return
 
+    async def producer_handler(self):
+        while self.running:
+            while self.send_queue.empty():  # wait for something to send
+                await asyncio.sleep(.1)
+
+            message = self.send_queue.get()
+            self.logger.debug(f'sending message to server: ({message})')
+            status = await self.producer(message)
+            if status == False:
+                self.logger.debug('failed producer')
+                continue
+            message = message.encode()
+            self.logger.debug(f'sent message {message}')
+            await self.websocket.send(message)
+
+    async def producer(self, message):
+        if not isinstance(message, m.Message) and not issubclass(message, m.Message):
+            self.logger.debug('purging not message object from queue')
+            return False
+        return True
+
     async def start(self):
         self.logger.debug(f'networkUtils.client started')
 
@@ -110,7 +133,11 @@ class Client:
         consumer_task = self.event_loop.create_task(self.consumer_handler())
         consumer_task.set_name('client.consumer_handler')
 
+        producer_task = self.event_loop.create_task(self.producer_handler())
+        producer_task.set_name('client.producer')
+
         self.client_tasks.append(consumer_task)
+        self.client_tasks.append(producer_task)
 
         while self.websocket.open:  # hang here while connection is open
             await asyncio.sleep(1.5)

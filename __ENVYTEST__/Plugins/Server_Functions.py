@@ -130,3 +130,15 @@ async def send_to_clients(server, clients: list, message: m.Message | m.Function
     """
     for client in clients:
         await send_to_client(server, client, message)
+
+
+async def update_client_attribute(server, client: str, attribute_name: str, attribute_value: any) -> None:
+    """
+    updates any client_attribute with any value
+    :param server: reference to the server making the call
+    :param client: client which is being updated
+    :param attribute_name: name of attribute to update
+    :param attribute_value: value to update to
+    :return: Void
+    """
+    server.clients[client][attribute_name] = attribute_value

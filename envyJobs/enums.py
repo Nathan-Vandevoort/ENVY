@@ -11,10 +11,13 @@ class Purpose(str, Enum):
     def __format__(self, format_spec):
         return self.value
 
+
 class Status(str, Enum):
     PENDING = 'pending'
     INPROGRESS = 'inprogress'
     DONE = 'done'
+    IDLE = 'idle'
+    WORKING = 'working'
 
     def __str__(self):
         return self.value

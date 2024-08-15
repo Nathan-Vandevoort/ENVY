@@ -1,3 +1,5 @@
+import asyncio
+
 import user_config, sys
 sys.path.append(user_config.Config.REPOPATH)
 from networkUtils import message as m
@@ -6,7 +8,7 @@ from envyLib.colors import Colors as c
 from envyLib import envy_utils as eutils
 
 
-def debug(envy) -> None:
+async def debug(envy) -> None:
     """
     a generic debug function feel free to change this to whatever you want it to do
     called from console with debug_envy()
@@ -16,7 +18,7 @@ def debug(envy) -> None:
     print(f'{c.IMPORTANT}Debug{c.CLEAR}')
 
 
-def fill_buffer(envy, buffer_name: str, data: any) -> None:
+async def fill_buffer(envy, buffer_name: str, data: any) -> None:
     """
     fills a buffer on envy given the buffers name and data to fill the buffer with
     :param envy: reference to the envy instance calling the function
@@ -27,7 +29,7 @@ def fill_buffer(envy, buffer_name: str, data: any) -> None:
     setattr(envy, buffer_name, data)
 
 
-def install_maya_plugin(envy) -> None:
+async def install_maya_plugin(envy) -> None:
     """
     installs the Maya plugin
     :param envy: reference to the envy instance calling the function
@@ -43,7 +45,7 @@ def install_maya_plugin(envy) -> None:
     """
 
 
-def restart_envy(envy) -> None:
+async def restart_envy(envy) -> None:
     import os
     """
     launches a new envy instance and shuts down the current one
@@ -54,3 +56,15 @@ def restart_envy(envy) -> None:
     os.startfile(f"launch_envy.py", cwd='//titansrv/studentShare/nathanV/Envy_V2/__ENVY__/')
     quit()
 
+
+async def send_status_to_server(envy) -> None:
+    print('SEND STATUS TO SERVER')
+    new_message = m.FunctionMessage('send_status_to_server()')
+    new_message.set_function('update_client_attribute')
+    new_message.format_arguments(envy.hostname, 'Status', envy.status)
+    envy.send(new_message)
+
+
+async def debug_plugin(envy) -> None:
+    await envy.set_status_working()
+    proc = asyncio.create_subprocess_shell()

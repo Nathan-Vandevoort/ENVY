@@ -1,13 +1,15 @@
 import asyncio
 import websockets.exceptions
-from networkUtils import server, client
+from networkUtils import client
+from envyCore import server
 from networkUtils.purpose import Purpose
-import logging, config, socket, hashlib, os, sys
+import logging, config, socket, os, sys
 from queue import Queue
 from envyLib import envy_utils as eutils
 import time
 from envyLib.envy_utils import DummyLogger
 from networkUtils import message as m
+from envyJobs.enums import Status
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = config.Config.ENVYPATH
@@ -30,6 +32,7 @@ class Envy:
         self.hash = eutils.get_hash()
 
         self.client_receive_queue = Queue(maxsize=0)
+        self.client_send_queue = Queue(maxsize=0)
         self.server_receive_queue = Queue(maxsize=0)
 
         self.event_loop = event_loop
@@ -47,7 +50,7 @@ class Envy:
 
         # ------------------ job attributes -------------------------
         self.job = None
-        self.progress = 0.0
+        self.status = Status.IDLE
 
     async def choose_role(self, role_override: Purpose = None) -> Purpose:
         self.logger.debug('choosing role')
@@ -68,16 +71,17 @@ class Envy:
         self.logger.debug('I am the server')
         return Purpose.SERVER
 
-    async def execute(self, job: m.FunctionMessage) -> None:
-        purpose = job.get_purpose()
-
-        if purpose == Purpose.FUNCTION_MESSAGE:
-            function_string = job.as_function()
-            try:
-                exec(f"NV.{function_string}")
-            except Exception as e:
-                self.logger.debug(f'Failed to execute {job} -> {e}')
-                pass
+    async def execute(self, message: m.FunctionMessage) -> bool:
+        function = message.as_function()
+        try:
+            await self.async_exec('await NV.' + function)
+        except Exception as e:
+            self.logger.error(f'Failed while executing {function}, {e}')
+            error_message = m.Message('server_error_message')
+            error_message.set_purpose(Purpose.MEDIUM_SERVER_ERROR)
+            error_message.set_message(f'Failed while executing {function}, {e}')
+            return False
+        return True
 
     async def execution_loop(self):
         while self.running:
@@ -88,6 +92,9 @@ class Envy:
             if not self.client_receive_queue.empty():
                 job = self.client_receive_queue.get()
                 await self.execute(job)
+
+    def send(self, message: m.Message | m.FunctionMessage) -> None:
+        self.client_send_queue.put(message)
 
     async def start_server(self):
         server_task = self.event_loop.create_task(self.server.start())
@@ -105,27 +112,9 @@ class Envy:
             await asyncio.sleep(.1)
         return server_task
 
-    async def start_client(self):
-        self.client_task = self.event_loop.create_task(self.client.start())
-        self.client_task.set_name('client.start')
-        self.client_dependant_tasks.append(self.client_task)
-
-        start_time = time.time()
-        while not self.client.running:  # wait for client to finish starting
-
-            if time.time() - start_time > TIMEOUT_INTERVAL:
-                self.logger.error('Timed out while attempting to connect with server')
-                self.logger.error('exiting')
-                time.sleep(3)
-                sys.exit(0)
-
-            self.logger.debug('waiting for client')
-            self.logger.debug(time.time() - start_time)
-            await asyncio.sleep(.1)
-
     async def run(self, role_override=None):
         self.running = True
-        self.client = client.Client(receive_queue=self.client_receive_queue, event_loop=self.event_loop,
+        self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
         self.server = server.Server(receive_queue=self.server_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
@@ -151,6 +140,8 @@ class Envy:
 
         :return: int
         """
+        await NV.send_status_to_server(self)  # add a message to the send queue
+
         self.logger.debug(f'envy.connect: Purpose is {self.role}')
         if self.role == Purpose.SERVER:
             self.server_task = await self.start_server()
@@ -238,6 +229,35 @@ class Envy:
 
     async def stop(self) -> None:
         self.running = False
+
+    async def set_status_idle(self) -> None:
+        self.status = Status.IDLE
+        await NV.send_status_to_server(self)  # add a message to the send queue
+
+    async def set_status_working(self) -> None:
+        self.status = Status.WORKING
+        await NV.send_status_to_server(self)  # add a message to the send queue
+
+    async def async_exec(self, s: str) -> None:
+        """
+        this one is a copy of the one in envy_utils but I put it here so it has access to the prepared environment
+        an Async version of exec that I found on stack overflow and tbh idk how it works
+        -Nathan
+
+        :param s: input string
+        :return: None
+        """
+        import ast
+        self.logger.debug(f'executing: {s}')
+        code = compile(
+            s,
+            '<string>',
+            'exec',
+            flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT,
+        )
+        coroutine = eval(code)
+        if coroutine is not None:
+            await coroutine
 
 
 if __name__ == '__main__':
