@@ -28,7 +28,6 @@ class Scheduler:
 
     async def sync_from_db(self) -> None:
         self.logger.debug('Scheduler: syncing from database')
-        await asyncio.sleep(4)  # wait so you have an accurate accounting of who your clients are
         jobs = list(self.job_db.get_jobs_by_status(Status.INPROGRESS))
         jobs.extend(list(self.job_db.get_jobs_by_status(Status.PENDING)))
 
@@ -128,6 +127,7 @@ class Scheduler:
         computer = self.tasks[task_id]['Computer']
         self.clients[computer]['Job'] = None
         self.clients[computer]['Task'] = None
+        self.clients[computer]['Progress'] = 0
         del self.tasks[task_id]
 
         self.logger.info(f'Scheduler: Finished task {task_id}')
@@ -160,11 +160,13 @@ class Scheduler:
             return True
 
     def pick_task(self, computer: str) -> int:
-        task = self.task_order[0]
-        self.logger.debug(f'Scheduler: Picked Task {task}')
-        return task
+        for task in self.task_order:
+            if self.tasks[task]['Computer'] is not None:
+                continue
+            return task
 
     async def start(self):
+        self.logger.debug("Scheduler: Started")
         self.job_db.start()
         self.ingestor.set_db(self.job_db)
 
