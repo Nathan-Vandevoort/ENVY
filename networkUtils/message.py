@@ -217,7 +217,10 @@ class FunctionMessage(Message):
             if isinstance(arg, str):  # if you are a string make sure you have quotes
                 validated_arg = f"'{arg}'"
 
-            formatted_args.append(validated_arg)
+            if isinstance(arg, dict):
+                validated_arg = f"'{json.dumps(arg)}'"
+
+            formatted_args.append(str(validated_arg))
 
         # if inject_self is true
         if inject_self:

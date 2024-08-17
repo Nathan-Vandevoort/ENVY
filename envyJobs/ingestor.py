@@ -6,11 +6,12 @@ from config import Config
 
 
 class Ingestor:
-    def __init__(self, logger: logging.Logger = None):
+    def __init__(self, scheduler, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
         self.running = False
         self.path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs')
         self.db = None
+        self.scheduler = scheduler
 
     def set_db(self, db):
         self.logger.debug(f'Set Database -> {db}')
@@ -52,6 +53,7 @@ class Ingestor:
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
         await self.add_to_db(new_job)
+        await self.scheduler.add_job(new_job)
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)

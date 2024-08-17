@@ -1,11 +1,11 @@
 import asyncio
-
-import user_config, sys
+import user_config, sys, os
 sys.path.append(user_config.Config.REPOPATH)
+sys.path.append(os.path.join(user_config.Config.ENVYPATH, 'Plugins'))
 from networkUtils import message as m
 from networkUtils.purpose import Purpose
 from envyLib.colors import Colors as c
-from envyLib import envy_utils as eutils
+import json
 
 
 async def debug(envy) -> None:
@@ -52,19 +52,43 @@ async def restart_envy(envy) -> None:
     :param envy: reference to the envy instance calling the function
     :return: Void
     """
-    #repopath = user_config.Config.REPOPATH
-    os.startfile(f"launch_envy.py", cwd='//titansrv/studentShare/nathanV/Envy_V2/__ENVY__/')
+    repopath = user_config.Config.REPOPATH
+    os.startfile(f"launch_envy.py", cwd=str(repopath))
     quit()
 
 
 async def send_status_to_server(envy) -> None:
-    print('SEND STATUS TO SERVER')
     new_message = m.FunctionMessage('send_status_to_server()')
     new_message.set_function('update_client_attribute')
     new_message.format_arguments(envy.hostname, 'Status', envy.status)
     envy.send(new_message)
 
 
-async def debug_plugin(envy) -> None:
-    await envy.set_status_working()
-    proc = asyncio.create_subprocess_shell()
+async def send_progress_to_server(envy, progress: float) -> None:
+    new_message = m.FunctionMessage('send_task_progress_to_server()')
+    new_message.set_function('update_client_attribute')
+    new_message.format_arguments(envy.hostname, 'Progress', progress)
+    envy.send(new_message)
+
+
+async def finish_task(envy, task_id: int) -> None:
+    new_message = m.FunctionMessage(f'finish_task(): {task_id}')
+    new_message.set_target(Purpose.SERVER)
+    new_message.set_function('mark_task_as_finished')
+    new_message.format_arguments(task_id)
+    envy.send(new_message)
+
+
+async def debug_plugin(envy, task_data: str) -> None:
+    from debug import envy_plugin as ep
+    await envy.set_status_working()  # This is important to make sure that envy doesnt try to do other jobs
+
+    task_data = json.loads(task_data)
+    task_id = task_data['ID']
+    environment = task_data['Environment']
+    parameters = task_data['Parameters']
+    frame = task_data['Frame']
+
+    debug_process = ep.Debug(envy, task_id, frame)
+    await debug_process.run()
+    await envy.set_status_idle()

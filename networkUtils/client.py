@@ -139,6 +139,7 @@ class Client:
         self.client_tasks.append(consumer_task)
         self.client_tasks.append(producer_task)
 
+        self.logger.info('Client: Connected')
         while self.websocket.open:  # hang here while connection is open
             await asyncio.sleep(1.5)
 

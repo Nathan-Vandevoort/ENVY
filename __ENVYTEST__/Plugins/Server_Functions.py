@@ -142,3 +142,13 @@ async def update_client_attribute(server, client: str, attribute_name: str, attr
     :return: Void
     """
     server.clients[client][attribute_name] = attribute_value
+
+
+async def mark_task_as_finished(server, task_id: int) -> None:
+    """
+    Marks a task as finished in the scheduler
+    :param server: reference to the server making the call
+    :param task_id: task ID to mark as finished
+    :return: Void
+    """
+    server.job_scheduler.finish_task(task_id)

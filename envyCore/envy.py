@@ -59,6 +59,7 @@ class Envy:
             self.logger.debug(f'role_override detected, setting self to {role_override}')
             return role_override
 
+        server_ip = eutils.get_server_ip()
         success = await self.client.health_check_server()
         self.logger.debug(f'server health check status: {success}')
 
@@ -66,10 +67,13 @@ class Envy:
             self.logger.debug('I am a Client')
             return Purpose.CLIENT
 
-        # you failed to health check the server
-        # that means that you are now the server
-        self.logger.debug('I am the server')
-        return Purpose.SERVER
+        #  check to see if the ip changed
+        if server_ip == eutils.get_server_ip():
+            # that means that you are now the server
+            self.logger.debug('I am the server')
+            return Purpose.SERVER
+
+        return await self.choose_role()
 
     async def execute(self, message: m.FunctionMessage) -> bool:
         function = message.as_function()
@@ -86,7 +90,7 @@ class Envy:
     async def execution_loop(self):
         while self.running:
             # stop blocking thread so other coroutines can run
-            await asyncio.sleep(.1)
+            await asyncio.sleep(.5)
 
             # if you have something in your queue do it
             if not self.client_receive_queue.empty():
@@ -121,7 +125,7 @@ class Envy:
         self.role = await self.choose_role(role_override)
         execution_loop_task = self.event_loop.create_task(self.execution_loop())
         execution_loop_task.set_name('envyCore.envy.execution_loop')
-
+        self.logger.info('Started Envy')
         while self.running:
             result = await self.connect()
 

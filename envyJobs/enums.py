@@ -4,6 +4,7 @@ from enum import Enum
 class Purpose(str, Enum):
     RENDER = 'render'
     CACHE = 'cache'
+    SIMULATION = 'simulation'
 
     def __str__(self):
         return self.value

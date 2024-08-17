@@ -169,6 +169,7 @@ class Server:
         try:
             await self.async_exec('await SRV.' + function)
         except Exception as e:
+            self.logger.debug(f'Failed while executing: {function} -> {e}')
             error_message = m.Message('server_error_message')
             error_message.set_purpose(Purpose.MEDIUM_SERVER_ERROR)
             error_message.set_message(f'Failed while executing {function}, {e}')
@@ -209,7 +210,9 @@ class Server:
             'IP': ip,
             'Socket': websocket,
             'Status': Status.IDLE,
-            'Job': None
+            'Job': None,
+            'Task': None,
+            'Progress': 0
         }
         update_clients_file(self.server_directory, self.clients)
         await SRV.send_clients_to_console(self)

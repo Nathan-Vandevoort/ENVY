@@ -6,6 +6,7 @@ from datetime import datetime
 from envyLib import envy_utils as eutils
 import os
 from config import Config
+import sys
 
 
 class Job:
@@ -109,7 +110,7 @@ class Job:
         if not metadata:
             self.metadata = {
                 'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
-                'Contributors': [__file__]
+                'Contributors': [sys.modules['__main__'].__file__]
             }
             return
 
@@ -120,7 +121,7 @@ class Job:
 
     def meta_add_contributor(self):
         contributors = self.metadata['Contributors']
-        contributors.append(__file__)
+        contributors.append(sys.modules['__main__'].__file__)
 
     def set_meta_value(self, key: str, value: any) -> bool:
         if key not in self.metadata:
