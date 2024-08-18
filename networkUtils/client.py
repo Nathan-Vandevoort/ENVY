@@ -117,7 +117,10 @@ class Client:
                 self.logger.debug('failed producer')
                 continue
             message = message.encode()
-            await self.websocket.send(message)
+            try:
+                await self.websocket.send(message)
+            except (websockets.exceptions.ConnectionClosed, AttributeError):
+                return
 
     async def producer(self, message):
         if not isinstance(message, m.Message) and not issubclass(message, m.Message):

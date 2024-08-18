@@ -179,7 +179,7 @@ class Server:
         try:
             await self.async_exec('await SRV.' + function)
         except Exception as e:
-            self.logger.debug(f'Failed while executing: {function} -> {e}')
+            self.logger.error(f'Failed while executing: {function} -> {e}')
             error_message = m.Message('server_error_message')
             error_message.set_purpose(Purpose.MEDIUM_SERVER_ERROR)
             error_message.set_message(f'Failed while executing {function}, {e}')
@@ -215,7 +215,7 @@ class Server:
             return success
 
     async def register_client(self, client, ip, websocket):
-        self.logger.debug(f"Registering client: {client}")
+        self.logger.info(f"Registering client: {client}")
         self.clients[client] = {
             'IP': ip,
             'Socket': websocket,
@@ -311,7 +311,7 @@ if __name__ == '__main__':
         reset = "\x1b[0m"
 
         # Define format
-        format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+        format = '%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
 
         FORMATS = {
             logging.DEBUG: grey + format + reset,

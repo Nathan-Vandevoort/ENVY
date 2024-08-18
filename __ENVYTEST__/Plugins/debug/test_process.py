@@ -4,7 +4,7 @@ import time, sys
 class Process:
     def __init__(self):
         counter = 0
-        while counter <= 50:
+        while counter <= 25:
             print(f'{counter * 2}%', flush=True)
             counter += 1
             time.sleep(.5)

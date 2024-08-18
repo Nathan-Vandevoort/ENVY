@@ -60,7 +60,7 @@ class Scheduler:
                 self.task_order.append(task)
 
     async def add_job(self, job: j.Job):
-
+        self.logger.info(f'Scheduler: Adding in memory job {job}')
         job_id = job.get_id()
         self.jobs[job_id] = {
             'Pending_Tasks': list(self.job_db.get_tasks_by_status(job_id, Status.PENDING, column='Task_Id')),
@@ -90,6 +90,7 @@ class Scheduler:
     async def issue_task(self, task_id: int, computer_name: str) -> None:
         self.logger.info(f'Scheduler: issuing task ({task_id}) to {computer_name}')
         job_id = self.job_db.get_value_from_task_id(task_id, column='Job_Id')[0]
+
         self.job_db.set_task_value(task_id, Status.INPROGRESS, column='Status')  # mark the task as INPROGRESS in the database
         try:  # if task is in pending tasks move it to active tasks
             task_index = self.jobs[job_id]['Pending_Tasks'].index(task_id)
@@ -106,12 +107,16 @@ class Scheduler:
         self.tasks[task_id]['Status'] = Status.INPROGRESS
         self.tasks[task_id]['Computer'] = computer_name
 
+        print(f'\nISSUING PENDING: {self.jobs[job_id]["Pending_Tasks"]}')
+        print(f'ISSUING ACTIVE: {self.jobs[job_id]["Active_Tasks"]}')
+        print(f'ISSUING TASK_ORDER: {self.task_order}\n')
+
         await SRV.send_to_client(self.server, computer_name, self.job_db.get_task_as_message(task_id))
 
     def finish_job(self, job_id):
         self.job_db.set_job_value(job_id, Status.DONE, column='Status')
         del self.jobs[job_id]
-        self.logger.debug(f'Scheduler: Marking job: {job_id} as Done')
+        self.logger.info(f'Scheduler: Marking job: {job_id} as Done')
 
     def finish_task(self, task_id: int) -> None:
         task_id = int(task_id)
@@ -130,11 +135,9 @@ class Scheduler:
         self.clients[computer]['Progress'] = 0
         del self.tasks[task_id]
 
-        self.logger.info(f'Scheduler: Finished task {task_id}')
-
-        # mark job as done in database if all pending and active tasks are done
-        if len(self.jobs[job_id]['Active_Tasks']) == 0 and len(self.jobs[job_id]['Pending_Tasks']) == 0:
+        if len(self.jobs[job_id]["Pending_Tasks"]) == 0 and len(self.jobs[job_id]["Active_Tasks"]) == 0:
             self.finish_job(job_id)
+        self.logger.info(f'Scheduler: Finished task {task_id}')
 
     def reorder_tasks(self, task_id: int, new_index: int) -> bool:
         try:
@@ -186,7 +189,8 @@ class Scheduler:
                     continue
 
                 task = self.pick_task(client)
-                await self.issue_task(task, client)
+                if task is not None:
+                    await self.issue_task(task, client)
 
 
 if __name__ == '__main__':
