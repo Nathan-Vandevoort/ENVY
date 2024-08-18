@@ -6,11 +6,15 @@ Name: maya_to_envy.py
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
+from pathlib import Path
 import json
 import os
 
 
 class MayaToEnvy(object):
+    ARNOLD = 'arnold'
+    REDSHIFT = 'redshift'
+    VRAY = 'vray'
 
     def __init__(self):
         """"""
@@ -20,6 +24,7 @@ class MayaToEnvy(object):
         self.project_path = None
         self.maya_version = None
         self.render_engine = None
+        self.cameras = []
         self.render_layers = []
         self.start_frame = 0
         self.end_frame = 0
@@ -78,38 +83,63 @@ class MayaToEnvy(object):
 
         self.get_scene_information()
 
-        if self.render_engine == 'arnold':
-            if cmds.getAttr('defaultArnoldRenderOptions.log_verbosity') != 2:
-                cmds.setAttr('defaultArnoldRenderOptions.log_verbosity', 2)
+        if not self.maya_file:
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
+            return
 
-                om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Log verbosity set to Info. File must be saved.')
+        if self.render_engine == MayaToEnvy.ARNOLD:
+            cmds.setAttr('defaultArnoldRenderOptions.log_verbosity', 2)
+            cmds.setAttr('defaultArnoldRenderOptions.log_to_console', 1)
 
-                result = cmds.confirmDialog(
-                    title='Export to Envy',
-                    message='File must be save it to export to Envy.\nDo you want to save it?',
-                    button=['Yes', 'No'],
-                    defaultButton='Yes',
-                    cancelButton='No',
-                    dismissString='No')
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_verbosity = 2.')
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_to_console = 1.')
 
-                if result == 'Yes':
-                    cmds.file(save=True)
-                else:
-                    om.MGlobal.displayError(f'[{self.CLASS_NAME}] Failed exporting to Envy.')
+            if not self.save_file():
+                return
 
-        json_path = os.path.join(self.project_path, 'data', 'test.json')
-        settings = {
-            'maya_file': self.maya_file,
-            'project_path': self.project_path,
-            'maya_version': self.maya_version,
-            'render_engine': self.render_engine,
-            'render_layers': self.render_layers,
-            'start_frame': self.start_frame,
-            'end_frame': self.end_frame,
-            'maya_file_modification_time': os.path.getmtime(self.maya_file)}
+        elif self.render_engine == MayaToEnvy.REDSHIFT:
+            cmds.setAttr('redshiftOptions.logLevel', 2)
 
-        with open(json_path, 'w') as file_to_write:
-            json.dump(settings, file_to_write, indent=4)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] redshiftOptions.logLevel = 2.')
+
+            if not self.save_file():
+                return
+        elif self.render_engine == MayaToEnvy.VRAY:
+            cmds.setAttr('vraySettings.sys_message_level', 3)
+            cmds.setAttr('vraySettings.sys_progress_increment', 1)
+
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_message_level = 3.')
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_progress_increment = 1.')
+
+            if not self.save_file():
+                return
+        else:
+            om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine not supported.')
+            return
+
+        for frame in range(self.start_frame, self.end_frame + 1):
+            for camera in self.cameras:
+                for render_layer in self.render_layers:
+                    maya_file_name = Path(self.maya_file).stem
+
+                    json_path = os.path.join(
+                        self.project_path,
+                        'data',
+                        f'{maya_file_name}_{camera}_{render_layer}_{str(frame).zfill(4)}_{str(frame).zfill(4)}.json')
+
+                    settings = {
+                        'maya_file': self.maya_file,
+                        'project_path': self.project_path,
+                        'maya_version': self.maya_version,
+                        'render_engine': self.render_engine,
+                        'camera': camera,
+                        'render_layer': render_layer,
+                        'start_frame': frame,
+                        'end_frame': frame,
+                        'maya_file_modification_time': os.path.getmtime(self.maya_file)}
+
+                    with open(json_path, 'w') as file_to_write:
+                        json.dump(settings, file_to_write, indent=4)
 
         om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Export to Envy was successfully.')
 
@@ -149,10 +179,30 @@ class MayaToEnvy(object):
         self.maya_version = cmds.about(query=True, version=True)
         self.render_engine = cmds.getAttr('defaultRenderGlobals.currentRenderer')
 
-        self.start_frame = cmds.getAttr('defaultRenderGlobals.startFrame')
-        self.end_frame = cmds.getAttr('defaultRenderGlobals.endFrame')
+        self.cameras = [camera for camera in cmds.ls(cameras=True) if cmds.getAttr(f'{camera}.renderable')]
+        self.start_frame = int(cmds.getAttr('defaultRenderGlobals.startFrame'))
+        self.end_frame = int(cmds.getAttr('defaultRenderGlobals.endFrame'))
 
         self.get_enabled_render_layers()
+
+    def save_file(self) -> bool:
+        """Saves the file."""
+        om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] File must be saved.')
+
+        result = cmds.confirmDialog(
+            title='Export to Envy',
+            message='File must be save it to export to Envy.\nDo you want to save it?',
+            button=['Yes', 'No'],
+            defaultButton='Yes',
+            cancelButton='No',
+            dismissString='No')
+
+        if result == 'Yes':
+            cmds.file(save=True)
+            return True
+        else:
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Failed exporting to Envy.')
+            return False
 
 
 if __name__ == '__main__':
