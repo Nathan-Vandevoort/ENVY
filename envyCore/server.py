@@ -1,4 +1,9 @@
-import socket, config, os, logging, websockets, asyncio, hashlib, json, sys
+import os, sys
+filepath = os.path.abspath(__file__)
+filepath = os.path.dirname(filepath)
+sys.path.append(os.path.join(filepath, os.pardir))
+import prep_env
+import socket, config, logging, websockets, asyncio, hashlib, json
 from queue import Queue
 from networkUtils.purpose import Purpose
 from envyLib import envy_utils as eutils
@@ -6,6 +11,10 @@ import networkUtils.message as m
 from envyJobs import scheduler, ingestor
 from envyDB import db
 from envyJobs.enums import Status
+import psutil
+import win32con
+import win32file
+import win32event
 
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
@@ -26,6 +35,7 @@ class Server:
         self.hostname = socket.gethostname()
         self.my_ip = socket.gethostbyname(self.hostname)
         self.running = False
+        self.server_file = None
 
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
@@ -164,7 +174,7 @@ class Server:
         return False
 
     async def execute(self, message: m.FunctionMessage) -> bool:
-        self.logger.info(f'executing {message}')
+        self.logger.debug(f'executing {message}')
         function = message.as_function()
         try:
             await self.async_exec('await SRV.' + function)
@@ -237,9 +247,13 @@ class Server:
 
     def write_server_file(self):
         self.logger.debug('writing server file')
-        with open(f'{self.server_directory}server.txt', 'w') as server_file:
-            server_file.write(self.my_ip)
-            server_file.close()
+        try:
+            os.rename(f'{self.server_directory}server.txt', f'{self.server_directory}server.txt')  # rename file to same name to check if its being used by another server
+        except OSError:
+            raise PermissionError('File is being used by another server')
+        self.server_file = open(f'{self.server_directory}server.txt', 'w')
+        self.server_file.write(self.my_ip)
+        self.server_file.flush()
 
     async def start(self):
         self.logger.debug('starting server')
@@ -249,10 +263,13 @@ class Server:
             scheduler_task = self.event_loop.create_task(self.job_scheduler.start())
             scheduler_task.set_name('Scheduler.start()')
             self.tasks.append(scheduler_task)
+            orphan_task = self.event_loop.create_task(self.check_orphaned())
+            orphan_task.set_name('check_orphaned')
+            self.tasks.append(orphan_task)
             self.running = True
             await self.server.wait_closed()
-        except OSError:
-            raise OSError(10048, 'server already exists on port')
+        except (OSError, PermissionError):
+            sys.exit(0)
         self.running = False
 
     async def async_exec(self, s: str) -> None:
@@ -276,14 +293,48 @@ class Server:
         if coroutine is not None:
             await coroutine
 
+    @staticmethod
+    async def check_orphaned():
+        parent = psutil.Process(os.getppid())
+        while True:
+            if not parent.is_running():
+                sys.exit()
+            await asyncio.sleep(2)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    logging.getLogger('websockets').setLevel(logging.WARNING)
-    logging.getLogger('asyncio').setLevel(logging.WARNING)
-    send_queue = Queue(maxsize=0)
+    class CustomFormatter(logging.Formatter):
+        # Define color codes
+        grey = "\x1b[38;20m"
+        yellow = "\x1b[33;20m"
+        red = "\x1b[31;20m"
+        bold_red = "\x1b[31;1m"
+        reset = "\x1b[0m"
+
+        # Define format
+        format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+
+        FORMATS = {
+            logging.DEBUG: grey + format + reset,
+            logging.INFO: yellow + format + reset,
+            logging.WARNING: yellow + format + reset,
+            logging.ERROR: red + format + reset,
+            logging.CRITICAL: bold_red + format + reset
+        }
+
+        def format(self, record):
+            log_fmt = self.FORMATS.get(record.levelno)
+            formatter = logging.Formatter(log_fmt)
+            return formatter.format(record)
+
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(CustomFormatter())
+
+    logger = logging.getLogger(__name__)
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
     receive_queue = Queue(maxsize=0)
     loop = asyncio.new_event_loop()
-    ldr = Server(receive_queue=receive_queue, event_loop=loop)
+    ldr = Server(receive_queue=receive_queue, event_loop=loop, logger=logger)
     loop.create_task(ldr.start())
     loop.run_forever()

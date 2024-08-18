@@ -10,6 +10,7 @@ import time
 from envyLib.envy_utils import DummyLogger
 from networkUtils import message as m
 from envyJobs.enums import Status
+import subprocess
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = config.Config.ENVYPATH
@@ -24,7 +25,7 @@ class Envy:
 
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
-        self.server_file_path = ENVYPATH + 'Connections/server.txt'
+        self.server_directory = ENVYPATH + 'Connections/'
 
         self.hostname = socket.gethostname()
         self.my_ip = socket.gethostbyname(self.hostname)
@@ -100,27 +101,25 @@ class Envy:
     def send(self, message: m.Message | m.FunctionMessage) -> None:
         self.client_send_queue.put(message)
 
+    def check_server_file(self):
+        self.logger.debug('writing server file')
+        try:
+            os.rename(f'{self.server_directory}server.txt',
+                      f'{self.server_directory}server.txt')  # rename file to same name to check if its being used by another server
+            return True
+        except OSError:
+            return False
+
     async def start_server(self):
-        server_task = self.event_loop.create_task(self.server.start())
-        server_task.set_name('server.start')
-        start_time = time.time()
-        while not self.server.running:  # wait for server to start
-            self.logger.debug('waiting for server')
-            await asyncio.sleep(.1)
-            if time.time() - start_time > TIMEOUT_INTERVAL:  # exit condition
-                self.logger.error('Timed out while attempting to start server')
-                self.logger.error('exiting')
-                time.sleep(3)
-                return None
-            self.logger.debug(time.time() - start_time)
-            await asyncio.sleep(.1)
-        return server_task
+        plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server.py')
+        cmd = ['python', plugin_path]
+        if self.check_server_file():
+            self.server = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+            await asyncio.sleep(1)
 
     async def run(self, role_override=None):
         self.running = True
         self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
-                                    logger=self.logger)
-        self.server = server.Server(receive_queue=self.server_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
         self.role = await self.choose_role(role_override)
         execution_loop_task = self.event_loop.create_task(self.execution_loop())
@@ -149,9 +148,6 @@ class Envy:
         self.logger.debug(f'envy.connect: Purpose is {self.role}')
         if self.role == Purpose.SERVER:
             self.server_task = await self.start_server()
-            if not self.server_task:
-                self.logger.warning('server failed to start')
-                return 0
 
         # Client connection
         success, exception, info = await self.client.connect()
@@ -214,8 +210,12 @@ class Envy:
         return 1  # elect new server
 
     def elect_server(self):
-        self.logger.debug('electing new server')
+        self.logger.info('electing new server')
         clients = eutils.get_clients_from_file(logger=self.logger)
+
+        if self.server_name == self.hostname:
+            self.role = Purpose.SERVER
+            return
 
         if self.server_name in clients:
             self.logger.debug('removing old server from eligible clients')
@@ -227,6 +227,7 @@ class Envy:
         self.logger.debug(f'New server: {new_server}')
         if self.hostname == new_server:  # I am the new server
             self.role = Purpose.SERVER
+            return
 
         else:
             time.sleep(10)

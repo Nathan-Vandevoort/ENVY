@@ -22,6 +22,22 @@ if 'launch_envy.py' in calling_script_name:
         sys.modules[module] = module_object
         spec.loader.exec_module(module_object)
 
+if 'server.py' in calling_script_name:
+    print('prepping server')
+    ENVYPATH = Config.ENVYPATH
+
+    modules = [
+        'Envy_Functions',
+        'Server_Functions'
+    ]
+
+    for module in modules:
+        envy_functions_path = os.path.join(ENVYPATH, 'Plugins', module + '.py')
+        spec = importlib.util.spec_from_file_location(module, envy_functions_path)
+        module_object = importlib.util.module_from_spec(spec)
+        sys.modules[module] = module_object
+        spec.loader.exec_module(module_object)
+
 if 'launch_console.py' in calling_script_name:
     print('prepping console')
     ENVYPATH = Config.ENVYPATH

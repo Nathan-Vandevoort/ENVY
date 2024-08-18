@@ -117,12 +117,11 @@ class Client:
                 self.logger.debug('failed producer')
                 continue
             message = message.encode()
-            self.logger.debug(f'sent message {message}')
             await self.websocket.send(message)
 
     async def producer(self, message):
         if not isinstance(message, m.Message) and not issubclass(message, m.Message):
-            self.logger.debug('purging not message object from queue')
+            self.logger.info('purging not message object from queue')
             return False
         return True
 
@@ -156,7 +155,7 @@ class Client:
             async for message in self.websocket:
                 deserialized_message = json.loads(message)
                 message_object = m.build_from_message_dict(deserialized_message)
-                self.logger.debug(f"received message from: server -> ({message_object})")
+                self.logger.info(f"received message from: server -> ({message_object})")
                 status = await self.consumer(message_object)
                 if not status:
                     self.logger.warning(f'unknown message received ({message_object}) -> {message_object.as_dict()}')
