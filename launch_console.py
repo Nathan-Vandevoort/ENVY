@@ -4,9 +4,33 @@ import logging
 
 from envyCore.console import Console
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
+
+class CustomFormatter(logging.Formatter):
+    # Define color codes
+    grey = "\x1b[38;20m"
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+
+    # Define format
+    format = '%(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+
+    FORMATS = {
+        logging.DEBUG: grey + format + reset,
+        logging.INFO: yellow + format + reset,
+        logging.WARNING: yellow + format + reset,
+        logging.ERROR: red + format + reset,
+        logging.CRITICAL: bold_red + format + reset
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
 handler = logging.StreamHandler()
-handler.setFormatter(formatter)
+handler.setFormatter(CustomFormatter())
 
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
@@ -14,5 +38,5 @@ logger.setLevel(logging.DEBUG)
 
 loop = asyncio.new_event_loop()
 con = Console(event_loop=loop, logger=logger)
-console_task = loop.create_task(con.start())
+console_task = loop.create_task(con.run())
 loop.run_forever()

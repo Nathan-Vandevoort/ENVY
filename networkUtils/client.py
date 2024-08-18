@@ -1,6 +1,6 @@
 import socket, config, os, logging, websockets, asyncio, hashlib, json
 from queue import Queue
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 from networkUtils import exceptions as network_exceptions
 import networkUtils.message as m
@@ -36,14 +36,14 @@ class Client:
 
     async def health_check_server(self) -> bool:
         self.logger.debug('health checking server')
-        status, exception, data = await self.connect(purpose=Purpose.HEALTH_CHECK, use_logger=False)
+        status, exception, data = await self.connect(purpose=Message_Purpose.HEALTH_CHECK, use_logger=False)
 
         if not status:
             return False
 
         return True
 
-    async def connect(self, purpose=Purpose.CLIENT, timeout=5, use_logger: bool = True) -> tuple:
+    async def connect(self, purpose=Message_Purpose.CLIENT, timeout=5, use_logger: bool = True) -> tuple:
         logger = eutils.DummyLogger()
         if use_logger:
             logger = self.logger
@@ -57,7 +57,7 @@ class Client:
         }
 
         try:
-            if purpose == Purpose.HEALTH_CHECK:
+            if purpose == Message_Purpose.HEALTH_CHECK:
                 websocket = await websockets.connect(uri, extra_headers=headers, timeout=timeout)
                 await websocket.send('ping')
                 result = await websocket.recv()
@@ -65,7 +65,7 @@ class Client:
                     await self.disconnect(websocket=websocket, use_logger=False)
                     return True, None, 'Connected Successfully'
 
-            if purpose == Purpose.CLIENT:
+            if purpose == Message_Purpose.CLIENT:
                 websocket = await websockets.connect(uri, extra_headers=headers, timeout=timeout)
                 if websocket.open:
                     self.websocket = websocket
@@ -172,8 +172,8 @@ class Client:
     # do from incoming connection
     async def consumer(self, message: m.FunctionMessage):
         target = message.get_target()
-        if target != Purpose.CLIENT:
-            self.logger.warning(f"message is not for {Purpose.CLIENT}")
+        if target != Message_Purpose.CLIENT:
+            self.logger.warning(f"message is not for {Message_Purpose.CLIENT}")
             return False
 
         self.receive_queue.put(message)

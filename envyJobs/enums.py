@@ -1,4 +1,12 @@
 from enum import Enum
+import json
+
+
+class EnumEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Enum):
+            return obj.value
+        return json.JSONEncoder.default(self, obj)
 
 
 class Purpose(str, Enum):
@@ -24,6 +32,9 @@ class Status(str, Enum):
         return self.value
 
     def __format__(self, format_spec):
+        return self.value
+
+    def __json__(self):
         return self.value
 
 

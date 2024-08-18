@@ -1,5 +1,5 @@
 import websockets, asyncio, config, os, socket, hashlib, logging, sys, json
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 from queue import Queue
 from envyLib import envy_utils as eutils
 from networkUtils import message as m
@@ -56,13 +56,11 @@ class Console:
 
             message = self.send_queue.get()
             self.logger.debug(f'sending message to server: ({message})')
-            self.logger.debug(f'websocket: {self.websocket}')
             status = await self.producer(message)
             if status == False:
                 self.logger.debug('failed producer')
                 continue
             message = message.encode()
-            self.logger.debug(f'sent message {message}')
             await self.websocket.send(message)
 
     async def producer(self, message):
@@ -71,7 +69,7 @@ class Console:
             return False
         return True
 
-    async def connect(self, purpose=Purpose.CONSOLE, timeout=5) -> websockets.WebSocketClientProtocol | None:
+    async def connect(self, purpose=Message_Purpose.CONSOLE, timeout=5) -> websockets.WebSocketClientProtocol | None:
         server_ip = eutils.get_server_ip(logger=self.logger)
         uri = f"ws://{server_ip}:{self.port}/{purpose}"
         self.logger.debug(f"attempting to connect with server at {uri}")

@@ -5,7 +5,7 @@ from envyJobs import job as j
 from envyJobs.enums import Status
 from networkUtils import message as m
 import json
-from networkUtils.purpose import Purpose as p
+from networkUtils.message_purpose import Message_Purpose as p
 from envyJobs.enums import Purpose as job_purpose
 
 """
@@ -53,7 +53,7 @@ class DB:
         CREATE TABLE IF NOT EXISTS tasks
         (Job_Id INTEGER,
         Task_Id INTEGER PRIMARY KEY, 
-        Purpose TEXT, 
+        Message_Purpose TEXT, 
         Type TEXT, 
         Frame INTEGER, 
         Status TEXT, 
@@ -94,7 +94,7 @@ class DB:
         sqlite_job = job.as_sqlite_compliant()
         name = sqlite_job['Name']
         identifier = sqlite_job['ID']
-        purpose = sqlite_job['Purpose']
+        purpose = sqlite_job['Message_Purpose']
         job_type = sqlite_job['Type']
         metadata = sqlite_job['Metadata']
         frames = job.range_as_list()

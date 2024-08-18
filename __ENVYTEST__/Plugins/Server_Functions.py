@@ -1,7 +1,7 @@
 import user_config, sys, json
 sys.path.append(user_config.Config.REPOPATH)
 from networkUtils import message as m
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 
 
 async def send_to_console(server, console: str, message: m.Message | m.FunctionMessage) -> None:
@@ -43,8 +43,8 @@ async def send_attribute_to_client(server, client: str, attribute: str, buffer_n
     """
     attribute = getattr(server, attribute)
     message = m.FunctionMessage(f'send_attribute_to_client(): {attribute}')
-    message.set_purpose(Purpose.FUNCTION_MESSAGE)
-    message.set_target(Purpose.CLIENT)
+    message.set_purpose(Message_Purpose.FUNCTION_MESSAGE)
+    message.set_target(Message_Purpose.CLIENT)
     message.set_function('fill_buffer')
     message.format_arguments(buffer_name, attribute)
     message.set_name(message.as_function())
@@ -71,11 +71,9 @@ async def send_clients_to_console(server, target_consoles: str | list = None) ->
     server.logger.debug(f'sending (clients) to console: {target_consoles}')
     for console in target_consoles:
         message = m.FunctionMessage(f'send_clients_to_console()')
-        message.set_purpose(Purpose.FUNCTION_MESSAGE)
-        message.set_target(Purpose.CONSOLE)
+        message.set_target(Message_Purpose.CONSOLE)
         message.set_function('fill_buffer')
         message.format_arguments(buffer_name, data=clients)
-        message.set_name(message.as_function())
         await send_to_console(server, console, message)
 
 
@@ -97,8 +95,8 @@ async def send_attribute_to_console(server, attribute: str, buffer_name: str, ta
     server.logger.debug(f'sending ({attribute}) to console: {target_consoles}')
     attribute = getattr(server, attribute)
     message = m.FunctionMessage(f'set server name')
-    message.set_purpose(Purpose.FUNCTION_MESSAGE)
-    message.set_target(Purpose.CONSOLE)
+    message.set_purpose(Message_Purpose.FUNCTION_MESSAGE)
+    message.set_target(Message_Purpose.CONSOLE)
     message.set_function('fill_buffer')
     message.format_arguments(buffer_name, attribute)
     message.set_name(message.as_function())

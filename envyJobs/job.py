@@ -15,7 +15,7 @@ class Job:
         Creates an empty job object (str) name must be provided
         Contains attributes:
         name: (str)
-        purpose: (envyJobs.enums.Purpose)
+        purpose: (envyJobs.enums.Message_Purpose)
         type: (str)
         environment: (dict)
         dependencies: (list of dict)
@@ -95,7 +95,7 @@ class Job:
     def as_dict(self) -> dict:
         return_dict = {
             'Name': self.name,
-            'Purpose': self.purpose,
+            'Message_Purpose': self.purpose,
             'Type': self.type,
             'ID': self.id,
             'Range': self.range,
@@ -168,7 +168,7 @@ class Job:
     def as_sqlite_compliant(self):
         return_dict = self.as_dict()
         name = return_dict['Name']
-        purpose = return_dict['Purpose']
+        purpose = return_dict['Message_Purpose']
         job_type = return_dict['Type']
         job_id = return_dict['ID']
         job_range = return_dict['Range']
@@ -179,7 +179,7 @@ class Job:
 
         return_dict = {
             'Name': name,
-            'Purpose': purpose,
+            'Message_Purpose': purpose,
             'Type': job_type,
             'ID': job_id,
             'Range': job_range,
@@ -222,14 +222,14 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     logger = logger or DummyLogger()
 
     logger.debug(f'Building job from {job_as_dict}')
-    # validate there is a Name and a Purpose and a Type
+    # validate there is a Name and a Message_Purpose and a Type
     if 'Name' not in job_as_dict:
         logger.warning(f'Name key cannot be found in {job_as_dict}')
         raise IndexError(f'Name key cannot be found in {job_as_dict}')
 
-    if 'Purpose' not in job_as_dict:
-        logger.warning(f'Purpose key cannot be found in {job_as_dict}')
-        raise IndexError(f'Purpose key cannot be found in {job_as_dict}')
+    if 'Message_Purpose' not in job_as_dict:
+        logger.warning(f'Message_Purpose key cannot be found in {job_as_dict}')
+        raise IndexError(f'Message_Purpose key cannot be found in {job_as_dict}')
 
     if 'Type' not in job_as_dict:
         logger.warning(f'Type key cannot be found in {job_as_dict}')
@@ -248,7 +248,7 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
         raise IndexError(f'ID cannot be found in {job_as_dict}')
 
     name = job_as_dict['Name']
-    purpose = job_as_dict['Purpose']
+    purpose = job_as_dict['Message_Purpose']
     job_type = job_as_dict['Type']
     metadata = job_as_dict['Metadata']
     new_range = job_as_dict['Range']

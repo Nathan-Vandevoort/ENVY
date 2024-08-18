@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Purpose(str, Enum):
+class Message_Purpose(str, Enum):
     CLIENT = 'client'
     CONSOLE = 'console'
     CONSOLE_REQUEST = 'console_request'

@@ -5,7 +5,7 @@ sys.path.append(os.path.join(filepath, os.pardir))
 import prep_env
 import socket, config, logging, websockets, asyncio, hashlib, json
 from queue import Queue
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 import networkUtils.message as m
 from envyJobs import scheduler, ingestor
@@ -162,7 +162,7 @@ class Server:
     async def client_consumer(self, message: m.Message | m.FunctionMessage):
         purpose = message.get_purpose()
 
-        if purpose == Purpose.FUNCTION_MESSAGE:
+        if purpose == Message_Purpose.FUNCTION_MESSAGE:
             if not isinstance(message, m.FunctionMessage):
                 self.logger.error(f"Message ({message}) is not a FunctionMessage")
                 return False
@@ -181,7 +181,7 @@ class Server:
         except Exception as e:
             self.logger.error(f'Failed while executing: {function} -> {e}')
             error_message = m.Message('server_error_message')
-            error_message.set_purpose(Purpose.MEDIUM_SERVER_ERROR)
+            error_message.set_purpose(Message_Purpose.MEDIUM_SERVER_ERROR)
             error_message.set_message(f'Failed while executing {function}, {e}')
             await SRV.send_to_consoles(self, error_message)
             return False
@@ -202,7 +202,7 @@ class Server:
         self.logger.debug(f'received message from console: {message}')
         purpose = message.get_purpose()
 
-        if purpose == Purpose.FUNCTION_MESSAGE:
+        if purpose == Message_Purpose.FUNCTION_MESSAGE:
             if not isinstance(message, m.FunctionMessage):
                 self.logger.error(f"Message ({message}) is not a FunctionMessage")
                 return False
@@ -210,7 +210,7 @@ class Server:
             success = await self.execute(message)
             return success
 
-        if purpose == Purpose.PASS_ON:
+        if purpose == Message_Purpose.PASS_ON:
             success = await self.pass_on(message)
             return success
 

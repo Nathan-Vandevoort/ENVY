@@ -107,10 +107,6 @@ class Scheduler:
         self.tasks[task_id]['Status'] = Status.INPROGRESS
         self.tasks[task_id]['Computer'] = computer_name
 
-        print(f'\nISSUING PENDING: {self.jobs[job_id]["Pending_Tasks"]}')
-        print(f'ISSUING ACTIVE: {self.jobs[job_id]["Active_Tasks"]}')
-        print(f'ISSUING TASK_ORDER: {self.task_order}\n')
-
         await SRV.send_to_client(self.server, computer_name, self.job_db.get_task_as_message(task_id))
 
     def finish_job(self, job_id):

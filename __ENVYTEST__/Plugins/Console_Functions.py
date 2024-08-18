@@ -1,9 +1,61 @@
+# -*- coding: utf-8 -*-
+
+"""
+Console_Functions.py: A "standard library" for Envy functions.
+Any function written in here can be executed by any console
+All functions in here must be NOT be async
+the first argument in every function MUST be a reference to the console instance calling the function even if you dont use it.
+Check out EXAMPLE to see how to write your own functions
+feel free to use any of the existing functions as a template to build your own!
+"""
+
+__author__ = "Nathan Vandevoort"
+__copyright__ = "Copyright 2024, Nathan Vandevoort"
+__version__ = "1.0.0"
+
 import user_config, sys
 sys.path.append(user_config.Config.REPOPATH)
 from networkUtils import message as m
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 from envyLib.colors import Colors as c
+
+
+def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
+    """
+    An example function to show users how to write their own console functions
+    anything you write in here is executed by the console I recommend not requiring arguments and instead having the user pass them in with inputs
+    These functions are commonly used to tell envy instances to do something. But they can be used to have the console do something instead.
+
+    :param console: IMPORTANT first argument MUST be a reference to the console making the call even if you don't use it
+    :param arg1: An example of how you can have arguments optionally supplied when calling the function or supply with inputs
+    :return: Void
+    """
+
+    if arg1 is None:  # Checks to see if arg1 is supplied during function call and if not prompt the user for arg1.
+        arg1 = input(f'{c.CYAN}What should Arg1 be (int)?{c.WHITE}')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/envyLib/Colors
+
+        try:  # Try to cast the argument to an integer
+            arg1 = int(arg1)
+        except Exception as e:  # if it's not the right type inform the user its wrong and return and print why it couldnt be casted to an int
+            console.write(f"{c.RED}Arg1 MUST be an integer: {c.WHITE} -> {e}")
+            return
+
+    arg2 = input(f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
+
+    classifier = get_classifier(console)  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
+    valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/envyLib/envy_utils.py which validates that the user supplied classifier is a valid classifier
+    if not valid:  # if the classifier is not valid tell the user and return
+        console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
+        return
+
+    new_message = m.FunctionMessage('EXAMPLE()')  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
+    new_message.set_target(Message_Purpose.CLIENT)  # Setting the target is important. Think about it like putting an address on a letter. The server will only execute functions with the target set to SERVER and vice versa with clients
+    new_message.set_function('ENVY_EXAMPLE')  # setting the function to the name of the function in Envy_Functions.py that we want to call
+    new_message.format_arguments(arg1, arg2=arg2)  # You set the arguments for the functions in here. As if you were doing it while calling the function
+
+    send_to_clients(console, classifier, new_message)  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
+    # notice how in the above function we passed in our current console. Thats because ALL functions in Console_Functions.py need a reference to the current console even if its not used
 
 
 def fill_buffer(console, buffer_name: str, data: any) -> None:
@@ -16,7 +68,6 @@ def fill_buffer(console, buffer_name: str, data: any) -> None:
     """
     setattr(console, buffer_name, data)
 
-
 def install_maya_plugin(console) -> None:
     """
     installs the Maya plugin
@@ -28,7 +79,7 @@ def install_maya_plugin(console) -> None:
         console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
         return
     function_message = m.FunctionMessage('install_maya_plugin()')
-    function_message.set_target(Purpose.CLIENT)
+    function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('install_maya_plugin')
     send_to_clients(console, classifier, function_message)
 
@@ -40,7 +91,7 @@ def request_clients(console) -> None:
     :return: Void
     """
     function_message = m.FunctionMessage('request clients')
-    function_message.set_target(Purpose.SERVER)
+    function_message.set_target(Message_Purpose.SERVER)
     function_message.set_function('send_clients_to_console')
     function_message.format_arguments(target_consoles=console.hostname)
     console.add_to_send_queue(function_message)
@@ -58,7 +109,7 @@ def restart_envy(console) -> None:
         console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
         return
     function_message = m.FunctionMessage('restart_envy()')
-    function_message.set_target(Purpose.CLIENT)
+    function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('restart_envy')
     send_to_clients(console, classifier, function_message)
 
@@ -71,7 +122,7 @@ def get_classifier(console):
 
 def debug_envy(console) -> None:
     """
-    has envy run its debug function
+    has envy run its example function
     :param console: reference to the console calling this function
     :return: Void
     """
@@ -81,8 +132,8 @@ def debug_envy(console) -> None:
         console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
         return
     function_message = m.FunctionMessage('debug_envy()')
-    function_message.set_target(Purpose.CLIENT)
-    function_message.set_function('debug')
+    function_message.set_target(Message_Purpose.CLIENT)
+    function_message.set_function('example')
     send_to_clients(console, classifier, function_message)
 
 
@@ -96,7 +147,7 @@ def send_to_clients(console, classifier: str, function_message: m.FunctionMessag
     :return: Void
     """
     message = m.Message(f'Pass on: {function_message}')
-    message.set_purpose(Purpose.PASS_ON)
+    message.set_purpose(Message_Purpose.PASS_ON)
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.add_to_send_queue(message)

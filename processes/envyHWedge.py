@@ -90,7 +90,7 @@ class EnvyHWedge:
             os.remove(self.inProgressName)
 
             jobInstructions = json.loads(jobInstructions)
-            del jobInstructions['Purpose']
+            del jobInstructions['Message_Purpose']
 
             # parse Job instructions
             for key in jobInstructions:
@@ -207,7 +207,7 @@ class EnvyHWedge:
                         nvFile.close()
                 except Exception:
                     continue
-                if fileInstructions['Purpose'] != 'EnvyHWedge':
+                if fileInstructions['Message_Purpose'] != 'EnvyHWedge':
                     continue
 
                 # skip files which are marked in progress

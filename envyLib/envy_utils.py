@@ -4,7 +4,7 @@ import os
 from config import Config
 import json
 import re
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 
 
 class DummyLogger:
@@ -71,7 +71,7 @@ async def shutdown_event_loop(event_loop: asyncio.AbstractEventLoop, logger: log
     cancels all currently running tasks and stops the event loop
 
     :param event_loop: An asyncio AbstractEventLoop object
-    :param logger: Optional Logger object to have this function log what it does to debug
+    :param logger: Optional Logger object to have this function log what it does to example
     :return: Void
     """
     logger = logger or DummyLogger()
@@ -88,7 +88,7 @@ def get_server_ip(logger: logging.Logger = None) -> str:  # returns the ip addre
     """
     Returns IP address present in the server file. If there is no server file it will return the callers IP
 
-    :param logger: Optional logger object to print to debug
+    :param logger: Optional logger object to print to example
     :return: string IP address
     """
     logger = logger or DummyLogger()

@@ -2,7 +2,7 @@ import asyncio
 import websockets.exceptions
 from networkUtils import client
 from envyCore import server
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 import logging, config, socket, os, sys
 from queue import Queue
 from envyLib import envy_utils as eutils
@@ -53,7 +53,7 @@ class Envy:
         self.job = None
         self.status = Status.IDLE
 
-    async def choose_role(self, role_override: Purpose = None) -> Purpose:
+    async def choose_role(self, role_override: Message_Purpose = None) -> Message_Purpose:
         self.logger.debug('choosing role')
 
         if role_override:  # if role override detected
@@ -66,13 +66,13 @@ class Envy:
 
         if success:  # if you were able to health check the server you are a client now
             self.logger.debug('I am a Client')
-            return Purpose.CLIENT
+            return Message_Purpose.CLIENT
 
         #  check to see if the ip changed
         if server_ip == eutils.get_server_ip():
             # that means that you are now the server
             self.logger.debug('I am the server')
-            return Purpose.SERVER
+            return Message_Purpose.SERVER
 
         return await self.choose_role()
 
@@ -83,7 +83,7 @@ class Envy:
         except Exception as e:
             self.logger.error(f'Failed while executing {function}, {e}')
             error_message = m.Message('server_error_message')
-            error_message.set_purpose(Purpose.MEDIUM_SERVER_ERROR)
+            error_message.set_purpose(Message_Purpose.MEDIUM_SERVER_ERROR)
             error_message.set_message(f'Failed while executing {function}, {e}')
             return False
         return True
@@ -146,7 +146,7 @@ class Envy:
         await NV.send_status_to_server(self)  # add a message to the send queue
 
         self.logger.debug(f'envy.connect: Purpose is {self.role}')
-        if self.role == Purpose.SERVER:
+        if self.role == Message_Purpose.SERVER:
             self.server_task = await self.start_server()
 
         # Client connection
@@ -214,7 +214,7 @@ class Envy:
         clients = eutils.get_clients_from_file(logger=self.logger)
 
         if self.server_name == self.hostname:
-            self.role = Purpose.SERVER
+            self.role = Message_Purpose.SERVER
             return
 
         if self.server_name in clients:
@@ -226,11 +226,11 @@ class Envy:
         new_server = clients[0]
         self.logger.debug(f'New server: {new_server}')
         if self.hostname == new_server:  # I am the new server
-            self.role = Purpose.SERVER
+            self.role = Message_Purpose.SERVER
             return
 
         else:
-            time.sleep(10)
+            time.sleep(5)
 
     async def stop(self) -> None:
         self.running = False

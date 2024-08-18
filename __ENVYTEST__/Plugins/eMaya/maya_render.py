@@ -234,13 +234,13 @@ class MayaRender(object):
         """Stops the render."""
         pass
         """if task.done():
-            self.logger.debug(f'cleaning up finished task: {task.get_name()}')
+            self.logger.example(f'cleaning up finished task: {task.get_name()}')
             continue
         task.cancel()
         try:
             await task
         except asyncio.CancelledError:
-            self.logger.debug(f'Cancelled Task {task.get_name()}')"""
+            self.logger.example(f'Cancelled Task {task.get_name()}')"""
 
 
 def main():

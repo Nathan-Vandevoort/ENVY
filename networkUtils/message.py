@@ -1,24 +1,25 @@
 from typing import Type
 from envyLib.envy_utils import DummyLogger
-from networkUtils.purpose import Purpose
+from networkUtils.message_purpose import Message_Purpose
 import json
 import logging
-
+from enum import Enum
+from envyJobs.enums import EnumEncoder
 
 class Message:
 
     def __init__(self, name: str):
-        self._purpose = Purpose
+        self._purpose = Message_Purpose
         self._message = None
         self._data = None
-        self._target = Purpose.CLIENT
+        self._target = Message_Purpose.CLIENT
         self.name = name
 
-    def set_purpose(self, purpose: Purpose) -> None:
+    def set_purpose(self, purpose: Message_Purpose) -> None:
         """
         Sets the purpose of the message
         :param self: reference to message object
-        :param purpose: a selection from the networkUtils.purpose.Purpose enum
+        :param purpose: a selection from the networkUtils.purpose.Message_Purpose enum
         :return: Void
         """
         self._purpose = purpose
@@ -46,11 +47,11 @@ class Message:
         """
         return self._data
 
-    def get_purpose(self) -> Type[Purpose]:
+    def get_purpose(self) -> Type[Message_Purpose]:
         """
         Retrieves the current purpose and returns it
         :param self: reference to message object
-        :return: Message Purpose
+        :return: Message Message_Purpose
         """
         return self._purpose
 
@@ -79,19 +80,19 @@ class Message:
         json_string = json.dumps(message_dict)
         return json_string
 
-    def get_target(self) -> Purpose:
+    def get_target(self) -> Message_Purpose:
         """
         returns the Target the function is intended to execute on
-        :return: (networkUtils.Purpose) Either Purpose.CLIENT, Purpose.CONSOLE, or Purpose.SERVER
+        :return: (networkUtils.Message_Purpose) Either Message_Purpose.CLIENT, Message_Purpose.CONSOLE, or Message_Purpose.SERVER
         """
         return self._target
 
-    def set_target(self, target: Purpose) -> None:
+    def set_target(self, target: Message_Purpose) -> None:
         """
         Sets the target of the current function message
         The target is the desired end point for the payload of the function method to execute on
-        eg: set_target(Purpose.CLIENT) the function payload will only run on clients
-        :param target: Either Purpose.CLIENT, Purpose.CONSOLE, or Purpose.SERVER
+        eg: set_target(Message_Purpose.CLIENT) the function payload will only run on clients
+        :param target: Either Message_Purpose.CLIENT, Message_Purpose.CONSOLE, or Message_Purpose.SERVER
         :return: Void
         """
         self._target = target
@@ -102,7 +103,7 @@ class Message:
         :return: dict version of message
         """
         result = {
-            'Purpose': self._purpose,
+            'Message_Purpose': self._purpose,
             'Message': self._message,
             'Name': self.name,
             'Data': self._data,
@@ -120,7 +121,7 @@ class Message:
 class FunctionMessage(Message):
     def __init__(self, name):
         super().__init__(name)
-        self._purpose = Purpose.FUNCTION_MESSAGE
+        self._purpose = Message_Purpose.FUNCTION_MESSAGE
         self._target = None
         self._function = None
         self._args = []
@@ -177,7 +178,7 @@ class FunctionMessage(Message):
         :return: (dict) representation of FunctionMessage object
         """
         return_dict = {
-            'Purpose': self._purpose,
+            'Message_Purpose': self._purpose,
             'Message': self._message,
             'Name': self.name,
             'Target': self._target,
@@ -253,23 +254,23 @@ def build_from_message_dict(input_dict: dict, logger: logging.Logger = None) -> 
     """
     logger = logger or DummyLogger()
 
-    # validate there is a Purpose and Message key
+    # validate there is a Message_Purpose and Message key
     logger.debug('building message from dict')
     logger.debug(f'input_dict: {input_dict}')
-    if 'Purpose' not in input_dict:
-        raise IndexError(f'Purpose Key cannot be found in {input_dict}, are you sure this is a message dictionary?')
+    if 'Message_Purpose' not in input_dict:
+        raise IndexError(f'Message_Purpose Key cannot be found in {input_dict}, are you sure this is a message dictionary?')
 
     if 'Message' not in input_dict:
         raise IndexError(f'Message Key cannot be found in {input_dict}, are you sure this is a message dictionary?')
 
-    purpose = input_dict['Purpose']
+    purpose = input_dict['Message_Purpose']
     message = input_dict['Message']
     name = input_dict['Name']
     data = input_dict['Data']
     target = input_dict['Target']
 
-    # If purpose is Purpose.Function_Message then return a FunctionMessage
-    if purpose == Purpose.FUNCTION_MESSAGE:
+    # If purpose is Message_Purpose.Function_Message then return a FunctionMessage
+    if purpose == Message_Purpose.FUNCTION_MESSAGE:
         function = input_dict['Function']
         args = input_dict['Args']
         kwargs = input_dict['Kwargs']

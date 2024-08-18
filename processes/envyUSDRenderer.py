@@ -88,7 +88,7 @@ class EnvyUSDRenderer:
                 arguments = json.load(job)
                 job.close()
             args = []
-            del arguments['Purpose']
+            del arguments['Message_Purpose']
             for argument in arguments:
                 args.append(argument)
                 args.append(str(arguments[argument]))
@@ -150,9 +150,9 @@ class EnvyUSDRenderer:
                 with open(root + file, 'r') as nvFile:
                     values = json.load(nvFile)
                     nvFile.close()
-                if 'Purpose' not in values:
+                if 'Message_Purpose' not in values:
                     continue
-                if values['Purpose'] != 'EnvyUSDRenderer':
+                if values['Message_Purpose'] != 'EnvyUSDRenderer':
                     continue
 
                 # skip if envy completed in file
@@ -270,7 +270,7 @@ def createUSDRenderJobs(fromPath=RENDERINPUT, enableTiled=False, tileCount=3, re
             continue
 
         # evaluate args
-        argsDict = {'Purpose': 'EnvyUSDRenderer'}
+        argsDict = {'Message_Purpose': 'EnvyUSDRenderer'}
 
         for count in range(tileCount ** 2):
             name, _ = os.path.splitext(usdFile)
