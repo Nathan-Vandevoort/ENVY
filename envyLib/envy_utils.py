@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import os
-from config import Config
+from global_config import Config
 import json
 import re
 from networkUtils.message_purpose import Message_Purpose
@@ -367,4 +367,22 @@ def insert_self_in_function(function: str) -> str:
 
 
 def make_job_directories():
+    """
+    makes job directories relative to envypath
+    :return: Void
+    """
     os.makedirs(os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs'))
+
+
+def split_list(lst: list, chunk_size: int) -> list:
+    """
+    splits a list into chunks
+    :param lst: list to split
+    :param chunk_size: size of chunk to split list into
+    :return: list of tuples where each tuple contains chunk_size number of entries from lst
+    """
+
+    return_list = []
+    for i in range(0, len(lst), chunk_size):
+        return_list.append(tuple(lst[i:i + chunk_size]))
+    return return_list

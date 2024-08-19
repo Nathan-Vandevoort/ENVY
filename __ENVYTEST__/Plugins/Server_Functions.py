@@ -1,8 +1,7 @@
-import user_config, sys, json
-sys.path.append(user_config.Config.REPOPATH)
 from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
-
+import sys
+__config__ = sys.modules.get('__config__')
 
 async def send_to_console(server, console: str, message: m.Message | m.FunctionMessage) -> None:
     """

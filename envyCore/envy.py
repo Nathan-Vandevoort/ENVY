@@ -1,9 +1,8 @@
 import asyncio
 import websockets.exceptions
 from networkUtils import client
-from envyCore import server
 from networkUtils.message_purpose import Message_Purpose
-import logging, config, socket, os, sys
+import logging, global_config, socket, os, sys
 from queue import Queue
 from envyLib import envy_utils as eutils
 import time
@@ -11,11 +10,13 @@ from envyLib.envy_utils import DummyLogger
 from networkUtils import message as m
 from envyJobs.enums import Status
 import subprocess
+import __config__ as config
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
-ENVYPATH = config.Config.ENVYPATH
-TIMEOUT_INTERVAL = config.Config.TIMEOUT
+ENVYPATH = global_config.Config.ENVYPATH
+TIMEOUT_INTERVAL = global_config.Config.TIMEOUT
 ENVY_FUNCTIONS = eutils.list_functions_in_file(os.path.join(ENVYPATH, 'Plugins', 'Envy_Functions' + '.py'))
+
 
 
 class Envy:
@@ -114,7 +115,7 @@ class Envy:
         plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server.py')
         cmd = ['python', plugin_path]
         if self.check_server_file():
-            self.server = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
+            self.server = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE, env=os.environ.copy())
             await asyncio.sleep(1)
 
     async def run(self, role_override=None):

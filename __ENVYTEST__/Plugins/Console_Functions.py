@@ -13,12 +13,12 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-import user_config, sys
-sys.path.append(user_config.Config.REPOPATH)
 from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 from envyLib.colors import Colors as c
+import sys
+__config__ = sys.modules.get('__config__')
 
 
 def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:

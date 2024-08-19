@@ -1,14 +1,14 @@
 import os
 import site
 import sys
-from config import Config
 import importlib.util  # so I can dynamically import custom functions
+import global_config
 
-sys.path.append(Config.ENVYPATH)
+sys.path.append(global_config.Config.ENVYPATH)
 calling_script_name = sys.modules['__main__'].__file__
 if 'launch_envy.py' in calling_script_name:
     print('prepping envy')
-    ENVYPATH = Config.ENVYPATH
+    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Envy_Functions',
@@ -24,7 +24,7 @@ if 'launch_envy.py' in calling_script_name:
 
 if 'server.py' in calling_script_name:
     print('prepping server')
-    ENVYPATH = Config.ENVYPATH
+    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Envy_Functions',
@@ -40,7 +40,7 @@ if 'server.py' in calling_script_name:
 
 if 'launch_console.py' in calling_script_name:
     print('prepping console')
-    ENVYPATH = Config.ENVYPATH
+    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Console_Functions',

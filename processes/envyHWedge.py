@@ -17,7 +17,7 @@ import signal
 import atexit
 import envyProcessHandler as eph
 import time
-from config import Globals
+from global_config import Globals
 from envyUtils.core import getComputerName, checkActiveComputers, makeDir, resetRenderJob
 
 JOBPATH = Globals.JOBPATH

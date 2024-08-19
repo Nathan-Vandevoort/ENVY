@@ -16,7 +16,7 @@ import atexit
 import time
 import envyProcessHandler as eph
 import json
-from config import Globals
+from global_config import Globals
 from envyUtils.core import makeDir, checkActiveComputers, getComputerName, addQuotes, resetRenderJob
 from envyUtils.logUtils import createDirectories
 

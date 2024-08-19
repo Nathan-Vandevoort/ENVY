@@ -1,4 +1,3 @@
-import prep_env
 import os, asyncio, sys, logging, socket
 from networkUtils.console import Console as network_console
 from queue import Queue
@@ -6,7 +5,7 @@ from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 import time
 from envyLib.colors import Colors as c
-import config
+import __config__ as config
 from networkUtils import message as m
 from envyLib.envy_utils import DummyLogger
 

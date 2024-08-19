@@ -1,24 +1,22 @@
 import os, sys
-filepath = os.path.abspath(__file__)
-filepath = os.path.dirname(filepath)
-sys.path.append(os.path.join(filepath, os.pardir))
+abs_file = os.path.abspath(__file__)
+sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir))
 import prep_env
-import socket, config, logging, websockets, asyncio, hashlib, json
+import global_config as gc
+sys.path.append(gc.Config.ENVYPATH)
+import __config__ as config
+import socket, logging, websockets, asyncio, json
 from queue import Queue
 from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 import networkUtils.message as m
-from envyJobs import scheduler, ingestor
-from envyDB import db
+from envyJobs import scheduler
 from envyJobs.enums import Status
 import psutil
-import win32con
-import win32file
-import win32event
 
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
-    os.path.join(config.Config.ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
+    os.path.join(gc.Config.ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
 
 
 def update_clients_file(dir, clients: dict):
@@ -299,9 +297,10 @@ class Server:
         while True:
             if not parent.is_running():
                 sys.exit()
-            await asyncio.sleep(2)
+            await asyncio.sleep(.5)
 
 if __name__ == '__main__':
+    os.system('color')
     class CustomFormatter(logging.Formatter):
         # Define color codes
         grey = "\x1b[38;20m"

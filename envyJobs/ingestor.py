@@ -2,7 +2,7 @@ import os, json, asyncio
 import envyJobs.job as job
 import logging
 from envyLib.envy_utils import DummyLogger
-from config import Config
+from global_config import Config
 
 
 class Ingestor:

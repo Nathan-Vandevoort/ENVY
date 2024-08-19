@@ -17,7 +17,7 @@ import subprocess
 import sys
 import time
 
-from config import Globals
+from global_config import Globals
 from envyUtils.core import getComputerName, checkActiveComputers, resetRenderJob, makeDir, remQuotes
 
 ENVYPATH = Globals.ENVYPATH

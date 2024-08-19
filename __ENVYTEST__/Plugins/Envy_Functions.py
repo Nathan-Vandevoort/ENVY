@@ -5,6 +5,7 @@ Envy_Functions.py: A "standard library" for Envy functions.
 Any function written in here can be executed by any envy instance
 All functions in here must be async
 the first argument in every function MUST be a reference to the envy instance calling the function even if you dont use it.
+Check out the CONSOLE_EXAMPLE (Console_Functions.py) function to see how to write your own functions which can be called by envy.
 Check out PLUGIN_EXAMPLE to see how to write your own plugins
 feel free to use any of the existing functions as a template to build your own!
 """
@@ -13,14 +14,11 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-import asyncio
-import user_config, sys, os
-sys.path.append(user_config.Config.REPOPATH)
-sys.path.append(os.path.join(user_config.Config.ENVYPATH, 'Plugins'))
 from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
+import json, sys
 from envyLib.colors import Colors as c
-import json
+__config__ = sys.modules.get('__config__')
 
 
 async def ENVY_EXAMPLE(envy, arg1: int, arg2: str = 'potato') -> None:
@@ -36,6 +34,29 @@ async def ENVY_EXAMPLE(envy, arg1: int, arg2: str = 'potato') -> None:
     """
     for i in range(arg1):  # prints whatever arg2 is arg1 many times. this is just an example of what sort of stuff you can do. But look at more examples!
         print(arg2)
+
+
+async def PLUGIN_EXAMPLE(envy, task_data: str) -> None:
+    """
+    A template on how you can implement your own plugins for envy.
+    This is the "Handle" function for envy that any job I create is referencing as its Type: job.set_type('PLUGIN_EXAMPLE')
+    :param envy: As always you MUST include a reference to the envy instance making the call
+    :param task_data: (json string) This will ALWAYS be a json encoded string that will contain the task.id, task.environment, task.parameters, task.frame
+    :return: Void
+    """
+    from example import envy_plugin as ep  # Here I'm importing the plugin data I've written in my 'example' plugin library
+    await envy.set_status_working()  # ALWAYS start a new plugin by setting the envy status to working. This tells the scheduler to not issue more tasks to this instance
+
+    task_data = json.loads(task_data)  # converting task_data from a json string to a dictionary
+    task_id = task_data['ID']
+    environment = task_data['Environment']
+    parameters = task_data['Parameters']
+    frame = task_data['Frame']
+
+    debug_process = ep.Example_Plugin_Handler(envy, task_id, frame)  # Here I'm initializing my example plugin. You can do this however you want. take a look inside /example/envy_plugin
+
+    await debug_process.run()  # Here I'm starting my example plugin take a look inside /example/envy_plugin to learn more
+    await envy.set_status_idle()  # THIS IS IMPORTANT. when the plugin is done set the status to idle. This tells the scheduler that its okay to issue more jobs to this instance[
 
 
 async def fill_buffer(envy, buffer_name: str, data: any) -> None:
@@ -72,8 +93,8 @@ async def restart_envy(envy) -> None:
     :param envy: reference to the envy instance calling the function
     :return: Void
     """
-    repopath = user_config.Config.REPOPATH
-    os.startfile(f"launch_envy.py", cwd=str(repopath))
+    ENVYPATH = __config__.Config.ENVYPATH
+    os.startfile(f"launch_envy.py", cwd=str(ENVYPATH))
     quit()
 
 
@@ -116,24 +137,18 @@ async def finish_task(envy, task_id: int) -> None:
     envy.send(new_message)
 
 
-async def PLUGIN_EXAMPLE(envy, task_data: str) -> None:
-    """
-    A template on how you can implement your own plugins for envy.
-    This is the "Handle" function for envy that any job I create is referencing as its Type: job.set_type('PLUGIN_EXAMPLE')
-    :param envy: As always you MUST include a reference to the envy instance making the call
-    :param task_data: (json string) This will ALWAYS be a json encoded string that will contain the task.id, task.environment, task.parameters, task.frame
-    :return: Void
-    """
-    from example import envy_plugin as ep  # Here I'm importing the plugin data I've written in my 'example' plugin library
-    await envy.set_status_working()  # ALWAYS start a new plugin by setting the envy status to working. This tells the scheduler to not issue more tasks to this instance
+# ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
+async def PLUGIN_eHoudini(envy, task_data: str) -> None:
+    from eHoudini import plugin as p
+    await envy.set_status_working()
 
-    task_data = json.loads(task_data)  # converting task_data from a json string to a dictionary
+    task_data = json.loads(task_data)
+    purpose = task_data['Purpose']
     task_id = task_data['ID']
     environment = task_data['Environment']
     parameters = task_data['Parameters']
     frame = task_data['Frame']
 
-    debug_process = ep.Example_Plugin_Handler(envy, task_id, frame)  # Here I'm initializing my example plugin. You can do this however you want. take a look inside /example/envy_plugin
+    plugin = p.Plugin(envy, task_id, environment, parameters)
+    await plugin.start()
 
-    await debug_process.run()  # Here I'm starting my example plugin take a look inside /example/envy_plugin to learn more
-    await envy.set_status_idle()  # THIS IS IMPORTANT. when the plugin is done set the status to idle. This tells the scheduler that its okay to issue more jobs to this instance

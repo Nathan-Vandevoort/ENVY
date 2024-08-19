@@ -1,11 +1,10 @@
-from envyJobs.enums import Purpose, Status, Condition
+from envyJobs.enums import Purpose, Condition
 import json
 from envyLib.envy_utils import DummyLogger
 import logging
 from datetime import datetime
-from envyLib import envy_utils as eutils
 import os
-from config import Config
+from global_config import Config
 import sys
 
 
@@ -15,7 +14,7 @@ class Job:
         Creates an empty job object (str) name must be provided
         Contains attributes:
         name: (str)
-        purpose: (envyJobs.enums.Message_Purpose)
+        purpose: (envyJobs.enums.Purpose)
         type: (str)
         environment: (dict)
         dependencies: (list of dict)
@@ -33,11 +32,12 @@ class Job:
         self.dependencies = []
         self.parameters = {}
 
+        self.allocation = 1
+
         self.metadata = {
-            'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
+            'Creation_Time': datetime.now().strftime('%d-%m-%Y %H-%M-%S'),
             'Contributors': []
         }
-
 
     def set_purpose(self, purpose: Purpose) -> None:
         self.purpose = purpose
@@ -89,20 +89,27 @@ class Job:
     def set_name(self, name: str) -> None:
         self.name = name
 
+    def set_allocation(self, number: int) -> None:
+        self.allocation = number
+
+    def get_allocation(self) -> int:
+        return self.allocation
+
     def encode(self) -> str:
         return json.dumps(self.as_dict())
 
     def as_dict(self) -> dict:
         return_dict = {
             'Name': self.name,
-            'Message_Purpose': self.purpose,
+            'Purpose': self.purpose,
             'Type': self.type,
             'ID': self.id,
             'Range': self.range,
             'Environment': self.environment,
             'Dependencies': self.dependencies,
             'Parameters': self.parameters,
-            'Metadata': self.metadata
+            'Metadata': self.metadata,
+            'Allocation': self.allocation
         }
         return return_dict
 
@@ -110,7 +117,7 @@ class Job:
         if not metadata:
             self.metadata = {
                 'Creation_Time': datetime.today().strftime('%d-%m-%Y'),
-                'Contributors': [sys.modules['__main__'].__file__]
+                'Contributors': [__name__]
             }
             return
 
@@ -160,7 +167,7 @@ class Job:
         return return_list
 
     def write(self) -> None:
-        write_path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y")}.json')
+        write_path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y_%H-%M-%S")}.json')
         with open(write_path, 'w') as job_file:
             json.dump(self.as_dict(), job_file)
             job_file.close()
@@ -168,7 +175,7 @@ class Job:
     def as_sqlite_compliant(self):
         return_dict = self.as_dict()
         name = return_dict['Name']
-        purpose = return_dict['Message_Purpose']
+        purpose = return_dict['Purpose']
         job_type = return_dict['Type']
         job_id = return_dict['ID']
         job_range = return_dict['Range']
@@ -176,17 +183,19 @@ class Job:
         parameters = json.dumps(return_dict['Parameters'])
         metadata = json.dumps(return_dict['Metadata'])
         dependencies = json.dumps(return_dict['Dependencies'])
+        allocation = return_dict['Allocation']
 
         return_dict = {
             'Name': name,
-            'Message_Purpose': purpose,
+            'Purpose': purpose,
             'Type': job_type,
             'ID': job_id,
             'Range': job_range,
             'Environment': environment,
             'Parameters': parameters,
             'Metadata': metadata,
-            'Dependencies': dependencies
+            'Dependencies': dependencies,
+            'Allocation': allocation
         }
 
         return return_dict
@@ -198,38 +207,18 @@ class Job:
         return self.name
 
 
-class Task(Job):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.__delattr__('range')
-        self.executor = None
-        self.frame = None
-
-    def set_frame(self, frame: int) -> None:
-        self.frame = frame
-
-    def get_frame(self) -> int:
-        return self.frame
-
-    def set_executor(self, executor: str) -> None:
-        self.executor = executor
-
-    def get_executor(self) -> str:
-        return self.executor
-
-
 def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     logger = logger or DummyLogger()
 
     logger.debug(f'Building job from {job_as_dict}')
-    # validate there is a Name and a Message_Purpose and a Type
+    # validate there is a Name and a Purpose and a Type
     if 'Name' not in job_as_dict:
         logger.warning(f'Name key cannot be found in {job_as_dict}')
         raise IndexError(f'Name key cannot be found in {job_as_dict}')
 
-    if 'Message_Purpose' not in job_as_dict:
-        logger.warning(f'Message_Purpose key cannot be found in {job_as_dict}')
-        raise IndexError(f'Message_Purpose key cannot be found in {job_as_dict}')
+    if 'Purpose' not in job_as_dict:
+        logger.warning(f'Purpose key cannot be found in {job_as_dict}')
+        raise IndexError(f'Purpose key cannot be found in {job_as_dict}')
 
     if 'Type' not in job_as_dict:
         logger.warning(f'Type key cannot be found in {job_as_dict}')
@@ -248,7 +237,7 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
         raise IndexError(f'ID cannot be found in {job_as_dict}')
 
     name = job_as_dict['Name']
-    purpose = job_as_dict['Message_Purpose']
+    purpose = job_as_dict['Purpose']
     job_type = job_as_dict['Type']
     metadata = job_as_dict['Metadata']
     new_range = job_as_dict['Range']

@@ -1,10 +1,11 @@
+import __config__
 import prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
-
 from envyCore.console import Console
+import os
 
-
+os.system('color')
 class CustomFormatter(logging.Formatter):
     # Define color codes
     grey = "\x1b[38;20m"

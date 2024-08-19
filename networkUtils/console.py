@@ -1,4 +1,5 @@
-import websockets, asyncio, config, os, socket, hashlib, logging, sys, json
+import websockets, asyncio, global_config, os, socket, hashlib, logging, sys, json
+import __config__ as config
 from networkUtils.message_purpose import Message_Purpose
 from queue import Queue
 from envyLib import envy_utils as eutils
@@ -83,6 +84,7 @@ class Console:
             websocket = await websockets.connect(uri, extra_headers=headers, timeout=timeout)
             if websocket.open:
                 self.websocket = websocket
+                self.logger.info('Connected to server')
                 return websocket
         except (
             websockets.exceptions.ConnectionClosedError,

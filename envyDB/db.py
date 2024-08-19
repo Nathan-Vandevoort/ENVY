@@ -1,12 +1,12 @@
 import sqlite3, os, logging
-from config import Config
+from global_config import Config
 from envyLib.envy_utils import DummyLogger
 from envyJobs import job as j
 from envyJobs.enums import Status
 from networkUtils import message as m
 import json
 from networkUtils.message_purpose import Message_Purpose as p
-from envyJobs.enums import Purpose as job_purpose
+from envyLib import envy_utils as eutils
 
 """
 'select id from JOBS where id=?', (identifier,) match by ID
@@ -36,144 +36,139 @@ class DB:
         self.logger.info('configuring database')
 
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS jobs
-        (Job_Id INTEGER PRIMARY KEY,
-        Name TEXT NOT NULL,  
-        purpose TEXT, 
-        type TEXT, 
-        metadata TEXT, 
-        range TEXT, 
-        status TEXT, 
-        environment TEXT, 
-        dependencies TEXT, 
-        parameters TEXT)
-        """)
+            CREATE TABLE IF NOT EXISTS jobs
+            (Job_Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Name TEXT NOT NULL,
+            Allocation_Ids TEXT,
+            Purpose TEXT,
+            Metadata TEXT, 
+            Type TEXT, 
+            Environment TEXT,
+            Parameters TEXT,
+            Range TEXT, 
+            Status TEXT, 
+            Dependencies TEXT,
+            Allocation INTEGER)
+            """)
 
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tasks
-        (Job_Id INTEGER,
-        Task_Id INTEGER PRIMARY KEY, 
-        Message_Purpose TEXT, 
-        Type TEXT, 
-        Frame INTEGER, 
-        Status TEXT, 
-        Environment TEXT, 
-        Dependencies TEXT, 
-        Parameters TEXT,
-        Computer TEXT,
-        FOREIGN KEY(Job_Id) REFERENCES jobs(Job_Id))
-        """)
+            CREATE TABLE IF NOT EXISTS allocations
+            (Allocation_Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Job_Id INTEGER,
+            Task_Ids TEXT,
+            Computer TEXT,
+            Status TEXT,
+            FOREIGN KEY(Job_Id) REFERENCES jobs(Job_Id))
+            """)
+
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks
+            (Task_Id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            Job_Id INTEGER,
+            Allocation_Id INTEGER,
+            Frame INTEGER, 
+            Status TEXT, 
+            Computer TEXT,
+            FOREIGN KEY(Allocation_Id) REFERENCES jobs(Allocation_Id))
+            """)
 
     def start(self):
         self.connect()
         self.configure_db()
 
-    def remove_job(self, job_id: int, ensure_done: bool = True) -> bool:
+    def add_job(self, job: j.Job) -> bool:
+        self.logger.debug(f'DB: Adding Job {job}')
+        job_id = self.create_job_entry(job)
 
-        if ensure_done:
-            query = """
-            SELECT Status
-            FROM jobs
-            WHERE Job_Id = ?
-            """
-            self.cursor.execute(query, (job_id,))
-            status = self.cursor.fetchone()
-            if status != Status.DONE:
-                self.logger.warning(f'Job with id: {job_id} is not done, ignoring remove_job')
+        if job_id < 0:
+            return False
+
+        frame_list = job.range_as_list()
+        allocation = job.get_allocation()
+        allocations = eutils.split_list(frame_list, allocation)
+
+        allocation_ids = []
+        for alloc in allocations:
+            allocation_id = self.create_allocation_entry(job, job_id)
+
+            if allocation_id < 0:
                 return False
 
-        query = """
-        DELETE FROM tasks
-        WHERE Job_Id = ?
-        """
-        self.cursor.execute(query, job_id)
-        self.connection.commit()
-        return True
+            allocation_ids.append(alloc)
 
-    def add_job(self, job: j.Job) -> bool:
+            task_ids = []
+            for frame in alloc:
+                task_id = self.create_task_entry(job, job_id, allocation_id, frame)
+
+                if task_id < 0:
+                    return False
+
+                task_ids.append(task_id)
+
+            task_ids = json.dumps(task_ids)
+            self.set_allocation_value(allocation_id, 'Task_Ids', task_ids)
+
+        allocation_ids = json.dumps(allocation_ids)
+        self.set_job_value(job_id, 'Allocation_Ids', allocation_ids)
+
+    def create_job_entry(self, job: j.Job) -> int:
         sqlite_job = job.as_sqlite_compliant()
         name = sqlite_job['Name']
-        identifier = sqlite_job['ID']
-        purpose = sqlite_job['Message_Purpose']
-        job_type = sqlite_job['Type']
+
+        purpose = sqlite_job['Purpose']
         metadata = sqlite_job['Metadata']
-        frames = job.range_as_list()
-        frame_range = sqlite_job['Range']
+        job_type = sqlite_job['Type']
         environment = sqlite_job['Environment']
-        dependencies = sqlite_job['Dependencies']
         parameters = sqlite_job['Parameters']
+        frame_range = sqlite_job['Range']
+        dependencies = sqlite_job['Dependencies']
+        allocation = sqlite_job['Allocation']
 
         # create job
         try:
-            self.logger.info(f'Creating Job: ({name})')
+            self.logger.debug(f'DB: Creating Job Entry')
             self.cursor.execute(
-                "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (identifier, name, purpose, job_type, metadata, frame_range, Status.PENDING, environment, dependencies, parameters)
+                "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (name, '', purpose, metadata, job_type, environment, parameters, frame_range, Status.PENDING, dependencies, allocation)
             )
+            self.connection.commit()
+            return self.cursor.lastrowid
         except Exception as e:
             self.logger.error(f'Failed to create job {job} for reason: {e}')
-            return False
+            return -1
 
-        if purpose == job_purpose.RENDER or purpose == job_purpose.CACHE:
-            data = []
-            for i, frame in enumerate(frames):
-                data.append(
-                    (identifier, int(str(identifier) + str(i)), purpose, job_type, frame, Status.PENDING, environment, dependencies, parameters, 'None'))
-
-            self.cursor.executemany(
-                """
-                INSERT INTO tasks VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                data
-            )
-
-            self.connection.commit()
-            return True
-
-        if purpose == job_purpose.SIMULATION:
+    def create_allocation_entry(self, job: j.Job, job_id: int) -> int:
+        try:
+            self.logger.debug(f'DB: Creating allocation entry')
             self.cursor.execute(
-                """
-                INSERT INTO tasks VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (identifier, int(str(identifier) + str(0)), purpose, job_type, 0, Status.PENDING, environment, dependencies, parameters, 'None')
+                "INSERT INTO allocations VALUES(?, ?, ?, ?)",
+                (job_id, '', None, Status.PENDING,)
             )
             self.connection.commit()
-            return True
+            return self.cursor.lastrowid
+        except Exception as e:
+            self.logger.error(f'Failed to create job {job} for reason: {e}')
+            return -1
 
-    def get_tasks_from_job_id(self, job_id: int, column: str = '*') -> list:
-        query = f"""
-        SELECT {column}
-        FROM tasks
-        WHERE Job_Id = ?
-        """
-        self.cursor.execute(query, (job_id, ))
-        tasks = self.cursor.fetchall()
-        tasks = [task[0] for task in tasks]
-        return tasks
+    def create_task_entry(self, job: j.Job, job_id: int, allocation_id: int, frame: int):
+        sqlite_job = job.as_sqlite_compliant()
+        purpose = sqlite_job['Purpose']
+        job_type = sqlite_job['Type']
+        environment = sqlite_job['Environment']
+        parameters = sqlite_job['Parameters']
+        try:
+            self.logger.debug(f'DB: Creating task entry')
+            self.cursor.execute(
+                "INSERT INTO tasks VALUES(?, ?, ?, ?, ?)",
+                (job_id, allocation_id, frame, Status.PENDING, None)
+            )
+            self.connection.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            self.logger.error(f'Failed to create job {job} for reason: {e}')
+            return -1
 
-    def get_value_from_task_id(self, task_id: int, column: str = '*') -> tuple:
-        self.logger.debug(f'DB: Getting Value from task id: {task_id} {type(task_id)}')
-        query = f"""
-                SELECT {column}
-                FROM tasks
-                WHERE Task_Id = ?
-                """
-        self.cursor.execute(query, (task_id,))
-        task = self.cursor.fetchone()
-        return task
-
-    def get_tasks_by_status(self, job_id: int, status: Status, column: str = '*') -> list:
-        query = f"""
-        SELECT {column}
-        FROM tasks
-        WHERE Job_Id = ? AND Status = ?
-        """
-        self.cursor.execute(query, (job_id, status))
-        tasks = self.cursor.fetchall()
-        tasks = [task[0] for task in tasks]
-        return tasks
-
-    def set_task_value(self, task_id: int, value: any, column: str = 'Status') -> None:
+    def set_task_value(self, task_id: int, column: str, value: any) -> None:
         query = f"""
         UPDATE tasks
         SET {column} = ?
@@ -182,7 +177,7 @@ class DB:
         self.cursor.execute(query, (value, task_id))
         self.connection.commit()
 
-    def set_job_value(self, job_id: int, value: any, column: str = 'Status') -> None:
+    def set_job_value(self, job_id: int, column: str, value: any) -> None:
         query = f"""
         UPDATE jobs
         SET {column} = ?
@@ -191,34 +186,116 @@ class DB:
         self.cursor.execute(query, (value, job_id))
         self.connection.commit()
 
-    def get_jobs_by_status(self, status: Status):
-        self.logger.debug(f'DB: selecting jobs by status {status}')
-        query = """
-        SELECT *
-        FROM jobs
-        WHERE Status = ?
-        """
-        matching_jobs = self.cursor.execute(query, (status, )).fetchall()
-        return matching_jobs
+    def set_allocation_value(self, allocation_id: int, column: str, value: any) -> None:
+        query = f"""
+                UPDATE allocations
+                SET {column} = ?
+                WHERE Allocation_Id = ?
+                """
+        self.cursor.execute(query, (value, allocation_id))
+        self.connection.commit()
 
-    def get_job_by_id(self, job_id: int) -> tuple:
-        self.logger.debug(f'DB: getting job from job_id {job_id}')
-        query = """
+    def get_task_value(self, task_id: int, column: str) -> any:
+        query = f"""
+        SELECT {column}
+        FROM tasks
+        WHERE Task_Id = ?
+        """
+        self.cursor.execute(query, (task_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result[0]
+        else:
+            raise IndexError('Column does not exist')
+
+    def get_task_values(self, task_id: int) -> any:
+        query = f"""
+        SELECT *
+        FROM tasks
+        WHERE Task_Id = ?
+        """
+        self.cursor.execute(query, (task_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result
+        else:
+            raise IndexError('Column does not exist')
+
+    def get_allocation_value(self, allocation_id: int, column: str) -> any:
+        query = f"""
+        SELECT {column}
+        FROM allocations
+        WHERE Allocation_Id = ?
+        """
+        self.cursor.execute(query, (allocation_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result[0]
+        else:
+            raise IndexError('Column does not exist')
+
+    def get_allocation_values(self, allocation_id: int) -> any:
+        query = f"""
+        SELECT *
+        FROM allocations
+        WHERE Allocation_Id = ?
+        """
+        self.cursor.execute(query, (allocation_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result
+        else:
+            raise IndexError('Column does not exist')
+
+    def get_job_value(self, job_id: int, column: str) -> any:
+        query = f"""
+        SELECT {column}
+        FROM jobs
+        WHERE Job_Id = ?
+        """
+        self.cursor.execute(query, (job_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result[0]
+        else:
+            raise IndexError('Column does not exist')
+
+    def get_job_values(self, job_id: int) -> any:
+        query = f"""
         SELECT *
         FROM jobs
         WHERE Job_Id = ?
         """
-        matching_jobs = self.cursor.execute(query, (job_id,)).fetchone()
-        return matching_jobs
+        self.cursor.execute(query, (job_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            return result[0]
+        else:
+            raise IndexError('Column does not exist')
+
+    def allocation_as_message(self, allocation_id: int):
+        allocation = self.get_allocation_values(allocation_id)
+        job_id = allocation[0]
+        task_ids = json.loads(allocation[1])
+
+        for task in task_ids:
+            self.get_task_value()
 
     def get_task_as_message(self, task_id: int) -> m.FunctionMessage:
-        self.logger.debug(f'Getting task {task_id} as message')
+        self.logger.debug(f'DB: Getting task {task_id} as message')
         task_tuple = self.get_value_from_task_id(task_id)
         self.logger.debug(f'DB: Task Values -> {task_tuple}')
         job_id, task_id, purpose, task_type, frame, status, environment, dependencies, parameters, computer = task_tuple
         environment = json.loads(environment)
         parameters = json.loads(parameters)
         data = {
+            'Purpose': purpose,
             'ID': task_id,
             'Environment': environment,
             'Parameters': parameters,

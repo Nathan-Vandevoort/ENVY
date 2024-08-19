@@ -12,7 +12,7 @@ __version__ = "1.0.0"
 from PySide6.QtCore import Slot, QCoreApplication, Signal, QObject
 import time
 import os
-from config import Globals
+from global_config import Globals
 
 
 ENVYPATH = Globals.ENVYPATH
