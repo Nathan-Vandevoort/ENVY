@@ -149,3 +149,13 @@ async def mark_task_as_finished(server, task_id: int) -> None:
     :return: Void
     """
     server.job_scheduler.finish_task(task_id)
+
+
+async def mark_allocation_as_finished(server, allocation_id: int) -> None:
+    """
+    Marks an allocation of tasks as finished in the scheduler
+    :param server: Reference to the server making the call
+    :param allocation_id: Allocation ID to mark as finished
+    :return: Void
+    """
+    server.job_scheduler.finish_allocation(allocation_id)

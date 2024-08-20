@@ -33,9 +33,9 @@ class Ingestor:
                 continue
 
             self.logger.info(f'New jobs found {new_jobs}')
-            for job in new_jobs:
-                await self.ingest(job)
-                os.remove(os.path.join(self.path, job))
+            for envy_job in new_jobs:
+                await self.ingest(envy_job)
+                os.remove(os.path.join(self.path, envy_job))
 
     async def ingest(self, job_path: str) -> bool:
         file, ext = os.path.splitext(job_path)
@@ -53,7 +53,7 @@ class Ingestor:
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
         await self.add_to_db(new_job)
-        await self.scheduler.add_job(new_job)
+        self.scheduler.sync_job(new_job.get_id())
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     logger = logging.getLogger(__name__)
     logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     loop = asyncio.new_event_loop()
 

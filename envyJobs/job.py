@@ -242,6 +242,7 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     metadata = job_as_dict['Metadata']
     new_range = job_as_dict['Range']
     new_id = job_as_dict['ID']
+    allocation = job_as_dict['Allocation']
 
     environment = None
     dependencies = None
@@ -265,6 +266,7 @@ def job_from_dict(job_as_dict: dict, logger: logging.Logger = None) -> Job:
     new_job.set_meta(metadata=metadata)
     new_job.set_range(new_range)
     new_job.set_id(new_id)
+    new_job.set_allocation(allocation)
 
     return new_job
 

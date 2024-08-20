@@ -13,7 +13,6 @@ import networkUtils.message as m
 from envyJobs import scheduler
 from envyJobs.enums import Status
 import psutil
-
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
     os.path.join(gc.Config.ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
@@ -219,8 +218,7 @@ class Server:
             'Socket': websocket,
             'Status': Status.IDLE,
             'Job': None,
-            'Task': None,
-            'Progress': 0
+            'Allocation': None,
         }
         update_clients_file(self.server_directory, self.clients)
         await SRV.send_clients_to_console(self)
