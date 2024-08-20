@@ -63,7 +63,6 @@ base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file
 os.environ["PATH"] = os.pathsep.join([bin_dir, *os.environ.get("PATH", "").split(os.pathsep)])
 os.environ["VIRTUAL_ENV"] = base  # virtual env is right above bin directory
 os.environ["VIRTUAL_ENV_PROMPT"] = "" or os.path.basename(base)  # noqa: SIM222
-
 # add the virtual environments libraries to the host python import mechanism
 prev_length = len(sys.path)
 for lib in "..\\Lib\\site-packages".split(os.pathsep):

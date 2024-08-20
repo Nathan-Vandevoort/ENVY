@@ -20,12 +20,13 @@ import os, subprocess
 import asyncio
 from envyJobs.enums import Status  # this module is in the ENVYREPO and provides useful information such as job status
 import sys
+import json
 NV = sys.modules.get('Envy_Functions')  # This gets the Envy_Functions module and assigns it to the variable NV. This allows you to call the envy_functions functions easily
 
 
 class Example_Plugin_Handler:
 
-    def __init__(self, envy, task_id: int, frame: int):
+    def __init__(self, envy, tasks: dict):
         """
         The initializing function for the Example_Plugin_Handler object.
         :param envy: I pass in a reference to the calling envy instance, so I can monitor envy.status and run Envy_Functions
@@ -41,10 +42,9 @@ class Example_Plugin_Handler:
         """
         self.my_path = os.path.abspath(__file__)
 
+        self.tasks = tasks
+        self.task_ids = list(tasks)
         self.envy = envy
-        self.task_id = task_id
-        self.frame = frame
-        self.envy.logger.info(f'Plugin-Example_Plugin_Handler: Initialized -> Frame: {frame}')  # I use envys logger like so for debug purposes
 
     async def start_subprocess(self) -> None:
         """
@@ -53,7 +53,7 @@ class Example_Plugin_Handler:
         :return: Void
         """
         plugin_path = os.path.join(os.path.dirname(self.my_path), 'test_process.py')
-        self.process = await asyncio.create_subprocess_shell(f'python {plugin_path}', stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)  # notice how I'm using asyncios create subprocess and not the subprocess modules
+        self.process = await asyncio.create_subprocess_exec(f'python',  plugin_path, json.dumps(self.tasks), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)  # notice how I'm using asyncios create subprocess and not the subprocess modules
 
     async def monitor_subprocess_output(self) -> int:
         """
@@ -80,10 +80,14 @@ class Example_Plugin_Handler:
         :return: Void
         """
         line = line.decode().rstrip()
+        print(line)
 
         if '%' in line:
             percentage = float(line[:-1])
-            await NV.send_progress_to_server(self.envy, percentage)
+            #await NV.send_progress_to_server(self.envy, percentage)
+
+        if 'FINISHED' in line:
+            await NV.finish_task(self.envy, self.task_ids.pop(0))  # this tells the scheduler that it succesfully finished the task
 
     async def run(self):
         """
@@ -102,4 +106,3 @@ class Example_Plugin_Handler:
         for task in pending:
             task.cancel()  # this cleans up other running tasks if one of them finished
         self.process = None
-        await NV.finish_task(self.envy, self.task_id)  # this tells the scheduler that it succesfully finished the task

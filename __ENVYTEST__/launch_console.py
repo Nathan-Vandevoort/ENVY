@@ -35,7 +35,7 @@ handler.setFormatter(CustomFormatter())
 
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 loop = asyncio.new_event_loop()
 con = Console(event_loop=loop, logger=logger)
