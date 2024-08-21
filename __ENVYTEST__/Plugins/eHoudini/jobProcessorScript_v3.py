@@ -8,11 +8,170 @@ directory = 'Z:/school/ENVY/__ENVYTEST__/'
 if directory not in sys.path:
     sys.path.append(directory)
 import __config__ as config
+
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
 
 
-def createEnvyJobs(myNode):
+def createSimulationEnvyJob(node):
+    saveFile = hou.ui.displayConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)')
+    if saveFile:
+        hou.hipFile.save()
+    else:
+        return
+
+    is_simulation = node.parm('isSimulation').eval()
+
+    if is_simulation == 1:
+        is_simulation = True
+    else:
+        is_simulation = False
+
+    job_name = node.parm('jobName').eval()
+    parameter_edits_multiparm = node.parm('simulation_parameterEdits')
+    parameters = {}
+    environment = {}
+    simulation_param_names = {
+        'f1': ('simulation_startParamName', 'simulation_startValue'),
+        'f2': ('simulation_endParamName', 'simulation_endValue'),
+        'substeps': ('simulation_substepsParamName', 'simulation_substepsValue'),
+        'version': ('simulation_versionParamName', 'simulation_versionValue'),
+    }
+
+    start_frame = None
+    end_frame = None
+    for simulation_param_name in simulation_param_names:
+        referenced_parm = node.parm(simulation_param_names[simulation_param_name][0]).getReferencedParm()
+        value = node.parm(simulation_param_names[simulation_param_name][1]).eval()
+        parameters[referenced_parm.path()] = value
+
+        if simulation_param_name == 'f1':
+            start_frame = int(float(value))
+
+        if simulation_param_name == 'f2':
+            end_frame = int(float(value))
+
+    target_button = node.parm('simulation_targetButton').getReferencedParm()
+    environment['Target_Button'] = target_button.path()
+
+    parameters.update(dictFromParameterEdits(node, parameter_edits_multiparm, 'simulation_', 1))
+    environment['HIP'] = node.parm('hip').eval()
+    environment['JOB'] = node.parm('job').eval()
+    environment['Job_Type'] = 'simulation'
+
+    if is_simulation is True:
+        new_job = ej.Job(f'{job_name}_{str(1).zfill(3)}')
+        new_job.set_meta()
+        new_job.set_environment(environment)
+        new_job.set_parameters(parameters)
+        new_job.set_type('PLUGIN_eHoudini')
+        new_job.set_purpose(Purpose.SIMULATION)
+        new_job.add_range(start_frame, end_frame, 1)
+        new_job.set_allocation((end_frame + 1) - start_frame)
+        new_job.write()
+
+    else:
+        new_job = ej.Job(f'{job_name}_{str(1).zfill(3)}')
+        new_job.set_meta()
+        new_job.set_environment(environment)
+        new_job.set_parameters(parameters)
+        new_job.set_type('PLUGIN_eHoudini')
+        new_job.set_purpose(Purpose.CACHE)
+        new_job.add_range(start_frame, end_frame, 1)
+        new_job.set_allocation(node.parm('allocationSize').eval())
+        new_job.write()
+
+def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str, job_index: int) -> dict | None:
+    NVC = node.parm('nvcToken').eval()
+    parameters = {}
+    for j in range(parameter_edits_multiparm.eval()):
+        parameter_edit_index = j + 1
+        parameter_parm_parm = node.parm(f'{parm_namespace}parm_{parameter_edit_index}')
+        value_parm = node.parm(f'{parm_namespace}value_{parameter_edit_index}')
+
+        # check that parameter_parm points to something
+        parameter_parm = parameter_parm_parm.getReferencedParm()
+        if parameter_parm_parm == parameter_parm:
+            hou.ui.displayMessage(
+                f"Invalid Parameter Reference: {parameter_parm_parm.name()} ({parameter_parm_parm.rawValue()})")
+            return None
+
+        rawValueString = value_parm.rawValue()
+        rawValueStringReplaced = rawValueString.replace('$NVJ', str(job_index))
+        rawValueStringReplaced = rawValueStringReplaced.replace('$NVC', str(NVC))
+        value_parm.set(rawValueStringReplaced)
+        value = value_parm.eval()
+        value_parm.set(rawValueString)
+
+        try:
+            value = float(value)
+        except Exception:
+            pass
+
+        parameters[parameter_parm.path()] = value
+    return parameters
+
+
+def setSimulationParametersFromNode(node):
+    cache_node_parm = node.parm('simulation_cacheNode')
+    cache_node = cache_node_parm.eval()
+    cache_node = hou.node(cache_node)
+    if cache_node is None:
+        hou.ui.displayMessage(f'Cannot find node at given Cache Node path')
+
+    fail_reasons = []
+    parameter_names = ['f1', 'f2', 'substeps', 'version', 'NVversion']
+    simulation_param_names = {
+        'f1': ('simulation_startParamName', 'simulation_startValue'),
+        'f2': ('simulation_endParamName', 'simulation_endValue'),
+        'substeps': ('simulation_substepsParamName', 'simulation_substepsValue'),
+        'version': ('simulation_versionParamName', 'simulation_versionValue'),
+    }
+    found_parameters = {
+        'f1': {},
+        'f2': {},
+        'substeps': {},
+        'version': {},
+    }
+
+    for parameter_name in parameter_names:
+        parameter = cache_node.parm(parameter_name)
+        if parameter is None:
+            fail_reasons.append(f'Could not find parameter "{parameter_name}" on {cache_node}')
+            continue
+
+        if parameter_name == 'NVversion':
+            parameter_name = 'version'
+
+        value = parameter.eval()
+        found_parameters[parameter_name][parameter.name()] = value
+
+    for simulation_param_name in simulation_param_names:
+        for param in simulation_param_names[simulation_param_name]:
+            node.parm(param).revertToDefaults()
+
+    target_button = cache_node.parm('execute')
+    if target_button is None:
+        fail_reasons.append(f'Could not find parameter "execute" on {cache_node}')
+
+    node.parm('simulation_targetButton').set(target_button)
+
+    for found_parameter in found_parameters:
+        for param in found_parameters[found_parameter]:
+            try:
+                sanitized_param = param
+                if param == 'NVversion':
+                    sanitized_param = 'version'
+                node.parm(simulation_param_names[sanitized_param][0]).set(cache_node.parm(param))
+                node.parm(simulation_param_names[sanitized_param][1]).set(str(found_parameters[found_parameter][param]))
+            except Exception as e:
+                fail_reasons.append(f'Failed while attempting to set "{found_parameter}"')
+
+    if len(fail_reasons) > 1:
+        hou.ui.displayMessage('\n'.join(fail_reasons))
+
+
+def createGenericEnvyJobs(myNode):
     node = myNode
     saveFile = hou.ui.displayConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)')
     if saveFile:
@@ -24,7 +183,6 @@ def createEnvyJobs(myNode):
     NVC = myNode.parm('nvcToken').eval()
     job_name = myNode.parm('jobName').eval()
 
-    # check if descriptive files checkbox is on
     generateDescriptiveFile = False
     nvNode = None
 
@@ -37,98 +195,18 @@ def createEnvyJobs(myNode):
         new_job = ej.Job(f'{job_name}_{str(i + 1).zfill(3)}')
         new_job.set_meta()
         environment = {}
-        parameters = {}
 
         job_index = i + 1
         parameter_edits_multiparm = myNode.parm(f'parameterEdits{job_index}')
         button_to_press_parm = myNode.parm(f'targetButton{job_index}')
-
-        # frame range toggle
-        frame_range_toggle = myNode.parm(f'useJobFrameRange{job_index}')
-        if frame_range_toggle.eval() == 1:
-            # get frame range parms
-            start_frame_parm_parm = node.parm(f'job_startFrameParm{job_index}')
-            start_frame_value_parm = node.parm(f'job_startFrameValue{job_index}')
-            end_frame_parm_parm = node.parm(f'job_endFrameParm{job_index}')
-            end_frame_value_parm = node.parm(f'job_endFrameValue{job_index}')
-            increment_parm_parm = node.parm(f'job_incrementFrameParm{job_index}')
-            increment_value_parm = node.parm(f'job_incrementFrameValue{job_index}')
-
-            # sanitize parms -----------------------------------------------------------------
-            try:
-                start_frame_parm = start_frame_parm_parm.getReferencedParm()
-                end_frame_parm = end_frame_parm_parm.getReferencedParm()
-                increment_parm = increment_parm_parm.getReferencedParm()
-            except AttributeError:
-                hou.ui.displayMessage(f'A frame range parameter is unfilled in job #{job_index}')
-                return
-
-            # check if start frame parm is valid
-            if start_frame_parm == start_frame_parm_parm:
-                hou.ui.displayMessage(
-                    f"Invalid Parameter Reference: {start_frame_parm_parm.name()} ({start_frame_parm_parm.rawValue()})")
-                return
-
-            start_frame = start_frame_value_parm.eval()
-
-            # check if start frame value is valid
-            try:
-                start_frame = int(start_frame)
-            except ValueError:
-                hou.ui.displayMessage(f"{start_frame_value_parm.name()} Must be set to an integer")
-                return
-
-            # end frame
-
-            # check if end frame parm is valid
-            if end_frame_parm == end_frame_parm_parm:
-                hou.ui.displayMessage(
-                    f"Invalid Parameter Reference: {end_frame_parm_parm.name()} ({end_frame_parm_parm.rawValue()})")
-                return
-
-            end_frame = end_frame_value_parm.eval()
-
-            # check if end frame value is valid
-            try:
-                end_frame = int(end_frame)
-            except ValueError:
-                hou.ui.displayMessage(f"{end_frame_parm_value.name()} Must be set to an integer")
-                return
-
-            # increment
-
-            # check if end frame parm is valid
-            if increment_parm == increment_parm_parm:
-                hou.ui.displayMessage(
-                    f"Invalid Parameter Reference: {increment_parm_parm.name()} ({increment_parm_parm.rawValue()})")
-                return
-
-            increment = increment_value_parm.eval()
-
-            # check if end frame value is valid
-            try:
-                increment = int(increment)
-            except ValueError:
-                hou.ui.displayMessage(f"{increment_value_parm.name()} Must be set to an integer")
-                return
-
-            # sanitize parms -----------------------------------------------------------------
-
-            new_job.add_range(start_frame, end_frame, increment)
-            new_job.set_purpose(Purpose.CACHE)
-
-        # simulation toggle
-        simulation_toggle = myNode.parm(f'useJobSimulation{job_index}')
-        if simulation_toggle.eval() == 1:
-            new_job.set_purpose(Purpose.SIMULATION)
-            pass
-            # todo implement simulation logic
 
         # validated button to press is good
         button_to_press = button_to_press_parm.getReferencedParm()
         if button_to_press_parm == button_to_press:
             hou.ui.displayMessage(f'Button_to_press is invalid for job #{job_index}')
             return
+
+        environment['Target_Button'] = button_to_press.path()
 
         # check if node is nvcache
         NV_cache = False
@@ -138,7 +216,7 @@ def createEnvyJobs(myNode):
             NV_node = button_to_press.node()
             NV_cache = True
 
-            if (NV_node.parm('filemethod').eval() == 1):  # then explicit is true
+            if NV_node.parm('filemethod').eval() == 1:  # then explicit is true
                 NV_cache_dir = str(NV_node.parm('file').eval()).replace('\\', '/').split('/')
                 NV_cache_dir.pop()
                 NV_cache_dir = '/'.join(NV_cache_dir)
@@ -151,31 +229,7 @@ def createEnvyJobs(myNode):
 
             # iterate over parameter edits
 
-        # iterate over parameter edits
-        for j in range(parameter_edits_multiparm.eval()):
-            parameter_edit_index = j + 1
-            parameter_parm_parm = node.parm(f'parm{job_index}_{parameter_edit_index}')
-            value_parm = node.parm(f'value{job_index}_{parameter_edit_index}')
-
-            # check that parameter_parm points to something
-            parameter_parm = parameter_parm_parm.getReferencedParm()
-            if parameter_parm_parm == parameter_parm:
-                hou.ui.displayMessage(f"Invalid Parameter Reference: {parameter_parm_parm.name()} ({parameter_parm_parm.rawValue()})")
-                return
-
-            rawValueString = parameter_parm_parm.rawValue()
-            rawValueStringReplaced = rawValueString.replace('$NVJ', str(job_index))
-            rawValueStringReplaced = rawValueStringReplaced.replace('$NVC', str(NVC))
-            parameter_parm_parm.set(rawValueStringReplaced)
-            value = parameter_parm_parm.eval()
-            parameter_parm_parm.set(rawValueString)
-
-            try:
-                value = float(value)
-            except Exception:
-                pass
-
-            parameters[parameter_parm.path()] = value
+        parameters = dictFromParameterEdits(myNode, parameter_edits_multiparm, '', job_index)
 
         environment['HIP'] = node.parm('hip').eval()
         environment['JOB'] = node.parm('job').eval()
@@ -183,56 +237,82 @@ def createEnvyJobs(myNode):
         new_job.set_environment(environment)
         new_job.set_parameters(parameters)
         new_job.set_type('PLUGIN_eHoudini')
+        new_job.set_purpose(Purpose.CACHE)
+        new_job.add_range(1, 1, 1)
         new_job.write()
 
-def set_advanced_from_NVcache(node, multi_parm_index):
-    button_to_press_parm = node.parm(f'targetButton{multi_parm_index}')
+def duplicateJob(myNode, parm, multiParmIndex):
+    jobParm = parm.parentMultiParm()
+    children = jobParm.multiParmInstances()
+    parmIndex = parm.multiParmInstanceIndices()
 
-    # validated button to press is good
-    button_to_press = button_to_press_parm.getReferencedParm()
-    if button_to_press_parm == button_to_press:
-        hou.ui.displayMessage(f'Button_to_press is invalid for job #{multi_parm_index}')
+    # isolate parms in my multiparm block
+    targetButton = myNode.parm(f'targetButton{multiParmIndex}')
+    parameterEdits = myNode.parm(f'parameterEdits{multiParmIndex}')
+
+    # raise an error if target button or parameter edits cannot be found
+    if targetButton == None or parameterEdits == None:
+        hou.ui.displayMessage(f"Failed to duplicate tab")
         return
 
-    # check if node is nvcache
-    NV_node = None
-    NV_cache_dir = None
-    if 'NVCACHE' not in button_to_press.node().type().name().upper():
-        hou.ui.displayMessage(f'target buttom must be from an NVcache node -> job #{multi_parm_index}')
+    # get the list of parameter edit parms
+    parameterEdits = parameterEdits.multiParmInstances()
+
+    # convert parameter edits into a dict of parameter and its value
+    parameterEditsDict = {}
+    for index, param in enumerate(parameterEdits):
+        # skip every other index because we are assuming that there are only parameter and value
+        if index % 2 != 0:
+            continue
+
+        # add to list
+        parameterEditsDict[param] = parameterEdits[index + 1]
+
+    # Make a new job
+    newJobIndex = jobParm.eval()
+    jobParm.insertMultiParmInstance(newJobIndex)
+
+    # isolate parms in new multiparm
+    newTargetButton = myNode.parm(f'targetButton{newJobIndex}')
+    newParameterEdits = myNode.parm(f'parameterEdits{newJobIndex}')
+
+    # raise an error if target button or parameter edits cannot be found
+    if newTargetButton == None or newParameterEdits == None:
+        hou.ui.displayMessage(f"Failed to duplicate tab")
         return
 
-    NV_node = button_to_press.node()
+    # set new target button
+    newTargetButton.set(targetButton.rawValue())
 
-    if (NV_node.parm('filemethod').eval() == 1):  # then explicit is true
-        NV_cache_dir = str(NV_node.parm('file').eval()).replace('\\', '/').split('/')
-        NV_cache_dir.pop()
-        NV_cache_dir = '/'.join(NV_cache_dir)
+    # set new parameter edits
+    for param in parameterEditsDict:
+        # make a new parameter edit
+        newParameterEdits.insertMultiParmInstance(newParameterEdits.evalAsInt())
+        newParamIndex = newParameterEdits.evalAsInt()
 
-    else:  # explicit is false
-        cacheNodeBaseName = str(NV_node.evalParm("basename"))
-        cacheNodeSavePath = str(NV_node.evalParm("basedir"))
-        cacheNodeVersion = str(NV_node.evalParm("NVversion"))
-        NV_cache_dir = f"{cacheNodeSavePath}/{cacheNodeBaseName}/v{cacheNodeVersion}"
+        # iterate over new params to get parameter objects
+        targetParmParm = None
+        targetValueParm = None
+        for createdParam in newParameterEdits.multiParmInstances():
+            # if param is not of the right index then ignore it
+            newParamEditsChildren = createdParam.multiParmInstanceIndices()
+            if newParamEditsChildren[len(newParamEditsChildren) - 1] == newParamIndex:
 
-    start_frame_parm = NV_node.parm('f1')
-    start_frame = start_frame_parm.eval()
-    end_frame_parm = NV_node.parm('f2')
-    end_frame = end_frame_parm.eval()
-    increment_parm = NV_node.parm('f3')
-    increment = int(increment_parm.eval())
-    simulation = NV_node.parm('cachesim').eval()
+                # if the name is parm then set it to targetParmParm
+                if 'parm' in createdParam.name():
+                    targetParmParm = createdParam
 
-    node.parm(f'useJobFrameRange{multi_parm_index}').set(1)
-    node.parm(f'useJobSimulation{multi_parm_index}').set(simulation)
+                # if the name is value then set it  targetParmValue
+                if 'value' in createdParam.name():
+                    targetValueParm = createdParam
 
-    start_frame_parm_parm = node.parm(f'job_startFrameParm{multi_parm_index}').set('`' + start_frame_parm.path() + '`')
-    start_frame_value_parm = node.parm(f'job_startFrameValue{multi_parm_index}')
-    start_frame_value_parm.deleteAllKeyframes()
-    start_frame_value_parm.set(start_frame)
-    end_frame_parm_parm = node.parm(f'job_endFrameParm{multi_parm_index}').set('`' + end_frame_parm.path() + '`')
-    end_frame_value_parm = node.parm(f'job_endFrameValue{multi_parm_index}')
-    end_frame_value_parm.deleteAllKeyframes()
-    end_frame_value_parm.set(int(end_frame))
-    increment_parm_parm = node.parm(f'job_incrementFrameParm{multi_parm_index}').set('`' + increment_parm.path() + '`')
-    increment_value_parm = node.parm(f'job_incrementFrameValue{multi_parm_index}').set(increment)
+        # raise an error if parameters were not found
+        if targetParmParm == None or targetValueParm == None:
+            hou.ui.displayMessage(f"Failed to duplicate tab")
+            return
 
+        # set Parm to Parm from dict
+        targetParmParm.set(param.rawValue())
+
+        # set Value to Value from dict
+        targetValueParm.set(parameterEditsDict[param].rawValue())

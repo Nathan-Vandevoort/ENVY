@@ -329,7 +329,7 @@ if __name__ == '__main__':
 
     logger = logging.getLogger(__name__)
     logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     receive_queue = Queue(maxsize=0)
     loop = asyncio.new_event_loop()
     ldr = Server(receive_queue=receive_queue, event_loop=loop, logger=logger)

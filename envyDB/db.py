@@ -78,12 +78,17 @@ class DB:
         self.connect()
         self.configure_db()
 
-    def add_job(self, job: j.Job) -> bool:
+    def add_job(self, job: j.Job) -> int | None:
+        """
+        Adds a job to the database including creating allocation and task entries.
+        :param job: The Job object to add
+        :return: (int) The new jobs ID or None if adding the job failed
+        """
         self.logger.debug(f'DB: Adding Job {job}')
         job_id = self.create_job_entry(job)
 
         if job_id < 0:
-            return False
+            return None
 
         frame_list = job.range_as_list()
         allocation = job.get_allocation()
@@ -92,7 +97,7 @@ class DB:
         for alloc in allocations:
             allocation_id = self.create_allocation_entry(job, job_id)
             if allocation_id < 0:
-                return False
+                return None
 
             allocation_ids.append(allocation_id)
 
@@ -101,7 +106,7 @@ class DB:
                 task_id = self.create_task_entry(job, job_id, allocation_id, frame)
 
                 if task_id < 0:
-                    return False
+                    return None
 
                 task_ids.append(task_id)
 
@@ -110,6 +115,7 @@ class DB:
 
         allocation_ids = json.dumps(allocation_ids)
         self.set_job_value(job_id, 'Allocation_Ids', allocation_ids)
+        return job_id
 
     def create_job_entry(self, job: j.Job) -> int:
         sqlite_job = job.as_sqlite_compliant()

@@ -25,6 +25,7 @@ class Status(str, Enum):
     PENDING = 'pending'
     INPROGRESS = 'inprogress'
     DONE = 'done'
+    DIRTY = 'dirty'
     IDLE = 'idle'
     WORKING = 'working'
 

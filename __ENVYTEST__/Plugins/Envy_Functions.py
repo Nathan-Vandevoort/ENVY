@@ -139,18 +139,31 @@ async def finish_task_allocation(envy, allocation_id: int) -> None:
     envy.send(new_message)
 
 
+async def start_task(envy, task_id: int) -> None:
+    """
+    Tells the server I just started this task
+    :param envy: reference to the envy instance making the call
+    :param task_id: ID of the task to mark as started
+    :return: Void
+    """
+    new_message = m.FunctionMessage(f'start_task(): {task_id}')
+    new_message.set_target(Message_Purpose.SERVER)
+    new_message.set_function('mark_task_as_started')
+    new_message.format_arguments(task_id, envy.hostname)
+    envy.send(new_message)
+
+
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
-async def PLUGIN_eHoudini(envy, task_data: str) -> None:
+async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
     from eHoudini import plugin as p
     await envy.set_status_working()
 
-    task_data = json.loads(task_data)
-    purpose = task_data['Purpose']
-    task_id = task_data['ID']
-    environment = task_data['Environment']
-    parameters = task_data['Parameters']
-    frame = task_data['Frame']
+    allocation_data = json.loads(allocation_data)
+    allocation_id = allocation_data['Allocation_Id']
 
-    plugin = p.Plugin(envy, task_id, environment, parameters)
+    plugin = p.Plugin(envy, allocation_data)
     await plugin.start()
+
+    await finish_task_allocation(envy, allocation_id)
+    await envy.set_status_idle()
 

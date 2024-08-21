@@ -88,6 +88,8 @@ class Example_Plugin_Handler:
 
         if 'FINISHED' in line:
             await NV.finish_task(self.envy, self.task_ids.pop(0))  # this tells the scheduler that it succesfully finished the task
+            if len(self.task_ids) > 0:  # make sure that there is a new task to start
+                await NV.start_task(self.envy, self.task_ids[0])  # I assume that when a task is finished the next task is automatically started
 
     async def run(self):
         """
@@ -95,6 +97,7 @@ class Example_Plugin_Handler:
         :return: Void
         """
         await self.start_subprocess()
+        await NV.start_task(self.envy, self.task_ids[0])  # I assume that when I launch the process I start the first task
         monitor_subprocess_task = self.envy.event_loop.create_task(self.monitor_subprocess_output())
         monitor_subprocess_task.set_name('Plugin-Example_Plugin_Handler: monitor_subprocess_output()')
         monitor_envy_task = self.envy.event_loop.create_task(self.monitor_envy())

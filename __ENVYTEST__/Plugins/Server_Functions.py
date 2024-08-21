@@ -159,3 +159,14 @@ async def mark_allocation_as_finished(server, allocation_id: int) -> None:
     :return: Void
     """
     server.job_scheduler.finish_allocation(allocation_id)
+
+
+async def mark_task_as_started(server, task_id: int, computer: str) -> None:
+    """
+    Marks a task as started in the scheduler
+    :param server: Reference to the server making the call
+    :param task_id: ID of the task to mark as started
+    :param computer: name of the computer starting the task
+    :return: Void
+    """
+    server.job_scheduler.start_task(task_id, computer)

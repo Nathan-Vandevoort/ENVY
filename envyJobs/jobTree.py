@@ -30,6 +30,7 @@ class JobTree:
         for job in jobs:
             job = job[0]
             active_allocations.extend(self.sync_job(job))
+        return active_allocations
 
     def sync_job(self, job_id: int) -> list:
         self.logger.debug(f'JobTree: syncing job: {job_id} from database to tree')
@@ -67,7 +68,7 @@ class JobTree:
         for allocation_id in allocation_ids:
             allocation_status = self.db.get_allocation_value(allocation_id, 'Status')
 
-            if allocation_status == Job_Status.DONE:
+            if allocation_status == Job_Status.DONE or allocation_status == Job_Status.DIRTY:
                 done_allocations.append(allocation_id)
                 continue
 
@@ -100,7 +101,7 @@ class JobTree:
                 task_status = task_data[4]
                 task_computer = task_data[5]
 
-                if task_status == Job_Status.DONE:
+                if task_status == Job_Status.DONE or task_status == Job_Status.DIRTY:
                     done_tasks.append(task_id)
                     continue
 
@@ -150,67 +151,58 @@ class JobTree:
 
         self.logger.info(f'JobTree: {task_node.computer} Finished task {task_id}')
         if len(allocation_node.children) == 0:
-            self.finish_allocation(allocation_node=allocation_node)
+            self.finish_allocation(allocation_node)
 
         return True
 
-    def finish_allocation(self, allocation_id: int = None, allocation_node: Node = None) -> None:
+    def finish_allocation(self, allocation: Node | int) -> None:
         """
         Marks the current allocation as done in the database and removes it from the tree
         you must provide either an allocation ID or allocation node
-        :param allocation_id: Optional the id of the allocation to remove
-        :param allocation_node: Optional The node to remove
+        :param allocation: either the ID of the allocation or a reference to the allocation node
         :return:
         """
-        if allocation_node is None:
-            job_id = self.db.get_allocation_value(allocation_id, 'Job_Id')
-            try:
-                allocation_node = self.resolver.get(self.root, f'/root/{job_id}/{allocation_id}')
-            except anytree.resolver.ChildResolverError as e:
-                self.logger.debug(f'cannot find allocation to finish')
-                return
+        allocation_id = allocation
+        if isinstance(allocation, int):
+            allocation = self.get_allocation(allocation)
 
+        if allocation is None:
+            self.logger.debug(f'JobTree: Allocation {allocation_id} is already marked as finished')
+            return
 
-        allocation_id = allocation_node.name
+        allocation_id = allocation.name
         self.db.set_allocation_value(allocation_id, 'Status', Job_Status.DONE)
-        job_node = allocation_node.parent
-        allocation_node.parent = None
+        job_node = allocation.parent
+        allocation.parent = None
 
         self.logger.debug(f'JobTree: Finished allocation {allocation_id}')
         if len(job_node.children) == 0:
             self.finish_job(job_node)
 
-    def finish_job(self, job_id: int = None, job_node: Node = None) -> None:
-        if job_node is None:
-            job_node = self.resolver.get(self.root, f'/root/{job_id}')
+    def finish_job(self, job: int | Node) -> None:
+        if isinstance(job, int):
+            job = self.resolver.get(self.root, f'/root/{job}')
 
-        job_id = job_node.name
+        job_id = job.name
         self.db.set_job_value(job_id, 'Status', Job_Status.DONE)
-        job_node.parent = None
+        job.parent = None
         self.number_of_jobs -= 1
         self.logger.debug(f'JobTree: Finished Job {job_id}')
 
-    def reset_task(self, task_id: int = None, task_node: Node = None):
+    def reset_task(self, task: int | Node):
 
-        if task_node is None:
-            job_id = self.db.get_task_value(task_id, 'Job_Id')
-            allocation_id = self.db.get_task_value(task_id, 'Allocation_Id')
-            self.db.set_task_value(task_id, 'Status', Job_Status.DONE)
-            try:
-                task_node = self.resolver.get(self.root, f'/root/{job_id}/{allocation_id}/{task_id}')
-            except anytree.resolver.ChildResolverError as e:
-                self.logger.warning(f'JobTree: Failed to reset task {task_id} - {e}')
-                return False
+        if isinstance(task, int):
+            task = self.get_task(task)
 
-        task_node.status = Job_Status.PENDING
-        task_node.computer = None
-        task_node.progress = 0
-        self.logger.debug(f'JobTree: Reset task {task_id}')
+        task.status = Job_Status.PENDING
+        task.computer = None
+        task.progress = 0
+        self.logger.debug(f'JobTree: Reset task {task}')
         return True
 
     def reset_allocation(self, allocation_id: int):
+        self.logger.debug(f'resetting allocation {allocation_id}')
         job_id = self.db.get_allocation_value(allocation_id, 'Job_Id')
-        allocation_id = self.db.get_allocation_value(allocation_id, 'Allocation_Id')
         self.db.set_allocation_value(allocation_id, 'Status', Job_Status.PENDING)
 
         try:
@@ -220,7 +212,7 @@ class JobTree:
             return False
 
         for task_node in allocation_node.children:
-            self.reset_task(task_node=task_node)
+            self.reset_task(task_node)
 
         allocation_node.status = Job_Status.PENDING
         allocation_node.computer = None
@@ -236,7 +228,7 @@ class JobTree:
                 yield allocation
         yield None
 
-    def get_allocation(self, allocation_id):
+    def get_allocation(self, allocation_id: int):
         job_id = self.db.get_allocation_value(allocation_id, 'Job_Id')
         try:
             allocation_node = self.resolver.get(self.root, f'/root/{job_id}/{allocation_id}')
@@ -256,21 +248,21 @@ class JobTree:
             return False
         return task_node
 
-    def start_allocation(self, computer: str, allocation_id: int = None, allocation_node: Node = None) -> None:
-        if allocation_node is None:
-            allocation_node = self.get_allocation(allocation_id)
-        self.logger.debug(f'JobTree: starting Allocation({allocation_node.name}) for {computer}')
+    def start_allocation(self, computer: str, allocation: int | Node) -> None:
+        if isinstance(allocation, int):
+            allocation = self.get_allocation(allocation)
+        self.logger.debug(f'JobTree: starting Allocation({allocation.name}) for {computer}')
 
-        job_node = allocation_node.parent
+        job_node = allocation.parent
 
         if job_node.status != Job_Status.INPROGRESS:
             job_node.status = Job_Status.INPROGRESS
 
-        allocation_node.status = Job_Status.INPROGRESS
-        allocation_node.computer = computer
+        allocation.status = Job_Status.INPROGRESS
+        allocation.computer = computer
 
-        self.db.set_allocation_value(allocation_node.name, 'Status', Job_Status.INPROGRESS)
-        self.db.set_allocation_value(allocation_node.name, 'Computer', computer)
+        self.db.set_allocation_value(allocation.name, 'Status', Job_Status.INPROGRESS)
+        self.db.set_allocation_value(allocation.name, 'Computer', computer)
 
     def start_task(self, task_id: int, computer: str) -> None:
         task_node = self.get_task(task_id)

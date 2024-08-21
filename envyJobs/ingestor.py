@@ -17,9 +17,12 @@ class Ingestor:
         self.logger.debug(f'Set Database -> {db}')
         self.db = db
 
-    async def add_to_db(self, job_to_add: job.Job):
+    async def add_to_db(self, job_to_add: job.Job) -> int:
         self.logger.debug(f'adding {job_to_add} to database')
-        self.db.add_job(job_to_add)
+        new_job_id = self.db.add_job(job_to_add)
+        if new_job_id is None:
+            raise Exception('Failed to create job database may be corrupted now')
+        return new_job_id
 
     async def start(self):
         self.logger.debug('Started envyJobs.ingester.Ingestor')
@@ -52,8 +55,8 @@ class Ingestor:
 
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
-        await self.add_to_db(new_job)
-        self.scheduler.sync_job(new_job.get_id())
+        new_id = await self.add_to_db(new_job)
+        self.scheduler.sync_job(new_id)
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)
