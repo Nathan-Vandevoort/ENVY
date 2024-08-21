@@ -18,6 +18,7 @@ class Config:
     TIMEOUT = 5
     REPOPATH = 'Z:/school/ENVY/'
     HOUDINIBINPATH = 'C:/Program Files/Side Effects Software/Houdini 20.0.653/bin/'
+    TEMP = 'C:/Temp/'
 
 # -------------------------------------------------------------- THE LINES BELOW ARE IMPORTANT -------------------------------------------------------------------
 

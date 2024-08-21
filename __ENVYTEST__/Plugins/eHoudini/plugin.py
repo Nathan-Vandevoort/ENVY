@@ -7,8 +7,6 @@ import atexit
 import subprocess
 import time
 import sys
-import pty
-
 from envyJobs.enums import Status as Job_Status
 c = sys.modules.get('__config__').Config
 NV = sys.modules.get('Envy_Functions')
@@ -19,32 +17,30 @@ class Plugin:
     def __init__(self, envy, allocation_data: dict):
 
         purpose = allocation_data['Purpose']
-
         self.envy = envy
         self.event_loop = envy.event_loop
         self.tasks = allocation_data['Tasks']
         self.task_list = list(self.tasks)
         self.environment = allocation_data['Environment']
         self.parameters = allocation_data['Parameters']
-
         targetButtonNode = self.environment['Target_Button']
         targetButtonNodeSplit = targetButtonNode.split('/')
         self.targetButtonParmName = targetButtonNodeSplit.pop()
         self.targetButtonNode = '/'.join(targetButtonNodeSplit)
-
+        temp_dir = c.TEMP
+        self.stdout_log_path = os.path.join(temp_dir, 'eHoudini_stdout.log')
+        self.stderr_log_path = os.path.join(temp_dir, 'eHoudini_stderr.log')
         self.logger = self.envy.logger
-
         self.hython_process = None
         self.ready_to_write = False
-
         self.coroutines = []
-
         atexit.register(self.exit_function)
 
     async def start_process(self):
         plugin_path = os.path.join(c.HOUDINIBINPATH, 'hython.exe')
-        proc = await asyncio.create_subprocess_exec(plugin_path, '-i', stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=subprocess.CREATE_NEW_CONSOLE)
-        self.logger.info(f'eHoudini: Started process hython_process')
+        with open(self.stdout_log_path, 'w') as stdout, open(self.stderr_log_path, 'w') as stderr:
+            proc = subprocess.Popen([plugin_path], stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, creationflags=subprocess.CREATE_NO_WINDOW)
+        self.logger.info(f'eHoudini: Started hython_process')
         return proc
 
     async def start(self) -> None:
@@ -54,6 +50,10 @@ class Plugin:
         monitor_output_task.set_name('monitor_output()')
         self.coroutines.append(monitor_output_task)
 
+        monitor_error_task = self.event_loop.create_task(self.monitor_error())
+        monitor_error_task.set_name('monitor_error()')
+        self.coroutines.append(monitor_error_task)
+
         monitor_envy_task = self.event_loop.create_task(self.monitor_envy())
         monitor_envy_task.set_name('monitor_envy()')
         self.coroutines.append(monitor_envy_task)
@@ -61,9 +61,10 @@ class Plugin:
         await self.houdini_load_hip_file()
         await self.houdini_set_parameter_changes()
         await self.houdini_press_cache_button()
+        await self.write_to_hython('exit()')
 
         done, pending = await asyncio.wait(
-            [monitor_envy_task, monitor_output_task],
+            [monitor_envy_task, monitor_output_task, monitor_error_task],
             return_when=asyncio.FIRST_COMPLETED
         )
         for task in pending:
@@ -101,38 +102,55 @@ class Plugin:
         await self.write_to_hython(f"targetParm.pressButton()")
         self.logger.info('eHoudini: pressed start button')
 
-    async def terminate_process(self, timeout: float = 5) -> bool:
+    def terminate_process(self, timeout: float = 5) -> bool:
         if self.hython_process is None:
             return True
 
         start_time = time.time()
         while self.hython_process.poll is None:
-            await asyncio.sleep(.05)
+            time.sleep(.1)
             if time.time() - start_time > timeout:
                 return False
             self.hython_process.terminate()
         return True
 
     async def monitor_output(self):
-        async for line in self.hython_process.stdout:
-            await self.parse_line(line)
-        return await self.hython_process.wait()
+        with open(self.stdout_log_path, 'r') as stdout:
+            self.logger.info('eHoudini: Monitoring output')
+            while True:
+                await asyncio.sleep(.01)
+                line = stdout.readline()
+                if line == '':
+                    continue
+                await self.parse_line(line)
 
-    async def parse_line(self, line: bytes) -> bool:
-        print(line)
-        if b'>>>' == line:  # ready for input
+    async def monitor_error(self):
+        with open(self.stderr_log_path, 'r') as stderr:
+            self.logger.info('eHoudini: Monitoring error')
+            while True:
+                await asyncio.sleep(.01)
+                line = stderr.readline()
+                if line == '':
+                    continue
+                await self.parse_line(line)
+
+    async def parse_line(self, line: str) -> bool:
+        line = line.strip()
+        self.logger.debug(f'eHoudini: {line}')
+        if '>>>' in line:  # ready for input
             self.ready_to_write = True
-            print('detected')
             return True
-        return False
+
         if '%' in line:
             return True
 
         if 'FINISHED' in line:
-            await NV.finish_task(self.envy, self.task_list.pop(0))
+            if len(self.task_list) > 0:
+                await NV.finish_task(self.envy, self.task_list.pop(0))
             if len(self.task_list) > 0:
                 await NV.start_task(self.envy, self.task_list[0])
             return True
+
         return False
 
     async def write_to_hython(self, message: str, wait: bool = True) -> None:
@@ -153,8 +171,8 @@ class Plugin:
     async def write(self, message: str):
         message += '\n'
         self.hython_process.stdin.write(message.encode())
-        await self.hython_process.stdin.drain()
-        self.logger.info(f'eHoudini: to hython -> {message}')
+        self.hython_process.stdin.flush()
+        self.logger.info(f'eHoudini: to hython -> {message.strip()}')
         self.ready_to_write = False
 
     def exit_function(self) -> None:
@@ -165,48 +183,3 @@ class Plugin:
             self.logger.error(f'eHoudini: FAILED TO TERMINATE CHILD PROCESS')
         self.logger.info(f'eHoudini: terminated child process')
         self.logger.info(f'eHoudini: successfully closed')
-
-if __name__ == '__main__':
-    async def run_command():
-        # Create a pseudo-terminal
-        master_fd, slave_fd = pty.openpty()
-
-        process = await asyncio.create_subprocess_exec(
-            'hython', '-i',  # Use the -i flag for interactive mode
-            stdin=slave_fd,
-            stdout=slave_fd,
-            stderr=asyncio.subprocess.PIPE
-        )
-
-        async def send_input(input_data):
-            try:
-                os.write(master_fd, input_data.encode() + b'\n')
-                print("Input sent successfully")
-            except Exception as e:
-                print(f"Failed to send input: {e}")
-
-        async def read_output():
-            while True:
-                output = await asyncio.get_event_loop().run_in_executor(None, os.read, master_fd, 1024)
-                if output:
-                    print(f'STDOUT: {output.decode()}', end='', flush=True)
-                else:
-                    break
-
-        await send_input('initial_input')
-        await asyncio.create_task(read_output())
-
-        await asyncio.sleep(2)
-        await send_input('next_input')
-
-        await asyncio.sleep(2)
-        await send_input('another_input')
-
-        await process.wait()
-
-        # Close the pseudo-terminal
-        os.close(master_fd)
-        os.close(slave_fd)
-
-
-    asyncio.run(run_command())

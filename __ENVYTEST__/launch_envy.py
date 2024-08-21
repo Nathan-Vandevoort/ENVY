@@ -66,5 +66,5 @@ if not os.path.isdir(os.path.join(__config__.Config.ENVYPATH, 'Jobs', 'Jobs')):
 
 loop = asyncio.new_event_loop()
 envy = Envy(loop, logger=logger)
-envy_task = loop.create_task(envy.run())
+envy_task = loop.create_task(envy.start())
 loop.run_forever()

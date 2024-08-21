@@ -44,7 +44,7 @@ class Client:
 
         return True
 
-    async def connect(self, purpose=Message_Purpose.CLIENT, timeout=5, use_logger: bool = True) -> tuple:
+    async def connect(self, purpose=Message_Purpose.CLIENT, timeout=2.5, use_logger: bool = True) -> tuple:
         logger = eutils.DummyLogger()
         if use_logger:
             logger = self.logger
@@ -108,6 +108,7 @@ class Client:
 
     async def producer_handler(self):
         while self.running:
+            await asyncio.sleep(.1)
             while self.send_queue.empty():  # wait for something to send
                 await asyncio.sleep(.1)
 

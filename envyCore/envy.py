@@ -118,7 +118,7 @@ class Envy:
             self.server = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE, env=os.environ.copy())
             await asyncio.sleep(1)
 
-    async def run(self, role_override=None):
+    async def start(self, role_override=None):
         self.running = True
         self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
@@ -279,5 +279,5 @@ if __name__ == '__main__':
     logging.getLogger('asyncio').setLevel(logging.WARNING)
     loop = asyncio.new_event_loop()
     envy = Envy(loop, logger=logger)
-    loop.create_task(envy.run())
+    loop.create_task(envy.start())
     loop.run_forever()

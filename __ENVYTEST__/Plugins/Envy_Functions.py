@@ -155,15 +155,22 @@ async def start_task(envy, task_id: int) -> None:
 
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
 async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
+    """
+    The Houdini plugin. Allows for caching and rendering through Houdini.
+    todo Add allocation support
+    todo Add resumable cache support
+    :param envy: Reference to envy instance making the call
+    :param allocation_data: The allocation data provided by the Scheduler
+    :return: Void
+    """
     from eHoudini import plugin as p
     await envy.set_status_working()
-
+    envy.logger.info("eHoudini: Started")
     allocation_data = json.loads(allocation_data)
     allocation_id = allocation_data['Allocation_Id']
-
     plugin = p.Plugin(envy, allocation_data)
     await plugin.start()
-
     await finish_task_allocation(envy, allocation_id)
     await envy.set_status_idle()
+    envy.logger.info("eHoudini: Exited")
 

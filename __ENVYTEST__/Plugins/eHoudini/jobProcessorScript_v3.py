@@ -1,8 +1,6 @@
 import os
 import sys
 import datetime
-from envyJobs import job as ej
-from envyJobs.enums import Purpose
 
 directory = 'Z:/school/ENVY/__ENVYTEST__/'
 if directory not in sys.path:
@@ -11,6 +9,9 @@ import __config__ as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
+
+from envyJobs import job as ej
+from envyJobs.enums import Purpose
 
 
 def createSimulationEnvyJob(node):
@@ -42,6 +43,9 @@ def createSimulationEnvyJob(node):
     end_frame = None
     for simulation_param_name in simulation_param_names:
         referenced_parm = node.parm(simulation_param_names[simulation_param_name][0]).getReferencedParm()
+        if node.parm(simulation_param_names[simulation_param_name][0]) == referenced_parm:
+            hou.ui.displayMessage(f'{simulation_param_names[simulation_param_name][0]} must refer to a parameter')
+            return
         value = node.parm(simulation_param_names[simulation_param_name][1]).eval()
         parameters[referenced_parm.path()] = value
 
@@ -53,10 +57,12 @@ def createSimulationEnvyJob(node):
 
     target_button = node.parm('simulation_targetButton').getReferencedParm()
     environment['Target_Button'] = target_button.path()
-
-    parameters.update(dictFromParameterEdits(node, parameter_edits_multiparm, 'simulation_', 1))
-    environment['HIP'] = node.parm('hip').eval()
-    environment['JOB'] = node.parm('job').eval()
+    parameter_edits = dictFromParameterEdits(node, parameter_edits_multiparm, 'simulation_', 1)
+    if parameter_edits is None:
+        return
+    parameters.update(parameter_edits)
+    environment['HIP'] = hou.hipFile.path()
+    environment['JOB'] = hou.getenv('JOB')
     environment['Job_Type'] = 'simulation'
 
     if is_simulation is True:
@@ -86,8 +92,8 @@ def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_names
     parameters = {}
     for j in range(parameter_edits_multiparm.eval()):
         parameter_edit_index = j + 1
-        parameter_parm_parm = node.parm(f'{parm_namespace}parm_{parameter_edit_index}')
-        value_parm = node.parm(f'{parm_namespace}value_{parameter_edit_index}')
+        parameter_parm_parm = node.parm(f'{parm_namespace}parm{job_index}_{parameter_edit_index}')
+        value_parm = node.parm(f'{parm_namespace}value{job_index}_{parameter_edit_index}')
 
         # check that parameter_parm points to something
         parameter_parm = parameter_parm_parm.getReferencedParm()
@@ -230,9 +236,11 @@ def createGenericEnvyJobs(myNode):
             # iterate over parameter edits
 
         parameters = dictFromParameterEdits(myNode, parameter_edits_multiparm, '', job_index)
+        if parameters is None:
+            return
 
-        environment['HIP'] = node.parm('hip').eval()
-        environment['JOB'] = node.parm('job').eval()
+        environment['HIP'] = hou.hipFile.path()
+        environment['JOB'] = hou.getenv('JOB')
 
         new_job.set_environment(environment)
         new_job.set_parameters(parameters)
