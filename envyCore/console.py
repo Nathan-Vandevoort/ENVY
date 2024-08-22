@@ -55,13 +55,13 @@ class Console:
                     exec(f'CONSOLE.{eutils.insert_self_in_function(user_input)}')
                     continue
                 except Exception as e:
-                    self.write(f"{c.RED}Error: {c.WHITE}{e}")
+                    self.display_error(e)
                     continue
 
             # check if function exists
             function_exists = eutils.check_if_function_exists(function, ENVY_FUNCTIONS)
             if not function_exists:
-                self.write(f"{c.RED}Error: {c.WHITE}Function {function} cannot be found in Plugins/Envy_Functions.py")
+                self.display_error('Function {function} cannot be found in Plugins/Envy_Functions.py')
                 continue
 
     async def consumer_handler(self):
@@ -96,6 +96,18 @@ class Console:
         self.logger.error(f'{message.as_function()}')
         self.logger.error(f'{message.as_dict()}')
         return False
+
+    @staticmethod
+    def display_error(message) -> None:
+        print(f'{c.RED}Error: {message}{c.CLEAR}')
+
+    @staticmethod
+    def display_info(message) -> None:
+        print(f'{c.WHITE}EnvyIO: {message}{c.CLEAR}')
+
+    @staticmethod
+    def display_warning(message) -> None:
+        print(f'{c.YELLOW} Warning: {message}{c.CLEAR}')
 
     async def execute(self, job: m.FunctionMessage) -> None:
         purpose = job.get_purpose()
@@ -177,7 +189,7 @@ class Console:
             classifier = eutils.extract_function(user_input)[1].rstrip().lstrip()
             self.logger.debug(f'classifier: {classifier}')
         except SyntaxError as syntaxErr:
-            self.write(f"{c.RED}Syntax Error while validating input: {c.WHITE}{str(syntaxErr)}")
+            self.display_error('Syntax Error while validating input: {str(syntaxErr)}')
             return False, None, None
 
         if eutils.validate_classifier(classifier,
@@ -187,10 +199,6 @@ class Console:
 
         self.logger.debug(f'classifier: {classifier} invalid')
         return False, None, None
-
-    @staticmethod
-    def write(s):
-        print(f"{c.GREEN}EnvyIO: {c.CLEAR}{s}")
 
 
 if __name__ == '__main__':

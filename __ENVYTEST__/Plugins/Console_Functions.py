@@ -38,7 +38,7 @@ def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
         try:  # Try to cast the argument to an integer
             arg1 = int(arg1)
         except Exception as e:  # if it's not the right type inform the user its wrong and return and print why it couldnt be casted to an int
-            console.write(f"{c.RED}Arg1 MUST be an integer: {c.WHITE} -> {e}")
+            console.display_error(f'Arg1 MUST be an integer: -> {e}')
             return
 
     arg2 = input(f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
@@ -46,7 +46,7 @@ def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     classifier = get_classifier(console)  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
     valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/envyLib/envy_utils.py which validates that the user supplied classifier is a valid classifier
     if not valid:  # if the classifier is not valid tell the user and return
-        console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
+        console.display_error(f'Invalid classifier: {classifier}')
         return
 
     new_message = m.FunctionMessage('EXAMPLE()')  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
@@ -68,6 +68,7 @@ def fill_buffer(console, buffer_name: str, data: any) -> None:
     """
     setattr(console, buffer_name, data)
 
+
 def install_maya_plugin(console) -> None:
     """
     installs the Maya plugin
@@ -76,7 +77,7 @@ def install_maya_plugin(console) -> None:
     classifier = get_classifier(console)
     valid = eutils.validate_classifier(classifier)
     if not valid:
-        console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
+        console.display_error(f'Invalid classifier: {classifier}')
         return
     function_message = m.FunctionMessage('install_maya_plugin()')
     function_message.set_target(Message_Purpose.CLIENT)
@@ -106,7 +107,7 @@ def restart_envy(console) -> None:
     classifier = get_classifier(console)
     valid = eutils.validate_classifier(classifier)
     if not valid:
-        console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
+        console.display_error(f'Invalid classifier: {classifier}')
         return
     function_message = m.FunctionMessage('restart_envy()')
     function_message.set_target(Message_Purpose.CLIENT)
@@ -115,7 +116,7 @@ def restart_envy(console) -> None:
 
 
 def get_classifier(console):
-    console.write("Classifier (What computers to affect)?")
+    console.display_info('Classifier (What computers to affect)?')
     classifier = input(f"{c.CYAN}UserInput: {c.WHITE}").rstrip()
     return classifier
 
@@ -129,7 +130,7 @@ def debug_envy(console) -> None:
     classifier = get_classifier(console)
     valid = eutils.validate_classifier(classifier)
     if not valid:
-        console.write(f"{c.RED}Invalid classifier: {c.WHITE}{classifier}")
+        console.display_error(f'Invalid classifier: {classifier}')
         return
     function_message = m.FunctionMessage('debug_envy()')
     function_message.set_target(Message_Purpose.CLIENT)

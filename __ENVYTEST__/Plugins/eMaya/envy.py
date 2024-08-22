@@ -1,3 +1,8 @@
+"""
+========================================================================================================================
+Name: envy.py
+========================================================================================================================
+"""
 import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 
@@ -47,8 +52,8 @@ def maya_useNewAPI():
 
 def initializePlugin(plugin):
     """"""
-    vendor = "Envy"
-    version = "1.0.0"
+    vendor = 'Mauricio Gonzalez Soto'
+    version = '1.0.0'
 
     plugin_fn = om.MFnPlugin(plugin, vendor, version)
 
