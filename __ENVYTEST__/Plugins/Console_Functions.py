@@ -17,7 +17,9 @@ from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 from envyLib.colors import Colors as c
+import shutil
 import sys
+import os
 __config__ = sys.modules.get('__config__')
 
 
@@ -74,15 +76,26 @@ def install_maya_plugin(console) -> None:
     installs the Maya plugin
     :param console: reference to the console calling the function
     """
-    classifier = get_classifier(console)
-    valid = eutils.validate_classifier(classifier)
-    if not valid:
-        console.display_error(f'Invalid classifier: {classifier}')
+    maya_user_folder = 'Z:/maya'
+    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envy.py'
+
+    if not os.path.exists(maya_user_folder):
+        console.display_error('Maya plugin installation failed: Maya user folder not found.')
         return
-    function_message = m.FunctionMessage('install_maya_plugin()')
-    function_message.set_target(Message_Purpose.CLIENT)
-    function_message.set_function('install_maya_plugin')
-    send_to_clients(console, classifier, function_message)
+    elif not os.path.exists(envy_plugin_path):
+        console.display_error('Maya plugin installation failed: Envy plugin not found.')
+        return
+
+    for folder in os.listdir(maya_user_folder):
+        if folder.isdigit():
+            maya_plugins_folder = os.path.join(maya_user_folder, folder, 'plug-ins')
+
+            if not os.path.exists(maya_plugins_folder):
+                os.mkdir(maya_plugins_folder)
+
+            shutil.copy(envy_plugin_path, maya_plugins_folder)
+
+    console.display_info('Maya plugin installed successfully.')
 
 
 def request_clients(console) -> None:

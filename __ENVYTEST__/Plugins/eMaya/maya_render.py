@@ -4,10 +4,14 @@ Name: maya_render.py
 ========================================================================================================================
 """
 import asyncio
-import logging
 import json
+import sys
 import re
 import os
+
+from envyJobs.enums import Status
+
+NV = sys.modules.get('Envy_Functions')
 
 
 class MayaRender(object):
@@ -17,8 +21,16 @@ class MayaRender(object):
 
     MAYA_RENDER_EXE_PATH = 'C:/Program Files/Autodesk/Maya2024/bin/Render.exe'
 
-    def __init__(self, event_loop, logger):
+    def __init__(self, envy, allocation_data: dict):
         """"""
+        self.envy = envy
+        self.event_loop = envy.event_loop
+        self.allocation_id = allocation_data['Allocation_Id']
+        self.logger = envy.logger
+        self.tasks = allocation_data['Tasks']
+        self.task_list = list(self.tasks)
+        self.environment = allocation_data['Environment']
+
         self.maya_file = None
         self.project_path = None
         self.maya_version = 0
@@ -34,14 +46,15 @@ class MayaRender(object):
         self.progress = 0
         
         self.render_subprocess = None
-        self.event_loop = event_loop
-        self.logger = logger
+
 
         self.vray_is_rendering = False
 
     @staticmethod
     def check_settings_keys(settings: dict) -> bool:
         """Checks the settings dictionary keys."""
+        print(settings)
+
         expected_keys = [
             'maya_file',
             'project_path',
@@ -49,8 +62,6 @@ class MayaRender(object):
             'render_engine',
             'camera',
             'render_layer',
-            'start_frame',
-            'end_frame',
             'maya_file_modification_time'
         ]
 
@@ -59,34 +70,22 @@ class MayaRender(object):
 
         return actual_keys == expected_keys_set
 
-    def get_settings_from_json(self, json_path: str) -> bool:
+    def get_settings_from_json(self) -> bool:
         """Gets the settings from json."""
-        if not json_path:
-            self.logger.error('JSON file does not exists.')
-            return False
-        elif not os.path.exists(json_path):
-            self.logger.error('JSON file does not exists.')
-            return False
-
-        self.logger.info('Reading render settings from JSON.')
-
-        with open(json_path, 'r') as file_to_read:
-            settings = json.load(file_to_read)
-
-        if not self.check_settings_keys(settings=settings):
+        if not self.check_settings_keys(settings=self.environment):
             self.logger.error('Settings are not valid.')
             return False
 
-        self.set_maya_file(settings['maya_file'])
-        self.set_project(settings['project_path'])
-        self.set_render_engine(settings['render_engine'])
-        self.set_start_frame(settings['start_frame'])
-        self.set_end_frame(settings['end_frame'])
+        self.set_maya_file(self.environment['maya_file'])
+        self.set_project(self.environment['project_path'])
+        self.set_render_engine(self.environment['render_engine'])
+        self.set_start_frame(next(iter(self.tasks.items()))[-1])
+        self.set_end_frame(next(iter(self.tasks.items()))[-1])
 
-        self.camera = settings['camera']
-        self.render_layer = settings['render_layer']
-        self.maya_version = settings['maya_version']
-        self.maya_file_modification_time = settings['maya_file_modification_time']
+        self.camera = self.environment['camera']
+        self.render_layer = self.environment['render_layer']
+        self.maya_version = self.environment['maya_version']
+        self.maya_file_modification_time = self.environment['maya_file_modification_time']
 
         self.logger.info('Settings read successfully.')
 
@@ -96,6 +95,7 @@ class MayaRender(object):
         """Checks if the maya file exists."""
         if not maya_file:
             self.logger.error('Maya file has not been set.')
+            # TODO: finish envy
             return False
         elif not os.path.exists(maya_file):
             self.logger.error('Maya file does not exists.')
@@ -175,7 +175,15 @@ class MayaRender(object):
                 self.current_frame = self.start_frame
                 self.current_layer += 1
 
+                if len(self.task_list) > 0:
+                    await NV.finish_task(self.envy, self.task_list.pop(0))
+
+                if len(self.task_list) > 0:
+                    await NV.start_task(self.envy, self.task_list[0])
+
         self.progress = progress
+
+        await NV.send_task_progress(self.envy, float(self.progress))
 
         self.logger.info(
             f'Frame: {self.current_frame} '
@@ -189,7 +197,7 @@ class MayaRender(object):
 
             if log_line:
                 log_line = log_line.decode().strip()
-
+                self.envy.logger.debug(log_line)
                 if self.render_engine == MayaRender.ARNOLD:
                     if '% done' in log_line:
                         progress = await self.get_render_progress(log_line=log_line)
@@ -214,6 +222,12 @@ class MayaRender(object):
             else:
                 break
 
+    async def monitor_envy(self) -> int:
+        """"""
+        while self.envy.status == Status.WORKING:
+            await asyncio.sleep(.5)
+        return -1
+
     async def monitor_process(self):
         """Monitors the render process."""
         while True:
@@ -222,13 +236,12 @@ class MayaRender(object):
             if self.render_subprocess.returncode is not None:
                 break
 
-    async def render(self, json_path: str = None) -> None:
+    async def render(self) -> None:
+        self.envy.logger.info(f'eMaya: render started')
         """Renders the Maya file."""
-        if json_path:
-            if not self.get_settings_from_json(json_path=json_path):
-                return
-
-        if not self.is_maya_file_valid(self.maya_file):
+        if not self.get_settings_from_json():
+            return
+        elif not self.is_maya_file_valid(self.maya_file):
             return
         elif not self.is_project_path_valid(self.project_path):
             return
@@ -244,44 +257,50 @@ class MayaRender(object):
 
         self.logger.info('Starting render.')
 
-        command = [
-            MayaRender.MAYA_RENDER_EXE_PATH,
-            '-cam', self.camera,
-            '-rl', self.render_layer,
-            '-s', str(self.start_frame),
-            '-e', str(self.end_frame),
-            '-proj', self.project_path,
-            self.maya_file]
-
         self.current_frame = self.start_frame
 
-        self.render_subprocess = await asyncio.create_subprocess_exec(
-            *command,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE)
+        await self.start_render_subprocess()
 
-        await self.monitor_process()
+        await NV.start_task(self.envy, self.task_list[0])
+        monitor_subprocess_task = self.envy.event_loop.create_task(self.monitor_process())
+        monitor_subprocess_task.set_name('maya_render_task')
+        monitor_envy_task = self.envy.event_loop.create_task(self.monitor_envy())
+        monitor_envy_task.set_name('maya_render_envy_task')
+        done, pending = await asyncio.wait(
+            [monitor_envy_task, monitor_subprocess_task],
+            return_when=asyncio.FIRST_COMPLETED
+        )
+
+        for task in pending:
+            task.cancel()
 
         exit_code = await self.render_subprocess.wait()
 
         if exit_code == 0:
-            self.logger.info('Render completed.')
+            self.logger.info('eMaya: Render completed.')
+            asyncio.run(NV.finish_task_allocation(self.envy, self.allocation_id))
         else:
-            self.logger.error(f'Render failed. Error {exit_code}.')
+            asyncio.run(NV.dirty_task_allocation(self.envy, self.allocation_id))  # todo change finish task to dirty task
+            self.logger.error(f'eMaya: Render failed. Error {exit_code}.')
 
+        self.envy.logger.info(f'eMaya: render ended')
     def set_maya_file(self, maya_file: str) -> None:
         """Sets the maya file."""
         if not self.is_maya_file_valid(maya_file=maya_file):
+            self.envy.logger.info(f'eMaya: set_maya_file Fail')
             return
 
         self.maya_file = maya_file
+        self.envy.logger.info(f'eMaya: set_maya_file Success')
 
     def set_project(self, project_path: str) -> None:
         """Sets the Maya project."""
         if not self.is_project_path_valid(project_path=project_path):
+            self.envy.logger.info(f'eMaya: set_project Fail')
             return
 
         self.project_path = project_path
+        self.envy.logger.info(f'eMaya: set_project Success')
 
     def set_render_engine(self, render_engine: str) -> None:
         """Sets the render engine."""
@@ -293,6 +312,7 @@ class MayaRender(object):
             self.render_engine = render_engine
         else:
             self.render_engine = 'invalid'
+        self.envy.logger.info(f'eMaya: set_render_engine {self.render_engine}')
 
     def set_end_frame(self, end_frame: int) -> None:
         """Sets the end frame."""
@@ -304,6 +324,7 @@ class MayaRender(object):
 
         if self.end_frame < self.start_frame:
             self.start_frame = self.end_frame
+        self.envy.logger.info(f'eMaya: set_end_frame {end_frame}')
 
     def set_start_frame(self, start_frame: int) -> None:
         """Sets the start frame."""
@@ -315,23 +336,20 @@ class MayaRender(object):
 
         if self.start_frame > self.end_frame:
             self.end_frame = self.start_frame
+        self.envy.logger.info(f'eMaya: set_start_frame = {start_frame}')
 
-
-def main():
-    """"""
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-
-    custom_logger = logging.getLogger(__name__)
-    custom_logger.addHandler(handler)
-    custom_logger.setLevel(logging.DEBUG)
-
-    loop = asyncio.new_event_loop()
-    maya_render = MayaRender(event_loop=loop, logger=custom_logger)
-    loop.create_task(maya_render.render('Z:/eMaya_project/data/eMaya_arnold_v2_renderCamShape_defaultRenderLayer_0023_0023.json'))
-    loop.run_forever()
-
-
-if __name__ == '__main__':
-    main()
+    async def start_render_subprocess(self) -> None:
+        """Stats the render subprocess."""
+        command = [
+            MayaRender.MAYA_RENDER_EXE_PATH,
+            '-cam', self.camera,
+            '-rl', self.render_layer,
+            '-s', str(self.start_frame),
+            '-e', str(self.end_frame),
+            '-proj', self.project_path,
+            self.maya_file]
+        self.envy.logger.info(f'eMaya: start_render_subprocess: {command}')
+        self.render_subprocess = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)

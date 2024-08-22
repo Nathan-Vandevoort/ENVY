@@ -71,22 +71,6 @@ async def fill_buffer(envy, buffer_name: str, data: any) -> None:
     setattr(envy, buffer_name, data)
 
 
-async def install_maya_plugin(envy) -> None:
-    """
-    installs the Maya plugin
-    :param envy: reference to the envy instance calling the function
-    """
-    e_maya_path = '//titansrv/studentShare/nathanV/Envy_V2/ENVYTEST/Plugins/eMaya'
-    user_maya_path = 'Z:/maya'
-
-    """
-    TODO: look for maya versions
-    creates plugin folder if it does not exists
-    check if there is the envy.py installed already, probably replace it so it could be updated all the time
-    copy the envy.py file for each maya version in the user maya folder 
-    """
-
-
 async def restart_envy(envy) -> None:
     import os
     """
@@ -153,6 +137,21 @@ async def start_task(envy, task_id: int) -> None:
     envy.send(new_message)
 
 
+async def dirty_task(envy, task_id: int) -> None:
+    # todo implement
+    pass
+
+
+async def dirty_task_allocation(envy, allocation_id: int) -> None:
+    # todo implement
+    pass
+
+
+async def send_task_progress(envy, task_id: int, progress: float) -> None:
+    # todo implement
+    pass
+
+
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
 async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
     """
@@ -174,3 +173,16 @@ async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
     await envy.set_status_idle()
     envy.logger.info("eHoudini: Exited")
 
+
+async def PLUGIN_eMaya(envy, allocation_data: str) -> None:
+    """"""
+    from eMaya import maya_render
+    await envy.set_status_working()
+    envy.logger.info('eMaya: Started')
+    allocation_data = json.loads(allocation_data)
+    allocation_id = allocation_data['Allocation_Id']
+    plugin = maya_render.MayaRender(envy, allocation_data)
+    await plugin.render()
+    await finish_task_allocation(envy, allocation_id)
+    # await envy.set_status_idle()
+    envy.logger.info("eMaya: Exited")

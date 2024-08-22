@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -12,7 +12,8 @@ import sys
 
 class Config():
     DISCOVERYPORT = 37020
-    ENVYPATH = 'Z:/school/ENVY/__ENVYTEST__/'
+    #ENVYPATH = 'Z:/school/ENVY/__ENVYTEST__/'
+    ENVYPATH = 'Z:/Envy_21/__ENVYTEST__/'
     TIMEOUT = 5
 
 
