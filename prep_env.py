@@ -80,14 +80,3 @@ sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
 
 sys.real_prefix = sys.prefix
 sys.prefix = base
-
-if __name__ == '__main__':
-    value = input('Reset config press enter to confirm or close out of the console if not')
-    default_data = {
-        'ENVYPATH': 'Z:/ENVY/',
-    }
-    with open('config.ini', 'w') as config_file:
-        config = configparser.ConfigParser()
-        config['DEFAULT'] = default_data
-        config.write(config_file)
-    input('Config file has been reset press enter to close console')
