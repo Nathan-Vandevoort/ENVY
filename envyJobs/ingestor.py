@@ -2,14 +2,14 @@ import os, json, asyncio
 import envyJobs.job as job
 import logging
 from envyLib.envy_utils import DummyLogger
-from global_config import Config
+ENVYPATH = os.environ['ENVYPATH']
 
 
 class Ingestor:
     def __init__(self, scheduler, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
         self.running = False
-        self.path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs')
+        self.path = os.path.join(ENVYPATH, 'Jobs', 'Jobs')
         self.db = None
         self.scheduler = scheduler
 
@@ -65,6 +65,10 @@ class Ingestor:
 if __name__ == '__main__':
     from envyDB import db
 
+    class scheduler:
+        def sync_job(self):
+            pass
+
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
@@ -75,7 +79,7 @@ if __name__ == '__main__':
 
     loop = asyncio.new_event_loop()
 
-    ingester = Ingestor(logger=logger)
+    ingester = Ingestor(scheduler, logger=logger)
     my_db = db.DB(logger=logger)
     my_db.start()
     ingester.set_db(my_db)

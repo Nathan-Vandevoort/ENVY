@@ -98,6 +98,23 @@ def install_maya_plugin(console) -> None:
     console.display_info('Maya plugin installed successfully.')
 
 
+def sign_out(console) -> None:
+    """
+    Has envy sign out
+    :param console: Reference to the console making the call
+    :return: Void
+    """
+    classifier = get_classifier(console)
+    valid = eutils.validate_classifier(classifier)
+    if not valid:
+        console.display_error(f'Invalid classifier: {classifier}')
+        return
+    function_message = m.FunctionMessage('sign_out()')
+    function_message.set_target(Message_Purpose.CLIENT)
+    function_message.set_function('sign_out')
+    send_to_clients(console, classifier, function_message)
+
+
 def request_clients(console) -> None:
     """
     Sends a message to the server requesting all the servers currently connected clients

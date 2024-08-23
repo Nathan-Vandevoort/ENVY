@@ -2,9 +2,6 @@ import os, sys
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir))
 import prep_env
-import global_config as gc
-sys.path.append(gc.Config.ENVYPATH)
-import __config__ as config
 import socket, logging, websockets, asyncio, json
 from queue import Queue
 from networkUtils.message_purpose import Message_Purpose
@@ -13,9 +10,14 @@ import networkUtils.message as m
 from envyJobs import scheduler
 from envyJobs.enums import Status
 import psutil
+
+ENVYPATH = os.environ['ENVYPATH']
+sys.path.append(ENVYPATH)
+import config_bridge as config
+
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
-    os.path.join(gc.Config.ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
+    os.path.join(ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
 
 
 def update_clients_file(dir, clients: dict):

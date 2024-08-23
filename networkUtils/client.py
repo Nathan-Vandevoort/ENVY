@@ -1,5 +1,5 @@
-import socket, global_config, os, logging, websockets, asyncio, hashlib, json
-import __config__ as config
+import socket,logging, websockets, asyncio, json
+import config_bridge as config
 from queue import Queue
 from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
@@ -108,7 +108,7 @@ class Client:
 
     async def producer_handler(self):
         while self.running:
-            await asyncio.sleep(.1)
+            await asyncio.sleep(.05)
             while self.send_queue.empty():  # wait for something to send
                 await asyncio.sleep(.1)
 

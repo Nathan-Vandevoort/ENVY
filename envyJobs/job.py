@@ -1,11 +1,13 @@
+import prep_env
 from envyJobs.enums import Purpose, Condition
 import json
 from envyLib.envy_utils import DummyLogger
 import logging
 from datetime import datetime
 import os
-from global_config import Config
 import sys
+
+ENVYPATH = os.environ['ENVYPATH']
 
 
 class Job:
@@ -87,10 +89,10 @@ class Job:
         return self.environment
 
     def set_name(self, name: str) -> None:
-        self.name = name
+        self.name = str(name)
 
     def set_allocation(self, number: int) -> None:
-        self.allocation = number
+        self.allocation = int(number)
 
     def get_allocation(self) -> int:
         return self.allocation
@@ -159,17 +161,17 @@ class Job:
         return_list = []
         for frame_range in ranges:
             range_split = frame_range.split('-')
-            start = int(range_split[0])
+            start = int(float(range_split[0]))
             range_split = range_split[1].split(':')
-            end = int(range_split[0]) + 1
-            increment = int(range_split[1])
+            end = int(float(range_split[0])) + 1
+            increment = int(float(range_split[1]))
             return_list.extend(range(start, end, increment))
         return return_list
 
     def write(self) -> None:
-        write_path = os.path.join(Config.ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y_%H-%M-%S")}.json')
+        write_path = os.path.join(ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y_%H-%M-%S")}.json')
         with open(write_path, 'w') as job_file:
-            json.dump(self.as_dict(), job_file)
+            json.dump(self.as_dict(), job_file, indent=4)
             job_file.close()
 
     def as_sqlite_compliant(self):

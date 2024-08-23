@@ -1,5 +1,5 @@
-import websockets, asyncio, global_config, os, socket, hashlib, logging, sys, json
-import __config__ as config
+import websockets, asyncio, socket, logging, json
+import config_bridge as config
 from networkUtils.message_purpose import Message_Purpose
 from queue import Queue
 from envyLib import envy_utils as eutils

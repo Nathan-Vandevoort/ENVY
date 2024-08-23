@@ -1,5 +1,4 @@
 import sqlite3, os, logging
-from global_config import Config
 from envyLib.envy_utils import DummyLogger
 from envyJobs import job as j
 from envyJobs.enums import Status
@@ -8,17 +7,14 @@ import json
 from networkUtils.message_purpose import Message_Purpose as p
 from envyLib import envy_utils as eutils
 
-"""
-'select id from JOBS where id=?', (identifier,) match by ID
-"""
-
+ENVYPATH = os.environ['ENVYPATH']
 
 class DB:
     def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
         self.connection = None
         self.cursor = None
-        self.db_path = os.path.join(Config.ENVYPATH, 'Jobs', 'Envy_Database.db')
+        self.db_path = os.path.join(ENVYPATH, 'Jobs', 'Envy_Database.db')
 
     def connect(self) -> bool:
         try:
@@ -330,6 +326,7 @@ class DB:
         result = self.cursor.fetchone()
         if isinstance(result, tuple):
             result = result[0]
+        print('RESULT' + result)
         return json.loads(result)
 
     def get_task_ids(self, allocation_id: int) -> list:

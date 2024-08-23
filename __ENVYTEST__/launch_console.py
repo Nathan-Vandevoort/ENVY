@@ -1,4 +1,4 @@
-import __config__
+import config_bridge
 import prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging

@@ -5,7 +5,7 @@ import datetime
 directory = 'Z:/school/ENVY/__ENVYTEST__/'
 if directory not in sys.path:
     sys.path.append(directory)
-import __config__ as config
+import config_bridge as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
@@ -39,21 +39,37 @@ def createSimulationEnvyJob(node):
         'version': ('simulation_versionParamName', 'simulation_versionValue'),
     }
 
-    start_frame = None
-    end_frame = None
-    for simulation_param_name in simulation_param_names:
-        referenced_parm = node.parm(simulation_param_names[simulation_param_name][0]).getReferencedParm()
-        if node.parm(simulation_param_names[simulation_param_name][0]) == referenced_parm:
-            hou.ui.displayMessage(f'{simulation_param_names[simulation_param_name][0]} must refer to a parameter')
-            return
-        value = node.parm(simulation_param_names[simulation_param_name][1]).eval()
-        parameters[referenced_parm.path()] = value
+    #  get start frame values
+    start_parm = node.parm(simulation_param_names['f1'][0])
+    start_referenced_parm = start_parm.getReferencedParm()
+    if start_parm == start_referenced_parm:
+        hou.ui.displayMessage('Start Frame Parameter path invalid')
+    start_frame = int(float(node.parm(simulation_param_names['f1'][1]).eval()))
+    environment['Start_Frame'] = {start_referenced_parm.path(): start_frame}
 
-        if simulation_param_name == 'f1':
-            start_frame = int(float(value))
+    #  get end frame values
+    end_parm = node.parm(simulation_param_names['f2'][0])
+    end_referenced_parm = end_parm.getReferencedParm()
+    if end_parm == end_referenced_parm:
+        hou.ui.displayMessage('End Frame Parameter path invalid')
+    end_frame = int(float(node.parm(simulation_param_names['f2'][1]).eval()))
+    environment['End_Frame'] = {end_referenced_parm.path(): end_frame}
 
-        if simulation_param_name == 'f2':
-            end_frame = int(float(value))
+    # get substeps values
+    substeps_parm = node.parm(simulation_param_names['substeps'][0])
+    susbteps_referenced_parm = substeps_parm.getReferencedParm()
+    if substeps_parm == susbteps_referenced_parm:
+        hou.ui.displayMessage('Substeps Parameter path invalid')
+    substeps = float(node.parm(simulation_param_names['substeps'][1]).eval())
+    environment['Substeps'] = {susbteps_referenced_parm.path(): substeps}
+
+    # get version values
+    version_parm = node.parm(simulation_param_names['version'][0])
+    version_referenced_parm = version_parm.getReferencedParm()
+    if version_parm == version_referenced_parm:
+        hou.ui.displayMessage('Version Parameter path invalid')
+    version = float(node.parm(simulation_param_names['version'][1]).eval())
+    environment['Version'] = {version_referenced_parm.path(): version}
 
     target_button = node.parm('simulation_targetButton').getReferencedParm()
     environment['Target_Button'] = target_button.path()

@@ -2,13 +2,23 @@ import os
 import site
 import sys
 import importlib.util  # so I can dynamically import custom functions
-import global_config
+import configparser
 
-sys.path.append(global_config.Config.ENVYPATH)
-calling_script_name = sys.modules['__main__'].__file__
+abs_file = os.path.abspath(__file__)
+file_dir = os.path.dirname(abs_file)
+
+config = configparser.ConfigParser()
+config.read(os.path.join(file_dir, 'config.ini'))
+
+ENVYPATH = config.get('DEFAULT', 'ENVYPATH')
+os.environ['ENVYPATH'] = ENVYPATH
+
+sys.path.append(ENVYPATH)
+try:
+    calling_script_name = sys.modules['__main__'].__file__
+except Exception as e:
+    calling_script_name = ''
 if 'launch_envy.py' in calling_script_name:
-    print('prepping envy')
-    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Envy_Functions',
@@ -24,7 +34,6 @@ if 'launch_envy.py' in calling_script_name:
 
 if 'server.py' in calling_script_name:
     print('prepping server')
-    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Envy_Functions',
@@ -40,7 +49,6 @@ if 'server.py' in calling_script_name:
 
 if 'launch_console.py' in calling_script_name:
     print('prepping console')
-    ENVYPATH = global_config.Config.ENVYPATH
 
     modules = [
         'Console_Functions',
@@ -54,9 +62,7 @@ if 'launch_console.py' in calling_script_name:
         sys.modules[module] = module_object
         spec.loader.exec_module(module_object)
 
-abs_file = os.path.abspath(__file__)
-
-bin_dir = os.path.dirname(abs_file) + '/venv/Scripts/'
+bin_dir = file_dir + '/venv/Scripts/'
 base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file__, plus the path separator
 
 # prepend bin to PATH (this file is inside the bin directory)
@@ -72,3 +78,14 @@ sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
 
 sys.real_prefix = sys.prefix
 sys.prefix = base
+
+if __name__ == '__main__':
+    value = input('Reset config press enter to confirm or close out of the console if not')
+    default_data = {
+        'ENVYPATH': 'Z:/ENVY/',
+    }
+    with open('config.ini', 'w') as config_file:
+        config = configparser.ConfigParser()
+        config['DEFAULT'] = default_data
+        config.write(config_file)
+    input('Config file has been reset press enter to close console')

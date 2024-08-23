@@ -5,7 +5,7 @@ from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
 import time
 from envyLib.colors import Colors as c
-import __config__ as config
+import config_bridge as config
 from networkUtils import message as m
 from envyLib.envy_utils import DummyLogger
 

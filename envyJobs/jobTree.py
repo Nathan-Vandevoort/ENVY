@@ -60,7 +60,7 @@ class JobTree:
             progress=0,
             parent=self.root
         )
-
+        print(job_id)
         allocation_ids = self.db.get_allocation_ids(job_id)
         pending_allocations = []
         active_allocations = []

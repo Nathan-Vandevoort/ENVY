@@ -83,6 +83,11 @@ async def restart_envy(envy) -> None:
     quit()
 
 
+async def sign_out(envy) -> None:
+    import os
+    os.system('shutdown -l -f')
+    
+
 async def send_status_to_server(envy) -> None:
     """
     tells the server what my current Status is
@@ -153,7 +158,7 @@ async def send_task_progress(envy, task_id: int, progress: float) -> None:
 
 
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
-async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
+async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     """
     The Houdini plugin. Allows for caching and rendering through Houdini.
     todo Add allocation support
@@ -165,9 +170,9 @@ async def PLUGIN_eHoudini(envy, allocation_data: str) -> None:
     from eHoudini import plugin as p
     await envy.set_status_working()
     envy.logger.info("eHoudini: Started")
-    allocation_data = json.loads(allocation_data)
+    allocation_data = json.loads(allocation_data_string)
     allocation_id = allocation_data['Allocation_Id']
-    plugin = p.Plugin(envy, allocation_data)
+    plugin = p.Plugin(envy, allocation_data_string)
     await plugin.start()
     await finish_task_allocation(envy, allocation_id)
     await envy.set_status_idle()

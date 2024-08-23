@@ -1,4 +1,4 @@
-import __config__
+import config_bridge
 import prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
@@ -39,9 +39,9 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filen
 handler = logging.StreamHandler()
 handler.setFormatter(CustomFormatter())
 
-log_path = os.path.join(str(__config__.Config.ENVYPATH), 'Logs', f'{socket.gethostname()}.log')
-if not os.path.isdir(os.path.join(str(__config__.Config.ENVYPATH), 'Logs')):
-    os.makedirs(os.path.join(str(__config__.Config.ENVYPATH), 'Logs'))
+log_path = os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs', f'{socket.gethostname()}.log')
+if not os.path.isdir(os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs')):
+    os.makedirs(os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs'))
 
 if not os.path.isfile(log_path):
     with open(log_path, 'w') as file:
@@ -59,9 +59,9 @@ log_handler.setFormatter(formatter)
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
 logger.addHandler(log_handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
-if not os.path.isdir(os.path.join(__config__.Config.ENVYPATH, 'Jobs', 'Jobs')):
+if not os.path.isdir(os.path.join(config_bridge.Config.ENVYPATH, 'Jobs', 'Jobs')):
     eutils.make_job_directories()
 
 loop = asyncio.new_event_loop()

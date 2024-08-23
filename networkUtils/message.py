@@ -1,10 +1,9 @@
+import prep_env
 from typing import Type
 from envyLib.envy_utils import DummyLogger
 from networkUtils.message_purpose import Message_Purpose
 import json
 import logging
-from enum import Enum
-from envyJobs.enums import EnumEncoder
 
 class Message:
 

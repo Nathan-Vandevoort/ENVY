@@ -2,7 +2,7 @@ import asyncio
 import websockets.exceptions
 from networkUtils import client
 from networkUtils.message_purpose import Message_Purpose
-import logging, global_config, socket, os, sys
+import logging, socket, os, sys
 from queue import Queue
 from envyLib import envy_utils as eutils
 import time
@@ -10,11 +10,10 @@ from envyLib.envy_utils import DummyLogger
 from networkUtils import message as m
 from envyJobs.enums import Status
 import subprocess
-import __config__ as config
+import config_bridge as config
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
-ENVYPATH = global_config.Config.ENVYPATH
-TIMEOUT_INTERVAL = global_config.Config.TIMEOUT
+ENVYPATH = os.environ['ENVYPATH']
 ENVY_FUNCTIONS = eutils.list_functions_in_file(os.path.join(ENVYPATH, 'Plugins', 'Envy_Functions' + '.py'))
 
 
