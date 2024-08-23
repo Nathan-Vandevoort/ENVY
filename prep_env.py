@@ -13,7 +13,9 @@ config.read(os.path.join(file_dir, 'config.ini'))
 ENVYPATH = config.get('DEFAULT', 'ENVYPATH')
 os.environ['ENVYPATH'] = ENVYPATH
 
-sys.path.append(ENVYPATH)
+if ENVYPATH not in sys.path:
+    sys.path.append(ENVYPATH)
+
 try:
     calling_script_name = sys.modules['__main__'].__file__
 except Exception as e:

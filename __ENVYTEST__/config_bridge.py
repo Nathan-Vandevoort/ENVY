@@ -28,8 +28,13 @@ class Config:
 
 
 # -------------------------------------------------------------- THE LINES BELOW ARE IMPORTANT -------------------------------------------------------------------
-sys.path.append(os.path.join(Config.ENVYPATH, 'Plugins'))
-sys.path.append(Config.REPOPATH)
+plugin_path = os.path.join(Config.ENVYPATH, 'Plugins')
+if plugin_path not in sys.path:
+    sys.path.append(os.path.join(Config.ENVYPATH, 'Plugins'))
+
+if Config.REPOPATH not in sys.path:
+    sys.path.append(Config.REPOPATH)
+
 import prep_env
 
 if __name__ == '__main__':

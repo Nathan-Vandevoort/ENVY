@@ -274,6 +274,7 @@ class Server:
         """
         this one is a copy of the one in envy_utils but I put it here so it has access to the prepared environment
         an Async version of exec that I found on stack overflow and tbh idk how it works
+        Update: I think I do know how it works kinda.
         -Nathan
 
         :param s: input string
