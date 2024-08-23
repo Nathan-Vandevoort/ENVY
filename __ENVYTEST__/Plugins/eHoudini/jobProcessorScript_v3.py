@@ -257,6 +257,7 @@ def createGenericEnvyJobs(myNode):
 
         environment['HIP'] = hou.hipFile.path()
         environment['JOB'] = hou.getenv('JOB')
+        environment['Job_Type'] = 'generic'
 
         new_job.set_environment(environment)
         new_job.set_parameters(parameters)

@@ -1,4 +1,5 @@
 import config_bridge
+# noinspection PyUnresolvedReferences
 import prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
@@ -7,7 +8,6 @@ from envyLib import envy_utils as eutils
 from envyCore.envy import Envy
 from datetime import datetime
 import socket
-import sys
 
 os.system('color')
 class CustomFormatter(logging.Formatter):

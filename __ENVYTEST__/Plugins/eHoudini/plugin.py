@@ -35,12 +35,28 @@ class Plugin:
         file_dir = os.path.dirname(abs_file)
         fuck_windows = self.allocation_data_string.replace('"', "'")
         cmd = f'"{plugin_path}" "{os.path.join(file_dir, "simulation.py")}" "{fuck_windows}"'
-        proc = await asyncio.create_subprocess_shell(cmd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+        proc = await asyncio.create_subprocess_shell(cmd, stdin=asyncio.subprocess.PIPE,
+                                                     stdout=asyncio.subprocess.PIPE,
+                                                     stderr=asyncio.subprocess.PIPE,
+                                                     creationflags=subprocess.CREATE_NO_WINDOW
+                                                     )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
 
     async def start_generic_process(self):
-        pass
+        plugin_path = os.path.join(c.HOUDINIBINPATH, 'hython.exe')
+        abs_file = os.path.abspath(__file__)
+        file_dir = os.path.dirname(abs_file)
+        fuck_windows = self.allocation_data_string.replace('"', "'")
+        cmd = f'"{plugin_path}" "{os.path.join(file_dir, "generic.py")}" "{fuck_windows}"'
+        proc = await asyncio.create_subprocess_shell(cmd,
+                                                     stdin=asyncio.subprocess.PIPE,
+                                                     stdout=asyncio.subprocess.PIPE,
+                                                     stderr=asyncio.subprocess.PIPE,
+                                                     creationflags=subprocess.CREATE_NO_WINDOW
+                                                     )
+        self.logger.info(f'eHoudini: Started hython_process')
+        return proc
 
     async def start_cache_process(self):
         plugin_path = os.path.join(c.HOUDINIBINPATH, 'hython.exe')
@@ -48,9 +64,11 @@ class Plugin:
         file_dir = os.path.dirname(abs_file)
         fuck_windows = self.allocation_data_string.replace('"', "'")
         cmd = f'"{plugin_path}" "{os.path.join(file_dir, "cache.py")}" "{fuck_windows}"'
-        proc = await asyncio.create_subprocess_shell(cmd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
+        proc = await asyncio.create_subprocess_shell(cmd, stdin=asyncio.subprocess.PIPE,
+                                                     stdout=asyncio.subprocess.PIPE,
                                                      stderr=asyncio.subprocess.PIPE,
-                                                     creationflags=subprocess.CREATE_NO_WINDOW)
+                                                     creationflags=subprocess.CREATE_NO_WINDOW
+                                                     )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
 
