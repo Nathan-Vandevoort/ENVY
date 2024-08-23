@@ -189,5 +189,5 @@ async def PLUGIN_eMaya(envy, allocation_data: str) -> None:
     plugin = maya_render.MayaRender(envy, allocation_data)
     await plugin.render()
     await finish_task_allocation(envy, allocation_id)
-    # await envy.set_status_idle()
+    await envy.set_status_idle()
     envy.logger.info("eMaya: Exited")

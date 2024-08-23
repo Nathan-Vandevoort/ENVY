@@ -19,11 +19,13 @@ file_dir = os.path.dirname(abs_file)
 config = configparser.ConfigParser()
 config.read(os.path.join(file_dir, 'config.ini'))
 
+
 class Config:
     DISCOVERYPORT = config.getint('DEFAULT', 'discoveryport')
     ENVYPATH = config.get('DEFAULT', 'envypath')
     REPOPATH = config.get('DEFAULT', 'repopath')
     HOUDINIBINPATH = config.get('DEFAULT', 'houdinibinpath')
+    MAYABINPATH = config.get('DEFAULT', 'mayabinpath')
     TEMP = config.get('DEFAULT', 'TEMP')
 
 

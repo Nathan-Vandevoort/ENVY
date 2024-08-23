@@ -10,6 +10,7 @@ import os
 
 from envyJobs.enums import Status
 
+config = sys.modules.get('config_bridge').Config
 NV = sys.modules.get('Envy_Functions')
 
 
@@ -18,7 +19,7 @@ class MayaRender(object):
     REDSHIFT = 'redshift'
     VRAY = 'vray'
 
-    MAYA_RENDER_EXE_PATH = 'C:/Program Files/Autodesk/Maya2024/bin/Render.exe'
+    MAYA_RENDER_EXE_PATH = os.path.join(config.MAYABINPATH, 'Render.exe')
 
     def __init__(self, envy, allocation_data: dict):
         """"""
@@ -71,11 +72,13 @@ class MayaRender(object):
             self.logger.error('Settings are not valid.')
             return False
 
+        frames = list(self.tasks.values())
+
         self.set_maya_file(self.environment['maya_file'])
         self.set_project(self.environment['project_path'])
         self.set_render_engine(self.environment['render_engine'])
-        self.set_start_frame(next(iter(self.tasks.items()))[-1])
-        self.set_end_frame(next(iter(self.tasks.items()))[-1])
+        self.set_start_frame(frames[0])
+        self.set_end_frame(frames[-1])
 
         self.camera = self.environment['camera']
         self.render_layer = self.environment['render_layer']
@@ -170,15 +173,17 @@ class MayaRender(object):
                 self.current_frame = self.start_frame
                 self.current_layer += 1
 
-                if len(self.task_list) > 0:
-                    await NV.finish_task(self.envy, self.task_list.pop(0))
-
-                if len(self.task_list) > 0:
-                    await NV.start_task(self.envy, self.task_list[0])
-
         self.progress = progress
 
-        await NV.send_task_progress(self.envy, self.task_list[0], float(self.progress))
+        if len(self.task_list) > 0:
+            await NV.send_task_progress(self.envy, self.task_list[0], float(self.progress))
+
+        if self.progress == 100:
+            if len(self.task_list) > 0:
+                await NV.finish_task(self.envy, self.task_list.pop(0))
+
+            if len(self.task_list) > 0:
+                await NV.start_task(self.envy, self.task_list[0])
 
         self.logger.info(
             f'Frame: {self.current_frame} '
