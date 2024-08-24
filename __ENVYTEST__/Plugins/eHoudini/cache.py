@@ -21,13 +21,12 @@ def press_target_button(target_button) -> None:
 
 
 data_string = sys.argv[1]
-print(data_string)
 data = json.loads(data_string.replace("'", '"'))
 environment = data['Environment']
 parameters = data['Parameters']
 hip = environment['HIP']
 job = environment['JOB']
-tasks = environment['Tasks']
+tasks = data['Tasks']
 task_list = list(tasks)
 start_frame_dict = environment['Start_Frame']
 

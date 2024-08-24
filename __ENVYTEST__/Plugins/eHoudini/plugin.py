@@ -27,7 +27,10 @@ class Plugin:
         self.logger = self.envy.logger
         self.hython_process = None
         self.coroutines = []
+        self.ignore_counter = 0
         atexit.register(self.exit_function)
+
+        self.logger.debug(f'Allocation Data String: {allocation_data_string}')
 
     async def start_simulation_process(self):
         plugin_path = os.path.join(c.HOUDINIBINPATH, 'hython.exe')
@@ -49,6 +52,21 @@ class Plugin:
         file_dir = os.path.dirname(abs_file)
         fuck_windows = self.allocation_data_string.replace('"', "'")
         cmd = f'"{plugin_path}" "{os.path.join(file_dir, "generic.py")}" "{fuck_windows}"'
+        proc = await asyncio.create_subprocess_shell(cmd,
+                                                     stdin=asyncio.subprocess.PIPE,
+                                                     stdout=asyncio.subprocess.PIPE,
+                                                     stderr=asyncio.subprocess.PIPE,
+                                                     creationflags=subprocess.CREATE_NO_WINDOW
+                                                     )
+        self.logger.info(f'eHoudini: Started hython_process')
+        return proc
+
+    async def start_resumable_simulation_process(self):
+        plugin_path = os.path.join(c.HOUDINIBINPATH, 'hython.exe')
+        abs_file = os.path.abspath(__file__)
+        file_dir = os.path.dirname(abs_file)
+        fuck_windows = self.allocation_data_string.replace('"', "'")
+        cmd = f'"{plugin_path}" "{os.path.join(file_dir, "resumable_simulation.py")}" "{fuck_windows}"'
         proc = await asyncio.create_subprocess_shell(cmd,
                                                      stdin=asyncio.subprocess.PIPE,
                                                      stdout=asyncio.subprocess.PIPE,
@@ -84,6 +102,10 @@ class Plugin:
         if self.job_type == 'cache':
             self.logger.debug('eHoudini: starting cache process')
             self.hython_process = await self.start_cache_process()
+
+        if self.job_type == 'resumable_simulation':
+            self.logger.debug('eHoudini: starting resumable simulation process')
+            self.hython_process = await self.start_resumable_simulation_process()
 
         monitor_output_task = self.event_loop.create_task(self.monitor_output())
         monitor_output_task.set_name('monitor_output()')
@@ -123,25 +145,40 @@ class Plugin:
         self.logger.info('eHoudini: Monitoring output')
         async for line in self.hython_process.stdout:
             await self.parse_line(line)
-        return await self.hython_process
+        return self.hython_process
 
     async def monitor_error(self):
         self.logger.info('eHoudini: Monitoring error')
         async for line in self.hython_process.stderr:
             await self.parse_line(line)
-        return await self.hython_process
+        return self.hython_process
 
     async def parse_line(self, line: bytes) -> bool:
         line = line.decode()
         line = line.strip()
         self.logger.debug(f'eHoudini: {line}')
 
+        if '$ENVY:' in line:
+            command = line.split(':')[1]
+            command_split = command.split('=')
+            command = command_split[0]
+            value = command_split[1]
+
+            if command == 'NEWSTARTFRAME':
+                self.ignore_counter = int(value)
+
         if '%' in line:
             return True
 
         if 'FINISHED' in line:
+
+            if self.ignore_counter > 0:
+                self.ignore_counter -= 1
+                return True
+
             if len(self.task_list) > 0:
                 await NV.finish_task(self.envy, self.task_list.pop(0))
+
             if len(self.task_list) > 0:
                 await NV.start_task(self.envy, self.task_list[0])
             return True

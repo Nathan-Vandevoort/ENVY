@@ -30,6 +30,7 @@ def createSimulationEnvyJob(node):
 
     job_name = node.parm('jobName').eval()
     parameter_edits_multiparm = node.parm('simulation_parameterEdits')
+    is_resumable = node.parm('advanced_simulation_resumable')
     parameters = {}
     environment = {}
     simulation_param_names = {
@@ -80,6 +81,78 @@ def createSimulationEnvyJob(node):
     environment['HIP'] = hou.hipFile.path()
     environment['JOB'] = hou.getenv('JOB')
     environment['Job_Type'] = 'simulation'
+
+    if is_resumable.eval() == 1:
+
+        dopnet_parm = node.parm('advanced_simulation_dopNetwork')
+        try:
+            dopnet_node = dopnet_parm.evalAsNode()
+        except TypeError:
+            hou.ui.displayMessage(f'Dopnet parameter must be the path to a dopnet. {dopnet_parm.rawValue()}')
+            return
+
+        initial_state_parm = node.parm('advanced_simulation_initialState')
+        initial_state = initial_state_parm.getReferencedParm()
+        if initial_state_parm == initial_state:
+            hou.ui.displayMessage(f'Initial State parameter invalid: {initial_state_parm.eval()}')
+            return
+
+        dopnet_start_frame_parm = node.parm('advanced_simulation_startFrame')
+        dopnet_start_frame = dopnet_start_frame_parm.getReferencedParm()
+        if dopnet_start_frame == dopnet_start_frame_parm:
+            hou.ui.displayMessage(f'Dopnet start frame parameter invalid: {dopnet_start_frame_parm.eval()}')
+            return
+
+        checkpoint_file_path_parm = node.parm('advanced_simulation_checkpointFilePath')
+        checkpoint_file_path = checkpoint_file_path_parm.getReferencedParm()
+        if checkpoint_file_path == checkpoint_file_path_parm:
+            hou.ui.displayMessage(f'Checkpoint File Path invalid: {checkpoint_file_path_parm.eval()}')
+            return
+
+        checkpoint_trail_length_parm = node.parm('advanced_simulation_checkpointTrailLength')
+        checkpoint_trail_length = checkpoint_trail_length_parm.getReferencedParm()
+        if checkpoint_trail_length == checkpoint_trail_length_parm:
+            hou.ui.displayMessage(f'Checkpoint Trail Length Path invalid: {checkpoint_trail_length_parm.eval()}')
+            return
+
+        checkpoint_interval_parm = node.parm('advanced_simulation_checkpointInterval')
+        checkpoint_interval = checkpoint_interval_parm.getReferencedParm()
+        if checkpoint_interval == checkpoint_interval_parm:
+            hou.ui.displayMessage(f'Checkpoint Interval Path invalid: {checkpoint_interval_parm.eval()}')
+            return
+
+        checkpoint_file_path_value_parm = node.parm('advanced_simulation_checkpointFilePath_value')
+        checkpoint_file_path_value = checkpoint_file_path_value_parm.rawValue()
+        checkpoint_file_path_value = checkpoint_file_path_value.replace('$OS', dopnet_node.name())
+        checkpoint_file_path_value_parm.set(checkpoint_file_path_value)
+        checkpoint_file_path_value = checkpoint_file_path_value_parm.eval()
+        checkpoint_file_path_value = f'{checkpoint_file_path_value}$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim'
+        checkpoint_file_path = (
+            checkpoint_file_path.path(),
+            checkpoint_file_path_value
+        )
+
+        checkpoint_trail_length_value_parm = node.parm('advanced_simulation_checkpointTrailLength_value')
+        checkpoint_trail_length_value = checkpoint_trail_length_value_parm.eval()
+        checkpoint_trail_length = (
+            checkpoint_trail_length.path(),
+            checkpoint_trail_length_value
+        )
+
+        checkpoint_interval_value_parm = node.parm('advanced_simulation_checkpointInterval_value')
+        checkpoint_interval_value = checkpoint_interval_value_parm.eval()
+        checkpoint_interval = (
+            checkpoint_interval.path(),
+            checkpoint_interval_value
+        )
+
+        environment['Job_Type'] = 'resumable_simulation'
+        environment['Dopnet_Initial_State_Parm'] = initial_state.path()
+        environment['Dopnet_Start_Frame_Parm'] = dopnet_start_frame.path()
+        environment['Checkpoint_File_Path'] = checkpoint_file_path
+        environment['Checkpoint_Trail_Length'] = checkpoint_trail_length
+        environment['Checkpoint_Interval'] = checkpoint_interval
+        environment['$OS'] = dopnet_node.name()
 
     if is_simulation is True:
         new_job = ej.Job(f'{job_name}_{str(1).zfill(3)}')
@@ -266,6 +339,7 @@ def createGenericEnvyJobs(myNode):
         new_job.add_range(1, 1, 1)
         new_job.write()
 
+
 def duplicateJob(myNode, parm, multiParmIndex):
     jobParm = parm.parentMultiParm()
     children = jobParm.multiParmInstances()
@@ -341,3 +415,74 @@ def duplicateJob(myNode, parm, multiParmIndex):
 
         # set Value to Value from dict
         targetValueParm.set(parameterEditsDict[param].rawValue())
+
+
+def configureDopnet(node):
+    dopnet_parm = node.parm('advanced_simulation_dopNetwork')
+
+    try:
+        dopnet_node = dopnet_parm.evalAsNode()
+    except TypeError:
+        hou.ui.displayMessage(f'Dopnet parameter must be the path to a dopnet. {dopnet_parm.rawValue()}')
+        return
+
+    if dopnet_node is None:
+        hou.ui.displayMessage(f'Dopnet parameter must be the path to a single dopnet. {dopnet_parm.rawValue()}')
+        return
+
+    # enable checkpoint on dopnet
+    dopnet_node.parm('cacheenabled').set(1)
+
+def setAdvancedSimulationResumableSettings(node):
+    dopnet_parm = node.parm('advanced_simulation_dopNetwork')
+    dopnet_parm.deleteAllKeyframes()
+
+    initial_state_parm = node.parm('advanced_simulation_initialState')
+    initial_state_parm.revertToDefaults()
+
+    dopnet_start_frame_parm = node.parm('advanced_simulation_startFrame')
+    dopnet_start_frame_parm.revertToDefaults()
+
+    checkpoint_file_path_parm = node.parm('advanced_simulation_checkpointFilePath')
+    checkpoint_file_path_parm.revertToDefaults()
+
+    checkpoint_trail_length_parm = node.parm('advanced_simulation_checkpointTrailLength')
+    checkpoint_trail_length_parm.revertToDefaults()
+
+    checkpoint_interval_parm = node.parm('advanced_simulation_checkpointInterval')
+    checkpoint_interval_parm.revertToDefaults()
+
+    try:
+        dopnet_node = dopnet_parm.evalAsNode()
+    except TypeError:
+        hou.ui.displayMessage(f'Dopnet parameter must be the path to a dopnet. {dopnet_parm.rawValue()}')
+        return
+
+    if dopnet_node is None:
+        hou.ui.displayMessage(f'Dopnet parameter must be the path to a single dopnet. {dopnet_parm.rawValue()}')
+        return
+
+    # get dopnet initial state param
+    dopnet_initial_state = dopnet_node.parm('initialstate')
+    dopnet_initial_state.deleteAllKeyframes()
+    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", follow_parm_reference=False)
+
+    # get dopnet start frame parm
+    dopnet_start_frame = dopnet_node.parm('startframe')
+    dopnet_start_frame.deleteAllKeyframes()
+    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", follow_parm_reference=False)
+
+    # get checkpoint file param
+    dopnet_checkpoint_file = dopnet_node.parm('explicitcachename')
+    dopnet_checkpoint_file.deleteAllKeyframes()
+    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", follow_parm_reference=False)
+
+    # get checkpoint trail length parm
+    dopnet_trail_length = dopnet_node.parm('explicitcachensteps')
+    dopnet_trail_length.deleteAllKeyframes()
+    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', follow_parm_reference=False)
+
+    # get checkpoint interval
+    dopnet_checkpoint_interval = dopnet_node.parm('explicitcachecheckpointspacing')
+    dopnet_checkpoint_interval.deleteAllKeyframes()
+    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", follow_parm_reference=False)
