@@ -3,15 +3,69 @@
 Name: envy.py
 ========================================================================================================================
 """
-import maya.OpenMayaUI as omui
-import maya.api.OpenMaya as om
-
 try:
     import PySide2.QtWidgets as QtWidgets
     from shiboken2 import wrapInstance
 except ModuleNotFoundError:
     import PySide6.QtWidgets as QtWidgets
     from shiboken6 import wrapInstance
+
+import maya.OpenMayaUI as omui
+import maya.api.OpenMaya as om
+
+import sys
+
+
+sys.path.append('Z:/Envy/__ENVYTEST__/Plugins/eMaya')
+
+
+import maya_to_envy
+
+
+envy_menu = None
+
+
+def maya_main_window() -> any:
+    """Gets the Maya main window widget as a Python object."""
+    main_window_ptr = omui.MQtUtil.mainWindow()
+    main_window = wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
+
+    return main_window
+
+
+class EnvyUI(QtWidgets.QDialog):
+
+    def __init__(self, parent=maya_main_window()):
+        """"""
+        super(EnvyUI, self).__init__(parent)
+
+        self.setWindowTitle('Envy')
+
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+
+        self.render_push_button = None
+
+        self.create_widgets()
+        self.create_layouts()
+        self.create_connections()
+
+    def create_widgets(self) -> None:
+        """Creates the widgets."""
+        self.render_push_button = QtWidgets.QPushButton('Render')
+
+    def create_layouts(self) -> None:
+        """Creates the layouts."""
+        self.main_layout.addWidget(self.render_push_button)
+
+    def create_connections(self) -> None:
+        """Creates the connections."""
+        self.render_push_button.clicked.connect(self.render)
+
+    @staticmethod
+    def render():
+        """Sets the Maya scene to Envy."""
+        envy = maya_to_envy.MayaToEnvy()
+        envy.export_to_envy(envy.get_cameras()[0], envy.get_render_layers()[0])
 
 
 class EnvyMenu:
@@ -22,25 +76,29 @@ class EnvyMenu:
         self.maya_window = wrapInstance(int(maya_window_ptr), QtWidgets.QWidget)
         self.maya_main_menu = self.maya_window.findChild(QtWidgets.QMenuBar)
 
+        self.envy_ui = EnvyUI()
+
     def add_envy_menu(self):
         """Adds the Envy menu to the main Maya window."""
         if not self.maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu'):
-            envy_menu = QtWidgets.QMenu('Envy', self.maya_window)
-            envy_menu.setObjectName('MainEnvyMenu')
-            envy_menu.addAction('Export to Envy', self.export_to_envy)
-            self.maya_main_menu.addMenu(envy_menu)
+            main_envy_menu = QtWidgets.QMenu('Envy', self.maya_window)
+            main_envy_menu.setObjectName('MainEnvyMenu')
+            self.maya_main_menu.addMenu(main_envy_menu)
 
-    def export_to_envy(self):
-        """"""
-        om.MGlobal.displayInfo('TODO: export_to_envy')
+            export_to_envy = main_envy_menu.addAction('Export to Envy')
+            export_to_envy.triggered.connect(self.show_envy_ui)
+
+    def show_envy_ui(self):
+        """Shows the Envy UI."""
+        self.envy_ui.show()
 
     def remove_envy_menu(self):
         """Removes the Envy menu from the main Maya window."""
-        envy_menu = self.maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu')
+        main_envy_menu = self.maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu')
 
-        if envy_menu:
-            self.maya_main_menu.removeAction(envy_menu.menuAction())
-            envy_menu.deleteLater()
+        if main_envy_menu:
+            self.maya_main_menu.removeAction(main_envy_menu.menuAction())
+            main_envy_menu.deleteLater()
         else:
             om.MGlobal.displayWarning('Envy menu not found for removal.')
 
@@ -52,6 +110,8 @@ def maya_useNewAPI():
 
 def initializePlugin(plugin):
     """"""
+    global envy_menu
+
     vendor = 'Mauricio Gonzalez Soto'
     version = '1.0.0'
 
@@ -65,8 +125,13 @@ def initializePlugin(plugin):
 
 def uninitializePlugin(plugin):
     """"""
-    envy_menu = EnvyMenu()
-    envy_menu.remove_envy_menu()
+    global envy_menu
+
+    if envy_menu:
+        envy_menu = EnvyMenu()
+        envy_menu.remove_envy_menu()
+
+        envy_menu = None
 
     plugin_fn = om.MFnPlugin(plugin)
 

@@ -7,8 +7,13 @@ import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
 from pathlib import Path
-import json
+import sys
 import os
+
+sys.path.append('Z:/Envy/')
+
+import envyJobs.job as job
+from envyJobs.enums import Purpose as p
 
 
 class MayaToEnvy(object):
@@ -75,17 +80,22 @@ class MayaToEnvy(object):
 
         return invalid_paths
 
-    def export_to_envy(self) -> None:
+    def export_to_envy(self, camera: str, render_layer: str) -> None:
         """Exports to envy."""
         if not self.check_paths():
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
             return
-
-        self.get_scene_information()
-
-        if not self.maya_file:
+        elif not self.get_maya_file():
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return
+        elif not cmds.objExists(camera):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Camera does not exists.')
+            return
+        elif not cmds.objExists(render_layer):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Render layer does not exists.')
+            return
+
+        self.render_engine = self.get_render_engine()
 
         if self.render_engine == MayaToEnvy.ARNOLD:
             cmds.setAttr('defaultArnoldRenderOptions.log_verbosity', 2)
@@ -117,29 +127,25 @@ class MayaToEnvy(object):
             om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine not supported.')
             return
 
-        for frame in range(self.start_frame, self.end_frame + 1):
-            for camera in self.cameras:
-                for render_layer in self.render_layers:
-                    maya_file_name = Path(self.maya_file).stem
+        maya_file_name = Path(self.get_maya_file()).stem
+        camera_short_name = cmds.ls(camera, shortNames=True)[0]
 
-                    json_path = os.path.join(
-                        self.project_path,
-                        'data',
-                        f'{maya_file_name}_{camera}_{render_layer}_{str(frame).zfill(4)}_{str(frame).zfill(4)}.json')
-
-                    settings = {
-                        'maya_file': self.maya_file,
-                        'project_path': self.project_path,
-                        'maya_version': self.maya_version,
-                        'render_engine': self.render_engine,
-                        'camera': camera,
-                        'render_layer': render_layer,
-                        'start_frame': frame,
-                        'end_frame': frame,
-                        'maya_file_modification_time': os.path.getmtime(self.maya_file)}
-
-                    with open(json_path, 'w') as file_to_write:
-                        json.dump(settings, file_to_write, indent=4)
+        render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer}')
+        render_job.add_range(self.get_start_frame(), self.get_end_frame(), 1)
+        render_job.set_meta()
+        render_job.set_allocation(3)
+        render_job.set_purpose(p.RENDER)
+        render_job.set_type('PLUGIN_eMaya')
+        render_job.set_environment({
+            'maya_file': self.get_maya_file(),
+            'project_path': self.get_project_path(),
+            'maya_version': self.get_maya_version(),
+            'render_engine': self.get_render_engine(),
+            'camera': camera,
+            'render_layer': render_layer,
+            'maya_file_modification_time': os.path.getmtime(self.get_maya_file())
+        })
+        render_job.write()
 
         om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Export to Envy was successfully.')
 
@@ -154,7 +160,40 @@ class MayaToEnvy(object):
 
         return False
 
-    def get_enabled_render_layers(self):
+    @staticmethod
+    def get_cameras() -> list:
+        """Gets cameras."""
+        return cmds.ls(cameras=True, long=True)
+
+    @staticmethod
+    def get_end_frame() -> int:
+        """Gets the render end frame."""
+        end_frame = cmds.getAttr('defaultRenderGlobals.endFrame')
+
+        return int(end_frame)
+
+    @staticmethod
+    def get_maya_file() -> str:
+        """Gets the Maya file."""
+        return cmds.file(query=True, sceneName=True)
+
+    @staticmethod
+    def get_maya_version() -> str:
+        """Gets the Maya version."""
+        return cmds.about(query=True, version=True)
+
+    @staticmethod
+    def get_project_path() -> str:
+        """Gets the project path."""
+        return cmds.workspace(active=True, query=True)
+
+    @staticmethod
+    def get_render_engine() -> str:
+        """Gets the current render engine."""
+        return cmds.getAttr('defaultRenderGlobals.currentRenderer')
+
+    @staticmethod
+    def get_render_layers() -> list:
         """Gets the enabled render layers."""
         all_layers = cmds.ls(type='renderLayer', long=True)
         render_layers = []
@@ -168,22 +207,16 @@ class MayaToEnvy(object):
             if not is_referenced:
                 render_layers.append(layer)
 
-        enabled_layers = [layer for layer in render_layers if cmds.getAttr(f"{layer}.renderable")]
+        enabled_layers = [layer for layer in render_layers if cmds.getAttr(f'{layer}.renderable')]
 
-        self.render_layers = enabled_layers
+        return enabled_layers
 
-    def get_scene_information(self) -> None:
-        """Gets the scene information."""
-        self.project_path = cmds.workspace(active=True, query=True)
-        self.maya_file = cmds.file(query=True, sceneName=True)
-        self.maya_version = cmds.about(query=True, version=True)
-        self.render_engine = cmds.getAttr('defaultRenderGlobals.currentRenderer')
+    @staticmethod
+    def get_start_frame() -> int:
+        """Gets the render start frame."""
+        start_frame = cmds.getAttr('defaultRenderGlobals.startFrame')
 
-        self.cameras = [camera for camera in cmds.ls(cameras=True) if cmds.getAttr(f'{camera}.renderable')]
-        self.start_frame = int(cmds.getAttr('defaultRenderGlobals.startFrame'))
-        self.end_frame = int(cmds.getAttr('defaultRenderGlobals.endFrame'))
-
-        self.get_enabled_render_layers()
+        return int(start_frame)
 
     def save_file(self) -> bool:
         """Saves the file."""
@@ -207,4 +240,3 @@ class MayaToEnvy(object):
 
 if __name__ == '__main__':
     maya_to_envy = MayaToEnvy()
-    maya_to_envy.export_to_envy()
