@@ -174,6 +174,7 @@ class Plugin:
 
             if self.ignore_counter > 0:
                 self.ignore_counter -= 1
+                self.logger.debug(f'Finished repeated frame')
                 return True
 
             if len(self.task_list) > 0:

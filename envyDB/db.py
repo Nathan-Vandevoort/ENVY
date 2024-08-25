@@ -35,7 +35,7 @@ class DB:
 
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS jobs
-            (Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            (Id INTEGER PRIMARY KEY,
             Name TEXT NOT NULL,
             Allocation_Ids TEXT,
             Purpose TEXT,
@@ -116,7 +116,7 @@ class DB:
     def create_job_entry(self, job: j.Job) -> int:
         sqlite_job = job.as_sqlite_compliant()
         name = sqlite_job['Name']
-
+        job_id = job.get_id()
         purpose = sqlite_job['Purpose']
         metadata = sqlite_job['Metadata']
         job_type = sqlite_job['Type']
@@ -131,11 +131,11 @@ class DB:
             self.logger.debug(f'DB: Creating Job Entry')
             self.cursor.execute(
                 "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (None, name, '', purpose, metadata, job_type, environment, parameters, frame_range, Status.PENDING,
+                (job_id, name, '', purpose, metadata, job_type, environment, parameters, frame_range, Status.PENDING,
                  dependencies, allocation)
             )
             self.connection.commit()
-            return self.cursor.lastrowid
+            return job_id
         except Exception as e:
             self.logger.error(f'Failed to create job {job} for reason: {e}')
             return -1
@@ -326,7 +326,6 @@ class DB:
         result = self.cursor.fetchone()
         if isinstance(result, tuple):
             result = result[0]
-        print('RESULT' + result)
         return json.loads(result)
 
     def get_task_ids(self, allocation_id: int) -> list:

@@ -177,7 +177,9 @@ def createSimulationEnvyJob(node):
         new_job.set_allocation(node.parm('allocationSize').eval())
         new_job.write()
 
-def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str, job_index: int) -> dict | None:
+
+def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str,
+                           job_index: int) -> dict | None:
     NVC = node.parm('nvcToken').eval()
     parameters = {}
     for j in range(parameter_edits_multiparm.eval()):
@@ -209,9 +211,7 @@ def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_names
 
 
 def setSimulationParametersFromNode(node):
-    cache_node_parm = node.parm('simulation_cacheNode')
-    cache_node = cache_node_parm.eval()
-    cache_node = hou.node(cache_node)
+    cache_node = node
     if cache_node is None:
         hou.ui.displayMessage(f'Cannot find node at given Cache Node path')
 
@@ -434,6 +434,7 @@ def configureDopnet(node):
     # enable checkpoint on dopnet
     dopnet_node.parm('cacheenabled').set(1)
 
+
 def setAdvancedSimulationResumableSettings(node):
     dopnet_parm = node.parm('advanced_simulation_dopNetwork')
     dopnet_parm.deleteAllKeyframes()
@@ -487,3 +488,234 @@ def setAdvancedSimulationResumableSettings(node):
     dopnet_checkpoint_interval = dopnet_node.parm('explicitcachecheckpointspacing')
     dopnet_checkpoint_interval.deleteAllKeyframes()
     checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", follow_parm_reference=False)
+
+
+def modifyVersion(node, amount):
+    versionParm = node.parm('NVversion')
+    versionParm.set(versionParm.eval() + amount)
+    versionParm.pressButton()
+
+
+def setRange(kwargs):
+    node = kwargs['node']
+
+    parm = kwargs['parm']
+    r1 = node.parm("f1")
+    r2 = node.parm("f2")
+    r3 = node.parm("f3")
+    ss = node.parm("substeps")
+
+    if parm.evalAsString() == "fstartend":
+        r1.deleteAllKeyframes()
+        r2.deleteAllKeyframes()
+        r1.setExpression('$FSTART')
+        r2.setExpression('$FEND')
+    elif parm.evalAsString() == "rfstartend":
+        r1.deleteAllKeyframes()
+        r2.deleteAllKeyframes()
+        r1.setExpression('$RFSTART')
+        r2.setExpression('$RFEND')
+    elif parm.evalAsString() == "nosubsteps":
+        r3.deleteAllKeyframes()
+        r3.set(1)
+        node.parm("substeps").set(1)
+    elif parm.evalAsString() == "substeps2":
+        r3.deleteAllKeyframes()
+        r3.set(1)
+        ss.deleteAllKeyframes()
+        ss.set(2)
+    elif parm.evalAsString() == "substeps4":
+        r3.deleteAllKeyframes()
+        r3.set(1)
+        ss.deleteAllKeyframes()
+        ss.set(4)
+    elif parm.evalAsString() == "substeps5":
+        r3.deleteAllKeyframes()
+        r3.set(1)
+        ss.deleteAllKeyframes()
+        ss.set(5)
+    elif parm.evalAsString() == "every2":
+        r3.deleteAllKeyframes()
+        r3.set(2)
+        ss.set(1)
+    elif parm.evalAsString() == "every5":
+        r3.deleteAllKeyframes()
+        r3.set(5)
+        ss.set(1)
+    elif parm.evalAsString() == "every10":
+        r3.deleteAllKeyframes()
+        r3.set(10)
+        ss.set(1)
+
+
+def setExpressionParm(_parm_from, _parm_to):
+    node_from = _parm_from.node()
+    node_to = _parm_to.node()
+
+    relative_path = node_to.relativePathTo(node_from)
+
+    parm_template = _parm_from.parmTemplate()
+
+    chref = "ch"
+    if (parm_template.type() == hou.parmTemplateType.String):
+        chref = "chs"
+
+    expression = '%s("%s/%s")' % (chref, relative_path, _parm_from.name())
+    _parm_to.setExpression(expression)
+
+
+def setRelativePath(_node_from, _parm_to):
+    node_to = _parm_to.node()
+    relative_path = node_to.relativePathTo(_node_from)
+
+    _parm_to.set(relative_path)
+
+
+def copyNodeWithNameRef(kwargs):
+    node = kwargs["node"]
+
+    copied = hou.copyNodesTo([node], node.parent())[0]
+    copied.setPosition(node.position() + hou.Vector2(4, 0))
+    setExpressionParm(node.parm("basename"), copied.parm("basename"))
+    copied.parm("loadfromdisk").set(True)
+
+    copied.setGenericFlag(hou.nodeFlag.Display, True)
+    copied.setGenericFlag(hou.nodeFlag.Render, True)
+    copied.setCurrent(True, True)
+
+
+def quickSetups(kwargs):
+    selected = kwargs["script_value"]
+
+    if selected == "copy":
+        copyNodeWithNameRef(kwargs)
+
+    kwargs['parm'].set(0)
+
+
+def hardenBaseName(node):
+    if node.evalParm('hardenbasename') and node.evalParm('filemethod') == 0:
+        if node.parm('basename').rawValue() != node.parm('basename').evalAsString():
+            basename = node.parm('basename').evalAsString()
+            node.parm('basename').deleteAllKeyframes()
+            node.parm('basename').revertToDefaults()
+            node.parm('basename').set(basename)
+
+
+def enableLoadFromDisk(node):
+    if node.evalParm('loadfromdiskonsave'):
+        node.parm('loadfromdisk').set(1)
+
+
+def saveToDisk(kwargs, filecache_node):
+    filecache_node.node('render').parm('execute').pressButton()
+
+    # kwargs['node'] is the top-level node, e.g. if this is wrapped in an HDA
+    node = kwargs['node']
+    hardenBaseName(node)
+    enableLoadFromDisk(node)
+    node.parm('reload').pressButton()
+
+
+def saveToDiskInBackground(kwargs):
+    import nodegraphtopui
+
+    node = kwargs['node']
+
+    nodegraphtopui.dirtyAll(kwargs['node'].parm('targettopnetwork').evalAsNode(), False)
+    nodegraphtopui.cookOutputNode(kwargs['node'].parm('targettopnetwork').evalAsNode())
+
+    hardenBaseName(node)
+    enableLoadFromDisk(node)
+
+
+def cancelCook(kwargs):
+    import nodegraphtopui
+    node = kwargs['node']
+    nodegraphtopui.dirtyAll(node.parm('targettopnetwork').evalAsNode(), False)
+
+
+def getOpenCommand(filepath):
+    import platform
+
+    OS = platform.system().lower()
+
+    if 'windows' in OS:
+        opener = 'start'
+    elif 'osx' in OS or 'darwin' in OS:
+        opener = 'open'
+    else:
+        opener = 'xdg-open'
+    return '{opener} {filepath}'.format(opener=opener, filepath=filepath)
+
+
+def openPath(kwargs):
+    import os
+
+    node = kwargs['node']
+
+    dir = node.evalParm("basedir")
+    if node.evalParm("filemethod"):
+        dir = os.path.dirname(node.evalParm("file"))
+
+    if os.path.exists(dir):
+        if dir[-1] != '/':
+            dir += '/'
+        hou.ui.showInFileBrowser(dir)
+    else:
+        hou.ui.displayMessage(text="Could not open directory:\n{dir}.".format(dir=dir),
+                              severity=hou.severityType.ImportantMessage)
+
+
+def verBump(kwargs, operation='add'):
+    node = kwargs['node']
+
+    if 'add' in operation:
+        node.parm("ver").set(node.evalParm("ver") + 1)
+    else:
+        node.parm("ver").set(max(node.evalParm("ver") - 1, 1))
+
+
+def subverBump(kwargs, operation='add'):
+    node = kwargs['node']
+
+    if 'add' in operation:
+        node.parm("subver").set(node.evalParm("subver") + 1)
+    else:
+        node.parm("subver").set(max(node.evalParm("subver") - 1, 0))
+
+
+def setLatestVersion(node):
+    cacheNodeBaseName = str(node.evalParm("basename"))
+    cacheNodeSavePath = str(node.evalParm("basedir"))
+    cacheNodeVersion = str(node.evalParm("NVversion"))
+
+    versionDir = cacheNodeSavePath + '/' + cacheNodeBaseName
+
+    # if version folder doesnt exist
+    if os.path.isdir(versionDir) == False:
+        node.parm('NVversion').set(1)
+        return
+
+    else:
+        files = os.listdir(versionDir)
+
+        # sort through files to get most recent version
+        latestVersion = 0
+        for file in files:
+            file = file.split('/')
+            file = file.pop()
+
+            if file[0].upper() != 'V':
+                continue
+
+            version = 0
+            try:
+                version = int(file[1:])
+            except ValueError:
+                continue
+
+            if version > latestVersion:
+                latestVersion = version
+        node.parm('NVversion').set(latestVersion + 1)
+

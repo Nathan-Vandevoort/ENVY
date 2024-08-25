@@ -20,7 +20,7 @@ def press_target_button(target_button) -> None:
     print(f'Pressed target button {target_button}')
 
 
-def get_latest_sim_file(sim_dir: str, hipname: str, operator_string: str):
+def get_latest_sim_file(sim_dir: str, hipname: str, operator_string: str, job_id: int):
     try:
         sim_files = os.listdir(sim_dir)
     except OSError:
@@ -34,16 +34,19 @@ def get_latest_sim_file(sim_dir: str, hipname: str, operator_string: str):
         try:
             sim_frame = int(float(name_split[-1]))
             start_frame = int(float(name_split[-2]))
+            file_operator_string = name_split[-4]
+            file_hipname = name_split[-5]
+            file_job_id = int(name_split[-3])
         except ValueError:
             continue
-
-        file_operator_string = name_split[-3]
-        file_hipname = name_split[-4]
 
         if file_hipname != hipname:
             continue
 
         if file_operator_string != operator_string:
+            continue
+
+        if file_job_id != job_id:
             continue
 
         sim_files_gathered[sim_frame + start_frame] = {
@@ -55,7 +58,12 @@ def get_latest_sim_file(sim_dir: str, hipname: str, operator_string: str):
     sim_files_sorted = list(sim_files_gathered)
     sim_files_sorted.sort()
 
-    return sim_files_gathered[sim_files_sorted[-1]]
+    try:
+        return_file = sim_files_gathered[sim_files_sorted[-1]]
+    except IndexError:
+        return_file = None
+
+    return return_file
 
 data_string = sys.argv[1]
 data = json.loads(data_string.replace("'", '"'))
@@ -85,6 +93,7 @@ for key in end_frame_dict:
 set_environment(hip, job)  # load the hip file and set project
 
 # resumable cache data
+job_id = environment['Job_Id']
 hip_name = hip.split('/').pop()
 hip_name = hip_name.split('.')[0]
 
@@ -98,15 +107,16 @@ sim_file_path_parm_path = environment['Checkpoint_File_Path'][0]
 sim_file_schema = environment['Checkpoint_File_Path'][1]
 sim_file_directory = os.path.dirname(sim_file_schema)
 
-sim_file_data = get_latest_sim_file(sim_file_directory, hip_name, operator_string)
+sim_file_data = get_latest_sim_file(sim_file_directory, hip_name, operator_string, job_id)
 
 if sim_file_data is not None:
     sim_file = sim_file_data['File']
     new_start_frame = sim_file_data['Start_Frame'] + sim_file_data['Sim_Frame']
 
-    print(f'$ENVY:NEWSTARTFRAME={int(tasks[task_list[0]]) - int(new_start_frame)}', flush=True)  # to tell the ehoudini plugin that hey i'm starting on this frame because its my most recent sim file
+    print(f'$ENVY:NEWSTARTFRAME={int(new_start_frame) - int(tasks[task_list[0]])}', flush=True)  # to tell the ehoudini plugin that hey i'm starting on this frame because its my most recent sim file
 
     new_sim_file_path = sim_file_schema.replace('$STARTFRAMETOKEN', str(new_start_frame))  # replace the start frame token with the starting frame
+    new_sim_file_path = new_sim_file_path.replace('$JOBID', str(job_id))
 
     #  update start frame dict
     start_frame_dict[start_frame_key] = new_start_frame
@@ -117,10 +127,11 @@ if sim_file_data is not None:
     dopnet_initial_state_parm.set(sim_file)
 
     # set the dopnets start frame
-    dopnet_start_frame_parm.set(new_start_frame)
+    dopnet_start_frame_parm.set(int(new_start_frame))
 
 else:
     new_sim_file_path = sim_file_schema.replace('$STARTFRAMETOKEN', str(start_frame_dict[start_frame_key]))
+    new_sim_file_path = new_sim_file_path.replace('$JOBID', str(job_id))
 
 # enable checkpointing on the dopnet
 dopnet_node.parm('explicitcache').set(1)
