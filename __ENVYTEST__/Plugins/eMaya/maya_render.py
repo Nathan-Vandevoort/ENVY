@@ -69,7 +69,7 @@ class MayaRender(object):
     def get_settings_from_json(self) -> bool:
         """Gets the settings from json."""
         if not self.check_settings_keys(settings=self.environment):
-            self.logger.error('Settings are not valid.')
+            self.logger.error('eMaya: Settings are not valid.')
             return False
 
         frames = list(self.tasks.values())
@@ -85,7 +85,7 @@ class MayaRender(object):
         self.maya_version = self.environment['maya_version']
         self.maya_file_modification_time = self.environment['maya_file_modification_time']
 
-        self.logger.info('Settings read successfully.')
+        self.logger.info('eMaya: Settings read successfully.')
 
         return True
 
@@ -186,6 +186,7 @@ class MayaRender(object):
                 await NV.start_task(self.envy, self.task_list[0])
 
         self.logger.info(
+            f'eMaya: '
             f'Frame: {self.current_frame} '
             f'Layer: {self.render_layer} '
             f'Progress: {self.progress}%')
@@ -197,7 +198,8 @@ class MayaRender(object):
 
             if log_line:
                 log_line = log_line.decode().strip()
-                self.envy.logger.debug(log_line)
+                self.envy.logger.debug(f'eMaya: {log_line}')
+
                 if self.render_engine == MayaRender.ARNOLD:
                     if '% done' in log_line:
                         progress = await self.get_render_progress(log_line=log_line)
@@ -218,7 +220,7 @@ class MayaRender(object):
                         if progress > 0:
                             await self.calculate_render_progress(progress=progress)
                 else:
-                    self.logger.info(log_line)
+                    self.logger.info(f'eMaya: {log_line}')
             else:
                 break
 
@@ -256,7 +258,7 @@ class MayaRender(object):
             self.logger.error('eMaya: Maya file has been modified.')
             return
 
-        self.logger.info('Starting render.')
+        self.logger.info('eMaya: Starting render.')
 
         self.current_frame = self.start_frame
 
