@@ -56,7 +56,7 @@ class Ingestor:
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
 
         new_id = await self.add_to_db(new_job)
-        self.scheduler.sync_job(new_id)
+        await self.scheduler.sync_job(new_id)
 
     async def check_for_new_jobs(self) -> list:
         new_jobs = os.listdir(self.path)

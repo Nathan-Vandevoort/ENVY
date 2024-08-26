@@ -8,6 +8,8 @@ from envyLib.colors import Colors as c
 import config_bridge as config
 from networkUtils import message as m
 from envyLib.envy_utils import DummyLogger
+from envyJobs import jobTree
+from envyDB import db
 
 CONSOLE = sys.modules.get('Console_Functions')  # import custom IO functions
 ENVYPATH = config.Config.ENVYPATH
@@ -32,6 +34,18 @@ class Console:
         self.running = False
 
         self.clients_buffer = {}
+        self.db = None
+        self.jobs_tree = self.configure_job_tree()
+
+    def configure_job_tree(self):
+        self.db = db.DB(logger=self.logger)
+        self.db.start()
+        jobs_tree = jobTree.JobTree(logger=self.logger)
+        jobs_tree.skip_complete_allocations = False
+        jobs_tree.skip_complete_tasks = False
+        jobs_tree.set_db(self.db)
+        jobs_tree.build_from_db()
+        return jobs_tree
 
     def add_to_send_queue(self, message: m.Message | m.FunctionMessage) -> None:
         self.send_queue.put(message)
@@ -65,16 +79,14 @@ class Console:
                 continue
 
     async def consumer_handler(self):
-        while self.receive_queue.empty():
-            await asyncio.sleep(.1)
-        await self.consumer(self.receive_queue.get())
+        while True:
+            await asyncio.sleep(.5)
+            if self.receive_queue.empty() is True:
+                await asyncio.sleep(.1)
+            await self.consumer(self.receive_queue.get())
 
     async def consumer(self, message: m.Message | m.FunctionMessage):
         purpose = message.get_purpose()
-
-        if purpose == Message_Purpose.SERVER_RESPONSE:
-            print(message)
-            return True
 
         if purpose == Message_Purpose.FUNCTION_MESSAGE:
             await self.execute(message)
@@ -113,6 +125,7 @@ class Console:
         purpose = job.get_purpose()
 
         if purpose == Message_Purpose.FUNCTION_MESSAGE:
+            self.logger.info(f'Console: Executing: {job}')
             function_string = job.as_function()
             try:
                 exec(f'CONSOLE.{function_string}')

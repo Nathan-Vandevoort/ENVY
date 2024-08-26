@@ -98,6 +98,30 @@ def install_maya_plugin(console) -> None:
     console.display_info('Maya plugin installed successfully.')
 
 
+def print_jobs(console) -> None:
+    console.jobs_tree.print_tree()
+
+
+def print_clients(console) -> None:
+    console.display_info(console.clients_buffer)
+
+
+def finish_task(console, task_id: int) -> None:
+    console.jobs_tree.finish_task(task_id)
+
+
+def finish_allocation(console, allocation_id: int) -> None:
+    console.jobs_tree.finish_allocation(allocation_id)
+
+
+def start_task(console, task_id: int, computer: str) -> None:
+    console.jobs_tree.start_task(task_id, computer)
+
+
+def sync_job(console, job_id: int) -> None:
+    console.jobs_tree.sync_job(job_id)
+
+
 def sign_out(console) -> None:
     """
     Has envy sign out

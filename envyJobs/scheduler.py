@@ -66,8 +66,9 @@ class Scheduler:
             return False
         return True
 
-    def sync_job(self, job_id: int):
+    async def sync_job(self, job_id: int):
         self.job_tree.sync_job(job_id)
+        await SRV.console_sync_job(self.server, job_id)
 
     async def start(self):
         self.logger.debug("Scheduler: Started")

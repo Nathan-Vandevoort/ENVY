@@ -11,6 +11,8 @@ from networkUtils import message as m
 from envyJobs.enums import Status
 import subprocess
 import config_bridge as config
+import safe_exit
+import psutil
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = os.environ['ENVYPATH']
@@ -38,6 +40,7 @@ class Envy:
 
         self.event_loop = event_loop
         self.running = None
+        self.restart_on_exit = False
 
         # ------------------ Server / Client -------------------------
         self.role = None
@@ -52,6 +55,8 @@ class Envy:
         # ------------------ job attributes -------------------------
         self.job = None
         self.status = Status.IDLE
+
+        safe_exit.register(self.exit_function)
 
     async def choose_role(self, role_override: Message_Purpose = None) -> Message_Purpose:
         self.logger.debug('choosing role')
@@ -79,7 +84,7 @@ class Envy:
     async def execute(self, message: m.FunctionMessage) -> bool:
         function = message.as_function()
         try:
-            await self.async_exec('await NV.' + function)
+            self.event_loop.create_task(self.async_exec('await NV.' + function))
         except Exception as e:
             self.logger.error(f'Failed while executing {function}, {e}')
             error_message = m.Message('server_error_message')
@@ -91,8 +96,7 @@ class Envy:
     async def execution_loop(self):
         while self.running:
             # stop blocking thread so other coroutines can run
-            await asyncio.sleep(.5)
-
+            await asyncio.sleep(.1)
             # if you have something in your queue do it
             if not self.client_receive_queue.empty():
                 job = self.client_receive_queue.get()
@@ -113,8 +117,9 @@ class Envy:
     async def start_server(self):
         plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server.py')
         cmd = ['python', plugin_path]
+        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
         if self.check_server_file():
-            self.server = subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE, env=os.environ.copy())
+            self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
             await asyncio.sleep(1)
 
     async def start(self, role_override=None):
@@ -263,6 +268,21 @@ class Envy:
         coroutine = eval(code)
         if coroutine is not None:
             await coroutine
+
+    def exit_function(self):
+        self.logger.debug(f'envy: exiting')
+        parent = psutil.Process()
+        for child in parent.children(recursive=True):
+            try:
+                child.terminate()
+                self.logger.debug(f'envy: Terminating process - {child.pid}')
+            except psutil.NoSuchProcess:
+                self.logger.debug(f'envy: Terminated process - {child.pid}')
+                pass
+
+        if self.restart_on_exit == True:
+            os.startfile(f"launch_envy.py", cwd=str(ENVYPATH), show_cmd=True)
+            quit()
 
 
 if __name__ == '__main__':

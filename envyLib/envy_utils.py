@@ -65,7 +65,7 @@ async def ainput(input_string: str) -> str:
     return await asyncio.to_thread(sys.stdin.readline)
 
 
-async def shutdown_event_loop(event_loop: asyncio.AbstractEventLoop, logger: logging.Logger = None) -> None:
+def shutdown_event_loop(event_loop: asyncio.AbstractEventLoop, logger: logging.Logger = None) -> None:
     """
     cancels all currently running tasks and stops the event loop
 
@@ -74,11 +74,10 @@ async def shutdown_event_loop(event_loop: asyncio.AbstractEventLoop, logger: log
     :return: Void
     """
     logger = logger or DummyLogger()
-    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    tasks = [t for t in asyncio.all_tasks(event_loop) if t is not asyncio.current_task()]
     for task in tasks:
         logger.debug(f'cancelling task {task}')
         task.cancel()
-    await asyncio.gather(*tasks, return_exceptions=True)
     event_loop.stop()
     logger.debug('event loop stopped')
 

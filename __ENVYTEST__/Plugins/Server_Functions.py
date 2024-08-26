@@ -148,8 +148,13 @@ async def mark_task_as_finished(server, task_id: int) -> None:
     :param task_id: task ID to mark as finished
     :return: Void
     """
-    server.job_scheduler.finish_task(task_id)
+    new_message = m.FunctionMessage('mark_task_as_finished()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('finish_task')
+    new_message.format_arguments(task_id)
+    await send_to_consoles(server, new_message)
 
+    server.job_scheduler.finish_task(task_id)
 
 async def mark_allocation_as_finished(server, allocation_id: int) -> None:
     """
@@ -158,8 +163,13 @@ async def mark_allocation_as_finished(server, allocation_id: int) -> None:
     :param allocation_id: Allocation ID to mark as finished
     :return: Void
     """
-    server.job_scheduler.finish_allocation(allocation_id)
+    new_message = m.FunctionMessage('mark_allocation_as_finished()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('finish_allocation')
+    new_message.format_arguments(allocation_id)
+    await send_to_consoles(server, new_message)
 
+    server.job_scheduler.finish_allocation(allocation_id)
 
 async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     """
@@ -169,4 +179,18 @@ async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     :param computer: name of the computer starting the task
     :return: Void
     """
+
+    new_message = m.FunctionMessage('mark_task_as_started()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('start_task')
+    new_message.format_arguments(task_id, computer)
+    await send_to_consoles(server, new_message)
+
     server.job_scheduler.start_task(task_id, computer)
+
+async def console_sync_job(server, job_id: int) -> None:
+    new_message = m.FunctionMessage('console_sync_job()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('sync_job')
+    new_message.format_arguments(job_id)
+    await send_to_consoles(server, new_message)

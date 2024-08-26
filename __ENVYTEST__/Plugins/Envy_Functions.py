@@ -18,7 +18,7 @@ from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
 import json, sys
 from envyLib.colors import Colors as c
-__config__ = sys.modules.get('__config__')
+config = sys.modules.get('config_bridge')
 
 
 async def ENVY_EXAMPLE(envy, arg1: int, arg2: str = 'potato') -> None:
@@ -72,14 +72,12 @@ async def fill_buffer(envy, buffer_name: str, data: any) -> None:
 
 
 async def restart_envy(envy) -> None:
-    import os
     """
     launches a new envy instance and shuts down the current one
     :param envy: reference to the envy instance calling the function
     :return: Void
     """
-    ENVYPATH = __config__.Config.ENVYPATH
-    os.startfile(f"launch_envy.py", cwd=str(ENVYPATH))
+    envy.restart_on_exit = True
     quit()
 
 
@@ -147,7 +145,7 @@ async def dirty_task(envy, task_id: int) -> None:
     pass
 
 
-async def dirty_task_allocation(envy, allocation_id: int) -> None:
+async def dirty_task_allocation(envy, allocation_id: int, reason: str = None) -> None:
     # todo implement
     pass
 
@@ -161,8 +159,6 @@ async def send_task_progress(envy, task_id: int, progress: float) -> None:
 async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     """
     The Houdini plugin. Allows for caching and rendering through Houdini.
-    todo Add allocation support
-    todo Add resumable cache support
     :param envy: Reference to envy instance making the call
     :param allocation_data: The allocation data provided by the Scheduler
     :return: Void
@@ -170,11 +166,8 @@ async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     from eHoudini import plugin as p
     await envy.set_status_working()
     envy.logger.info("eHoudini: Started")
-    allocation_data = json.loads(allocation_data_string)
-    allocation_id = allocation_data['Allocation_Id']
     plugin = p.Plugin(envy, allocation_data_string)
     await plugin.start()
-    await finish_task_allocation(envy, allocation_id)
     await envy.set_status_idle()
     envy.logger.info("eHoudini: Exited")
 
