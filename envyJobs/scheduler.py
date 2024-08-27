@@ -30,7 +30,7 @@ class Scheduler:
                 return False
             if self.check_allocation(allocation, computer=computer_name) is True:
                 self.logger.debug(f'Scheduler: Allocation ({allocation.name}) chosen for {computer_name}')
-                self.clients[computer_name]['Job'] = allocation.parent.job_name
+                self.clients[computer_name]['Job'] = allocation.parent.name
                 self.clients[computer_name]['Allocation'] = allocation.name
                 self.job_tree.start_allocation(computer_name, allocation)
                 message = self.job_tree.allocation_as_message(allocation)

@@ -10,19 +10,25 @@ from networkUtils.message_purpose import Message_Purpose
 
 
 class JobTree:
-    def __init__(self, logger: logging.Logger = None, read_only: bool = False):
+    def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
 
         self.root = Node(name='root')
         self.db = None
         self.resolver = Resolver()
         self.number_of_jobs = 0
-        self.read_only = read_only
+        self.read_only = False
         self.skip_complete_allocations = True
         self.skip_complete_tasks = True
 
     def set_db(self, db):
         self.db = db
+
+    def enable_read_only(self):
+        self.read_only = True
+
+    def disable_read_only(self):
+        self.read_only = False
 
     def build_from_db(self) -> list:
         self.logger.debug('JobTree: building tree from database')
@@ -124,7 +130,10 @@ class JobTree:
             new_allocation.pending_tasks = pending_tasks
             new_allocation.active_tasks = active_tasks
 
-            progress = len(done_tasks) / (len(pending_tasks) + len(active_tasks) + len(done_tasks))
+            try:
+                progress = len(done_tasks) / (len(pending_tasks) + len(active_tasks) + len(done_tasks))
+            except ZeroDivisionError:
+                progress = 0
             progress = round(progress, 2)
 
             new_allocation.progress = progress
@@ -132,7 +141,10 @@ class JobTree:
         new_job.pending_allocations = pending_allocations
         new_job.active_allocations = active_allocations
 
-        progress = len(done_allocations) / (len(pending_allocations) + len(active_allocations) + len(done_allocations))
+        try:
+            progress = len(done_allocations) / (len(pending_allocations) + len(active_allocations) + len(done_allocations))
+        except ZeroDivisionError:
+            progress = 0
         progress = round(progress, 2)
 
         new_job.progress = progress

@@ -39,5 +39,5 @@ logger.setLevel(logging.INFO)
 
 loop = asyncio.new_event_loop()
 con = Console(event_loop=loop, logger=logger)
-console_task = loop.create_task(con.run())
+console_task = loop.create_task(con.start())
 loop.run_forever()

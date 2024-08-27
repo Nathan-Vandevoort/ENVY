@@ -1,2 +1,4 @@
 1. make sure pathing on job processor hda is correct
     On created
+2. fix job processor duplicate job in sop job processor and NVcache portion
+3. have job throw an error if it failed to write

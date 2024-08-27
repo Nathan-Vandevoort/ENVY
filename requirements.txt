@@ -2,3 +2,4 @@ anytree==2.12.1
 psutil==6.0.0
 websockets==12.0
 safe-exit==0.1.2
+PySide6==6.7.2

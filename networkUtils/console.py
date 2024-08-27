@@ -104,12 +104,15 @@ class Console:
         console_tasks = [consumer_task, producer_task]
 
         while self.websocket.open:
-            await asyncio.sleep(5)
+            await asyncio.sleep(.1)
+
+        for task in console_tasks:
+            task.cancel()
 
         self.running = False
         self.websocket = None
         self.logger.warning('connection closed with server')
-        raise websockets.ConnectionClosed(None, None)
+        return
 
 
 if __name__ == '__main__':

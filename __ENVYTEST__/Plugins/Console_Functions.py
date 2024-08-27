@@ -149,7 +149,7 @@ def request_clients(console) -> None:
     function_message.set_target(Message_Purpose.SERVER)
     function_message.set_function('send_clients_to_console')
     function_message.format_arguments(target_consoles=console.hostname)
-    console.add_to_send_queue(function_message)
+    console.send(function_message)
 
 
 def restart_envy(console) -> None:
@@ -205,4 +205,4 @@ def send_to_clients(console, classifier: str, function_message: m.FunctionMessag
     message.set_purpose(Message_Purpose.PASS_ON)
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
-    console.add_to_send_queue(message)
+    console.send(message)

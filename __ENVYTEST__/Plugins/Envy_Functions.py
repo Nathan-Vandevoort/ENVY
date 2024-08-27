@@ -160,7 +160,7 @@ async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     """
     The Houdini plugin. Allows for caching and rendering through Houdini.
     :param envy: Reference to envy instance making the call
-    :param allocation_data: The allocation data provided by the Scheduler
+    :param allocation_data_string: The allocation data provided by the Scheduler as a json string
     :return: Void
     """
     from eHoudini import plugin as p
