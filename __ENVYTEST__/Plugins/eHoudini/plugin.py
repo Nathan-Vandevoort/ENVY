@@ -113,6 +113,9 @@ class Plugin:
             self.logger.debug('eHoudini: starting resumable simulation process')
             self.hython_process = await self.start_resumable_simulation_process()
 
+        if len(self.task_list) > 0:
+            await NV.start_task(self.envy, self.task_list[0])
+
         monitor_output_task = self.event_loop.create_task(self.monitor_output())
         monitor_output_task.set_name('monitor_output()')
         self.coroutines.append(monitor_output_task)

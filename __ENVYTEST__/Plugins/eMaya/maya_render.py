@@ -15,6 +15,8 @@ NV = sys.modules.get('Envy_Functions')
 
 
 class MayaRender(object):
+    PLUGIN_NAME = 'eMaya'
+
     ARNOLD = 'arnold'
     REDSHIFT = 'redshift'
     VRAY = 'vray'
@@ -39,7 +41,6 @@ class MayaRender(object):
         self.render_layer = None
         self.start_frame = 1
         self.end_frame = 1
-        self.maya_file_modification_time = 0
 
         self.current_frame = 1
         self.current_layer = 1
@@ -58,7 +59,6 @@ class MayaRender(object):
             'render_engine',
             'camera',
             'render_layer',
-            'maya_file_modification_time'
         ]
 
         actual_keys = set(settings.keys())
@@ -66,10 +66,10 @@ class MayaRender(object):
 
         return actual_keys == expected_keys_set
 
-    def get_settings_from_json(self) -> bool:
+    def get_settings_from_data_base(self) -> bool:
         """Gets the settings from json."""
         if not self.check_settings_keys(settings=self.environment):
-            self.logger.error('eMaya: Settings are not valid.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Settings are invalid.\n{self.environment}')
             return False
 
         frames = list(self.tasks.values())
@@ -83,20 +83,21 @@ class MayaRender(object):
         self.camera = self.environment['camera']
         self.render_layer = self.environment['render_layer']
         self.maya_version = self.environment['maya_version']
-        self.maya_file_modification_time = self.environment['maya_file_modification_time']
 
-        self.logger.info('eMaya: Settings read successfully.')
+        self.logger.info(f'{MayaRender.PLUGIN_NAME}: Settings from data base read successfully.')
 
         return True
 
     def is_maya_file_valid(self, maya_file: str) -> bool:
         """Checks if the maya file exists."""
         if not maya_file:
-            self.logger.error('eMaya: Maya file has not been set.')
-            # TODO: finish envy
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Maya file has not been set.')
             return False
         elif not os.path.exists(maya_file):
-            self.logger.error('eMaya: Maya file does not exists.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Maya file does not exists.')
+            return False
+        elif not maya_file.startswith('Z:/'):
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Maya file must be saved on the Z:/ drive.')
             return False
         else:
             return True
@@ -104,13 +105,24 @@ class MayaRender(object):
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
         if not project_path:
-            self.logger.error('eMaya: Project path has not been set.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path has not been set.')
             return False
         elif not os.path.exists(project_path):
-            self.logger.error('eMaya: Project path does not exists.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path does not exists.')
+            return False
+        elif not project_path.startswith('Z:/'):
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path must be saved on the Z:/ drive.')
             return False
         else:
             return True
+
+    def is_render_engine_valid(self) -> bool:
+        """Checks if the render engine is supported."""
+        if not self.render_engine:
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render engine has not been set.')
+            return False
+
+        return True
 
     @staticmethod
     async def get_arnold_render_progress(log_line: str) -> int:
@@ -163,8 +175,8 @@ class MayaRender(object):
             return await self.get_vray_render_progress(log_line=log_line)
         elif self.render_engine == MayaRender.REDSHIFT:
             return await self.get_redshift_render_progress(log_line=log_line)
-
-        return -1
+        else:
+            return -1
 
     async def calculate_render_progress(self, progress: int) -> None:
         """Calculates and print the render progress such as the current frame, layer."""
@@ -186,13 +198,14 @@ class MayaRender(object):
                 await NV.start_task(self.envy, self.task_list[0])
 
         self.logger.info(
-            f'eMaya: '
-            f'Frame: {self.current_frame} '
-            f'Layer: {self.render_layer} '
+            f'{MayaRender.PLUGIN_NAME}: '
+            f'Layer: {self.render_layer} | '
+            f'Camera: {self.camera} | '
+            f'Frame: {self.current_frame} | '
             f'Progress: {self.progress}%')
 
-    async def print_render_progress(self):
-        """Prints the render progress."""
+    async def monitor_render_progress(self):
+        """Monitors the render progress."""
         while True:
             log_line = await self.render_subprocess.stdout.readline()
 
@@ -225,116 +238,111 @@ class MayaRender(object):
                 break
 
     async def monitor_envy(self) -> int:
-        """"""
+        """Monitors Envy."""
         while self.envy.status == Status.WORKING:
             await asyncio.sleep(.5)
+
         return -1
 
     async def monitor_process(self):
         """Monitors the render process."""
         while True:
-            await self.print_render_progress()
+            await self.monitor_render_progress()
             await asyncio.sleep(5)
             if self.render_subprocess.returncode is not None:
                 break
 
+    async def monitor_tasks(self):
+        running = True
+        while running:
+            await asyncio.sleep(.01)
+            for task in self.coroutines:
+                if task.done():
+                    self.logger.debug(f'eMaya: task {task.get_name()}')
+                    await self.end_coroutines()
+                    running = False
+
     async def render(self) -> None:
         """Renders the Maya file."""
-        self.envy.logger.info(f'eMaya: Render started.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Launching {MayaRender.PLUGIN_NAME}.')
 
-        if not self.get_settings_from_json():
+        if not self.get_settings_from_data_base():
             return
         elif not self.is_maya_file_valid(self.maya_file):
             return
         elif not self.is_project_path_valid(self.project_path):
             return
-        elif not self.render_engine:
-            self.logger.error('eMaya: Render engine has not been set.')
-            return
-        elif self.render_engine == 'invalid':
-            self.logger.error('eMaya: Render engine not supported.')
-            return
-        elif self.maya_file_modification_time != os.path.getmtime(self.maya_file):
-            self.logger.error('eMaya: Maya file has been modified.')
+        elif not self.is_render_engine_valid():
             return
 
-        self.logger.info('eMaya: Starting render.')
+        self.logger.info(f'{MayaRender.PLUGIN_NAME}: Validations completed.')
 
         self.current_frame = self.start_frame
 
         await self.start_render_subprocess()
 
         await NV.start_task(self.envy, self.task_list[0])
+
         monitor_subprocess_task = self.envy.event_loop.create_task(self.monitor_process())
         monitor_subprocess_task.set_name('maya_render_task')
         monitor_envy_task = self.envy.event_loop.create_task(self.monitor_envy())
         monitor_envy_task.set_name('maya_render_envy_task')
-        done, pending = await asyncio.wait(
-            [monitor_envy_task, monitor_subprocess_task],
-            return_when=asyncio.FIRST_COMPLETED
-        )
 
-        for task in pending:
-            task.cancel()
+        # await self.monitor_tasks()
 
         exit_code = await self.render_subprocess.wait()
 
         if exit_code == 0:
             await NV.finish_task_allocation(self.envy, self.allocation_id)
-            self.logger.info('eMaya: Render completed.')
+            self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
         else:
             await NV.dirty_task_allocation(self.envy, self.allocation_id)
-            self.logger.error(f'eMaya: Render failed. Error {exit_code}.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
-        self.envy.logger.info(f'eMaya: Closing eMaya.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Closing {MayaRender.PLUGIN_NAME}.')
 
     def set_maya_file(self, maya_file: str) -> None:
         """Sets the maya file."""
         if not self.is_maya_file_valid(maya_file=maya_file):
-            self.envy.logger.info(f'eMaya: Set Maya file failed.')
+            self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set Maya file failed.')
             return
 
         self.maya_file = maya_file
-        self.envy.logger.info(f'eMaya: Set Maya files was successful.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set Maya file to {self.maya_file}.')
 
     def set_project(self, project_path: str) -> None:
         """Sets the Maya project."""
         if not self.is_project_path_valid(project_path=project_path):
-            self.envy.logger.info(f'eMaya: Set project failed.')
+            self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set project failed.')
             return
 
         self.project_path = project_path
-        self.envy.logger.info(f'eMaya: Set project was successful.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set project to {self.project_path}.')
 
     def set_render_engine(self, render_engine: str) -> None:
         """Sets the render engine."""
-        if render_engine == MayaRender.ARNOLD:
-            self.render_engine = render_engine
-        elif render_engine == MayaRender.REDSHIFT:
-            self.render_engine = render_engine
-        elif render_engine == MayaRender.VRAY:
+        if render_engine in [MayaRender.ARNOLD, MayaRender.REDSHIFT, MayaRender.VRAY]:
             self.render_engine = render_engine
         else:
-            self.render_engine = 'invalid'
-
-        self.envy.logger.info(f'eMaya: Set render engine to {self.render_engine}')
+            self.render_engine = None
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: {render_engine} render engine is not supported.')
 
     def set_end_frame(self, end_frame: int) -> None:
         """Sets the end frame."""
         if not isinstance(end_frame, (int, float)):
-            self.logger.error('eMaya: End frame must be an int value.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: End frame must be an int value.')
             return
 
         self.end_frame = int(end_frame)
 
         if self.end_frame < self.start_frame:
             self.start_frame = self.end_frame
-        self.envy.logger.info(f'eMaya: Set end frame to {end_frame}.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set end frame to {end_frame}.')
 
     def set_start_frame(self, start_frame: int) -> None:
         """Sets the start frame."""
         if not isinstance(start_frame, (int, float)):
-            self.logger.error('eMaya: Start frame must be an int value.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Start frame must be an int value.')
             return
 
         self.start_frame = int(start_frame)
@@ -342,7 +350,7 @@ class MayaRender(object):
         if self.start_frame > self.end_frame:
             self.end_frame = self.start_frame
 
-        self.envy.logger.info(f'eMaya: Set start frame to {start_frame}.')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set start frame to {start_frame}.')
 
     async def start_render_subprocess(self) -> None:
         """Stats the render subprocess."""
@@ -355,7 +363,7 @@ class MayaRender(object):
             '-proj', self.project_path,
             self.maya_file]
 
-        self.envy.logger.info(f'eMaya: Starting render subprocess: {command}')
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess: {command}')
 
         self.render_subprocess = await asyncio.create_subprocess_exec(
             *command,

@@ -285,7 +285,7 @@ def validate_computer_against_classifier(classifier: str, hostname: str, logger:
         return True
 
 
-def get_applicable_clients(classifier: str, clients: list, logger: logging.Logger = None) -> list | bool:
+def get_applicable_clients(classifier: str, clients: list, logger: logging.Logger = None) -> list:
     """
     given a classifier and a list of clients will return True if classifier pertains to every computer in
     list or a list of clients who it does pertain to

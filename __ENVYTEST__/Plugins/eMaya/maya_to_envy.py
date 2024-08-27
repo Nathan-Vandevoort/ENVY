@@ -10,7 +10,12 @@ from pathlib import Path
 import sys
 import os
 
-sys.path.append('Z:/Envy/')
+
+envy_path = 'Z:/Envy/'
+
+if envy_path not in sys.path:
+    sys.path.append(envy_path)
+
 
 import envyJobs.job as job
 from envyJobs.enums import Purpose as p
@@ -82,10 +87,10 @@ class MayaToEnvy(object):
 
     def export_to_envy(self, camera: str, render_layer: str) -> None:
         """Exports to envy."""
-        if not self.check_paths():
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
-            return
-        elif not self.get_maya_file():
+        # if not self.check_paths():
+        #     om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
+        #     return
+        if not self.get_maya_file():
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return
         elif not cmds.objExists(camera):
@@ -129,8 +134,9 @@ class MayaToEnvy(object):
 
         maya_file_name = Path(self.get_maya_file()).stem
         camera_short_name = cmds.ls(camera, shortNames=True)[0]
+        render_layer_short_name = render_layer.replace(':', '')
 
-        render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer}')
+        render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer_short_name}')
         render_job.add_range(self.get_start_frame(), self.get_end_frame(), 1)
         render_job.set_meta()
         render_job.set_allocation(3)
@@ -142,8 +148,7 @@ class MayaToEnvy(object):
             'maya_version': self.get_maya_version(),
             'render_engine': self.get_render_engine(),
             'camera': camera,
-            'render_layer': render_layer,
-            'maya_file_modification_time': os.path.getmtime(self.get_maya_file())
+            'render_layer': render_layer
         })
         render_job.write()
 
@@ -192,24 +197,26 @@ class MayaToEnvy(object):
         """Gets the current render engine."""
         return cmds.getAttr('defaultRenderGlobals.currentRenderer')
 
-    @staticmethod
-    def get_render_layers() -> list:
+    def get_render_layers(self) -> list:
         """Gets the enabled render layers."""
-        all_layers = cmds.ls(type='renderLayer', long=True)
+        all_render_layers_layers = cmds.ls(type='renderLayer', long=True)
         render_layers = []
 
-        for layer in all_layers:
-            if cmds.referenceQuery(layer, isNodeReferenced=True):
-                is_referenced = cmds.referenceQuery(layer, isNodeReferenced=True)
+        for render_layer in all_render_layers_layers:
+            if cmds.referenceQuery(render_layer, isNodeReferenced=True):
+                is_referenced = cmds.referenceQuery(render_layer, isNodeReferenced=True)
             else:
                 is_referenced = False
 
             if not is_referenced:
-                render_layers.append(layer)
+                if render_layer == 'defaultRenderLayer':
+                    render_layers.append(render_layer)
+                elif render_layer.startswith('rs_'):
+                    render_layers.append(render_layer)
+                else:
+                    om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] Render layer {render_layer} skipped.')
 
-        enabled_layers = [layer for layer in render_layers if cmds.getAttr(f'{layer}.renderable')]
-
-        return enabled_layers
+        return render_layers
 
     @staticmethod
     def get_start_frame() -> int:

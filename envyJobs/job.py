@@ -47,8 +47,8 @@ class Job:
     def get_purpose(self) -> Purpose:
         return self.purpose
 
-    def set_type(self, type) -> None:
-        self.type = type
+    def set_type(self, type_value) -> None:
+        self.type = type_value
 
     def get_type(self) -> str:
         return self.type
@@ -141,8 +141,8 @@ class Job:
     def get_meta(self) -> dict:
         return self.metadata
 
-    def set_range(self, range: str) -> None:
-        self.range = range
+    def set_range(self, range_value: str) -> None:
+        self.range = range_value
 
     def get_range(self) -> str:
         return self.range
@@ -169,8 +169,13 @@ class Job:
         return return_list
 
     def write(self) -> None:
-        write_path = os.path.join(ENVYPATH, 'Jobs', 'Jobs', f'{self.name}_{datetime.today().strftime("%d-%m-%Y_%H-%M-%S")}.json')
-        with open(write_path, 'w') as job_file:
+        folder_path = os.path.join(ENVYPATH, 'Jobs', 'Jobs')
+        json_file_path = os.path.join(folder_path, f'{self.name}_{datetime.today().strftime("%d-%m-%Y_%H-%M-%S")}.json')
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open(json_file_path, 'w') as job_file:
             json.dump(self.as_dict(), job_file, indent=4)
             job_file.close()
 

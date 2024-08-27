@@ -15,11 +15,9 @@ import maya.api.OpenMaya as om
 
 import sys
 
-
-sys.path.append('Z:/Envy/__ENVYTEST__/Plugins/eMaya')
-
-
-import maya_to_envy
+new_path = 'Z:/Envy/__ENVYTEST__/Plugins/eMaya'
+if new_path not in sys.path:
+    sys.path.append(new_path)
 
 
 envy_menu = None
@@ -31,41 +29,6 @@ def maya_main_window() -> any:
     main_window = wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
     return main_window
-
-
-class EnvyUI(QtWidgets.QDialog):
-
-    def __init__(self, parent=maya_main_window()):
-        """"""
-        super(EnvyUI, self).__init__(parent)
-
-        self.setWindowTitle('Envy')
-
-        self.main_layout = QtWidgets.QVBoxLayout(self)
-
-        self.render_push_button = None
-
-        self.create_widgets()
-        self.create_layouts()
-        self.create_connections()
-
-    def create_widgets(self) -> None:
-        """Creates the widgets."""
-        self.render_push_button = QtWidgets.QPushButton('Render')
-
-    def create_layouts(self) -> None:
-        """Creates the layouts."""
-        self.main_layout.addWidget(self.render_push_button)
-
-    def create_connections(self) -> None:
-        """Creates the connections."""
-        self.render_push_button.clicked.connect(self.render)
-
-    @staticmethod
-    def render():
-        """Sets the Maya scene to Envy."""
-        envy = maya_to_envy.MayaToEnvy()
-        envy.export_to_envy(envy.get_cameras()[0], envy.get_render_layers()[0])
 
 
 class EnvyMenu:
