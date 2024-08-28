@@ -16,7 +16,6 @@ envy_path = 'Z:/Envy/'
 if envy_path not in sys.path:
     sys.path.append(envy_path)
 
-
 import envyJobs.job as job
 from envyJobs.enums import Purpose as p
 
@@ -166,11 +165,6 @@ class MayaToEnvy(object):
         return False
 
     @staticmethod
-    def get_cameras() -> list:
-        """Gets cameras."""
-        return cmds.ls(cameras=True, long=True)
-
-    @staticmethod
     def get_end_frame() -> int:
         """Gets the render end frame."""
         end_frame = cmds.getAttr('defaultRenderGlobals.endFrame')
@@ -217,6 +211,30 @@ class MayaToEnvy(object):
                     om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] Render layer {render_layer} skipped.')
 
         return render_layers
+
+    def get_cameras_from_render_layer(self, render_layer: str) -> list:
+        """Gets the cameras in the current render layer."""
+        if not cmds.objExists(render_layer):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Render layer {render_layer} does not exists.')
+            return []
+        elif not cmds.objectType(render_layer, isType='renderLayer'):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] {render_layer} is not a render layer.')
+            return []
+
+        render_layer_members = cmds.editRenderLayerMembers(render_layer, query=True, fullNames=True)
+        cameras = set()
+
+        if render_layer_members:
+            for obj in render_layer_members:
+                children_shapes = cmds.listRelatives(obj, children=True, shapes=True, fullPath=True)
+
+                if children_shapes:
+                    for shape in children_shapes:
+                        if cmds.objectType(shape, isType='camera'):
+                            if not cmds.getAttr(f'{shape}.orthographic'):
+                                cameras.add(shape)
+
+        return list(cameras)
 
     @staticmethod
     def get_start_frame() -> int:
