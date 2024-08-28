@@ -11,6 +11,8 @@ class Console:
     def __init__(self, event_loop, send_queue: Queue, receive_queue: Queue, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
 
+        self.logger.debug('networkUtils.Console: initializing')
+
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
         self.server_file_path = configs.ENVYPATH + 'Connections/server.txt'

@@ -13,7 +13,7 @@ class JobTree:
     def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
 
-        self.root = Node(name='root')
+        self.root = Node(name='root', node_type='root')
         self.db = None
         self.resolver = Resolver()
         self.number_of_jobs = 0
@@ -67,6 +67,7 @@ class JobTree:
             active_allocations=[],
             status=job_status,
             progress=0,
+            node_type='Job',
             parent=self.root
         )
         allocation_ids = self.db.get_allocation_ids(job_id)
@@ -95,6 +96,7 @@ class JobTree:
                 status=allocation_status,
                 progress=0,
                 computer=allocation_computer,
+                node_type='Allocation',
                 parent=new_job
             )
 
@@ -125,6 +127,7 @@ class JobTree:
                     status=task_status,
                     progress=0,
                     computer=task_computer,
+                    node_type='Task',
                     parent=new_allocation
                 )
             new_allocation.pending_tasks = pending_tasks

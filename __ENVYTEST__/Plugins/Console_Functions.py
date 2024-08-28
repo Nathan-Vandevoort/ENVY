@@ -23,7 +23,7 @@ import os
 __config__ = sys.modules.get('__config__')
 
 
-def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
+async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     """
     An example function to show users how to write their own console functions
     anything you write in here is executed by the console I recommend not requiring arguments and instead having the user pass them in with inputs
@@ -45,7 +45,7 @@ def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
 
     arg2 = input(f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
 
-    classifier = get_classifier(console)  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
+    classifier = await get_classifier(console)  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
     valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/envyLib/envy_utils.py which validates that the user supplied classifier is a valid classifier
     if not valid:  # if the classifier is not valid tell the user and return
         console.display_error(f'Invalid classifier: {classifier}')
@@ -56,11 +56,11 @@ def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     new_message.set_function('ENVY_EXAMPLE')  # setting the function to the name of the function in Envy_Functions.py that we want to call
     new_message.format_arguments(arg1, arg2=arg2)  # You set the arguments for the functions in here. As if you were doing it while calling the function
 
-    send_to_clients(console, classifier, new_message)  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
+    await send_to_clients(console, classifier, new_message)  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
     # notice how in the above function we passed in our current console. Thats because ALL functions in Console_Functions.py need a reference to the current console even if its not used
 
 
-def fill_buffer(console, buffer_name: str, data: any) -> None:
+async def fill_buffer(console, buffer_name: str, data: any) -> None:
     """
     fills a buffer on the console given the buffers name and data to fill the buffer with
     :param console: reference to the console calling the function
@@ -71,7 +71,7 @@ def fill_buffer(console, buffer_name: str, data: any) -> None:
     setattr(console, buffer_name, data)
 
 
-def install_maya_plugin(console) -> None:
+async def install_maya_plugin(console) -> None:
     """
     installs the Maya plugin
     :param console: reference to the console calling the function
@@ -98,37 +98,37 @@ def install_maya_plugin(console) -> None:
     console.display_info('Maya plugin installed successfully.')
 
 
-def print_jobs(console) -> None:
+async def print_jobs(console) -> None:
     console.jobs_tree.print_tree()
 
 
-def print_clients(console) -> None:
+async def print_clients(console) -> None:
     console.display_info(console.clients_buffer)
 
 
-def finish_task(console, task_id: int) -> None:
+async def finish_task(console, task_id: int) -> None:
     console.jobs_tree.finish_task(task_id)
 
 
-def finish_allocation(console, allocation_id: int) -> None:
+async def finish_allocation(console, allocation_id: int) -> None:
     console.jobs_tree.finish_allocation(allocation_id)
 
 
-def start_task(console, task_id: int, computer: str) -> None:
+async def start_task(console, task_id: int, computer: str) -> None:
     console.jobs_tree.start_task(task_id, computer)
 
 
-def sync_job(console, job_id: int) -> None:
+async def sync_job(console, job_id: int) -> None:
     console.jobs_tree.sync_job(job_id)
 
 
-def sign_out(console) -> None:
+async def sign_out(console) -> None:
     """
     Has envy sign out
     :param console: Reference to the console making the call
     :return: Void
     """
-    classifier = get_classifier(console)
+    classifier = await get_classifier(console)
     valid = eutils.validate_classifier(classifier)
     if not valid:
         console.display_error(f'Invalid classifier: {classifier}')
@@ -136,10 +136,10 @@ def sign_out(console) -> None:
     function_message = m.FunctionMessage('sign_out()')
     function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('sign_out')
-    send_to_clients(console, classifier, function_message)
+    await send_to_clients(console, classifier, function_message)
 
 
-def request_clients(console) -> None:
+async def request_clients(console) -> None:
     """
     Sends a message to the server requesting all the servers currently connected clients
     :param console: a reference to the console making the call
@@ -152,13 +152,13 @@ def request_clients(console) -> None:
     console.send(function_message)
 
 
-def restart_envy(console) -> None:
+async def restart_envy(console) -> None:
     """
     restart envy instances
     :param console: reference to the console making the call
     :return: Void
     """
-    classifier = get_classifier(console)
+    classifier = await get_classifier(console)
     valid = eutils.validate_classifier(classifier)
     if not valid:
         console.display_error(f'Invalid classifier: {classifier}')
@@ -166,16 +166,16 @@ def restart_envy(console) -> None:
     function_message = m.FunctionMessage('restart_envy()')
     function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('restart_envy')
-    send_to_clients(console, classifier, function_message)
+    await send_to_clients(console, classifier, function_message)
 
 
-def get_classifier(console):
+async def get_classifier(console):
     console.display_info('Classifier (What computers to affect)?')
-    classifier = input(f"{c.CYAN}UserInput: {c.WHITE}").rstrip()
+    classifier = await console.next_input(f"{c.CYAN}UserInput: {c.WHITE}")
     return classifier
 
 
-def debug_envy(console) -> None:
+async def debug_envy(console) -> None:
     """
     has envy run its example function
     :param console: reference to the console calling this function
@@ -189,10 +189,10 @@ def debug_envy(console) -> None:
     function_message = m.FunctionMessage('debug_envy()')
     function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('example')
-    send_to_clients(console, classifier, function_message)
+    await send_to_clients(console, classifier, function_message)
 
 
-def send_to_clients(console, classifier: str, function_message: m.FunctionMessage) -> None:
+async def send_to_clients(console, classifier: str, function_message: m.FunctionMessage) -> None:
     """
     sends a single message to the server with a message.FunctionMessage within.
     the server will then send copies of the function message to any clients which meet the classifier

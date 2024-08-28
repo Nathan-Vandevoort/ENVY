@@ -34,7 +34,7 @@ if 'launch_envy.py' in calling_script_name:
         sys.modules[module] = module_object
         spec.loader.exec_module(module_object)
 
-if 'server.py' in calling_script_name:
+if 'server' in calling_script_name:
     print('prepping server')
 
     modules = [
@@ -49,7 +49,7 @@ if 'server.py' in calling_script_name:
         sys.modules[module] = module_object
         spec.loader.exec_module(module_object)
 
-if 'launch_console.py' in calling_script_name:
+if 'console' in calling_script_name or 'UI' in calling_script_name:
     print('prepping console')
 
     modules = [

@@ -9,11 +9,12 @@ import networkUtils.message as m
 
 class Client:
 
-    def __init__(self, receive_queue: Queue, event_loop, send_queue: Queue, logger: logging.Logger = None):
+    def __init__(self, receive_queue: Queue, event_loop, send_queue: Queue, logger: logging.Logger = None, purpose: Message_Purpose = Message_Purpose.CLIENT):
         self.logger = logger or eutils.DummyLogger()
         self.hostname = socket.gethostname()
         self.my_ip = socket.gethostbyname(self.hostname)
         self.running = False
+        self.purpose = purpose
 
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
@@ -67,6 +68,12 @@ class Client:
                     return True, None, 'Connected Successfully'
 
             if purpose == Message_Purpose.CLIENT:
+                websocket = await websockets.connect(uri, extra_headers=headers, timeout=timeout)
+                if websocket.open:
+                    self.websocket = websocket
+                    return True, None, 'Connected Successfully'
+
+            if purpose == Message_Purpose.CONSOLE:
                 websocket = await websockets.connect(uri, extra_headers=headers, timeout=timeout)
                 if websocket.open:
                     self.websocket = websocket

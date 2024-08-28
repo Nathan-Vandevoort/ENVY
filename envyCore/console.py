@@ -1,5 +1,5 @@
 import asyncio, sys, logging
-from networkUtils.console import Console as network_console
+from networkUtils.client import Client
 from queue import Queue
 from networkUtils.message_purpose import Message_Purpose
 from envyLib import envy_utils as eutils
@@ -9,22 +9,28 @@ from networkUtils import message as m
 from envyLib.envy_utils import DummyLogger
 from envyJobs import jobTree
 from envyDB import db
+import websockets
 
 CONSOLE = sys.modules.get('Console_Functions')  # import custom IO functions
 
 class Console:
-    def __init__(self, event_loop, logger: logging.Logger = None):
+    def __init__(self, event_loop, input_queue=None, stand_alone: bool = True, logger: logging.Logger = None):
         self.event_loop = event_loop
         self.logger = logger or DummyLogger()
         self.send_queue = Queue(maxsize=0)
         self.receive_queue = Queue(maxsize=0)
 
+        # IO
+        self.input_queue = input_queue
+
         # console state
         self.connected = False
+        self.stand_alone = stand_alone
         self.coroutines = []
+        self.client_dependant_coroutines = []
 
         # networking
-        self.network_console = network_console(event_loop=self.event_loop, send_queue=self.send_queue, receive_queue=self.receive_queue, logger=self.logger)
+        self.client = Client(event_loop=self.event_loop, send_queue=self.send_queue, receive_queue=self.receive_queue, logger=self.logger)
 
         # Buffers
         self.clients = {}
@@ -54,9 +60,32 @@ class Console:
                 self.display_warning('Console is not connected to Envy network. Your message may not be received')
             try:
                 self.logger.debug(f'executing {user_input}')
-                exec(f'CONSOLE.{eutils.insert_self_in_function(user_input)}')
+                await self.execute(eutils.insert_self_in_function(user_input))
             except Exception as e:
                 self.display_error(e)
+
+    async def user_input_from_queue(self):
+        while True:
+            if self.input_queue.empty():
+                await asyncio.sleep(.1)
+                continue
+            user_input = self.input_queue.get()
+            user_input = user_input.rstrip()
+            if self.connected is False:
+                self.display_warning('Console is not connected to Envy network. Your message may not be received')
+            try:
+                self.logger.debug(f'executing {user_input}')
+                await self.execute(eutils.insert_self_in_function(user_input))
+            except Exception as e:
+                self.display_error(e)
+
+    async def next_input(self, input_string: str) -> str:
+        if self.stand_alone is True:
+            return input(input_string)
+        else:
+            while self.input_queue.empty():
+                await asyncio.sleep(.01)
+            return self.input_queue.get().rstrip()
 
     async def consumer_handler(self):
         while True:
@@ -69,50 +98,148 @@ class Console:
         purpose = message.get_purpose()
 
         if purpose == Message_Purpose.FUNCTION_MESSAGE:
-            await self.execute(message)
+            function_string = message.as_function()
+            await self.execute(function_string)
             return
 
         self.display_warning(f'Unknown message received {message}')
         self.display_info(f'{message}: {message.as_dict()}')
 
-    async def execute(self, message: m.FunctionMessage) -> any:
-        self.display_info(f'Executing: {message}')
-        function_string = message.as_function()
+    async def execute(self, function_string: str) -> any:
+        self.display_info(f'Executing: {function_string}')
         try:
-            exec(f'CONSOLE.{function_string}')
+            self.event_loop.create_task(self.async_exec(f'await CONSOLE.{function_string}'))
         except Exception as e:
-            self.display_error(f'Failed to execute {message} -> {e}')
+            self.display_error(f'Failed to execute {function_string} -> {e}')
 
     async def start(self):
-        user_input_task = self.event_loop.create_task(self.user_input())
-        user_input_task.set_name('User_Input_Task')
-        self.coroutines.append(user_input_task)
+        if self.stand_alone is True:
+            user_input_task = self.event_loop.create_task(self.user_input())
+            user_input_task.set_name('User_Input_Task')
+            self.coroutines.append(user_input_task)
+
+        else:
+            user_input_task = self.event_loop.create_task(self.user_input_from_queue())
+            user_input_task.set_name('User_Input_Task')
+            self.coroutines.append(user_input_task)
 
         consumer_task = self.event_loop.create_task(self.consumer_handler())
         consumer_task.set_name('Consumer_Task')
         self.coroutines.append(consumer_task)
 
         while True:
-            websocket = await self.network_console.connect()
-            if websocket is None:
-                self.connected = False
-                self.display_info('Failed to connect to server')
-                continue
+            result = await self.connect()
+            await asyncio.sleep(5)
 
-            self.connected = True
-            await self.network_console.start()
+    async def async_exec(self, s: str) -> None:
+        """
+        this one is a copy of the one in envy_utils but I put it here so it has access to the prepared environment
+        an Async version of exec that I found on stack overflow and tbh idk how it works
+        -Nathan
 
-            self.display_warning('Connection with server lost')
+        :param s: input string
+        :return: None
+        """
+        import ast
+        self.logger.debug(f'executing: {s}')
+        code = compile(
+            s,
+            '<string>',
+            'exec',
+            flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT,
+        )
+        try:
+            coroutine = eval(code)
+            if coroutine is not None:
+                await coroutine
+        except Exception as e:
+            self.display_error(e)
+
+    async def connect(self) -> None | int:
+        """
+        connects server and client depending on what the role attribute is set to
+        returns various integers with different meanings
+        0: something fucked up and you cant try again
+
+        :return: int
+        """
+
+        # Client connection
+        success, exception, info = await self.client.connect(purpose=Message_Purpose.CONSOLE)
+        if not success:  # if client failed to connect
             self.connected = False
+            self.logger.info('Failed to connect to server')
 
-    @staticmethod
-    def display_error(message) -> None:
-        print(f'{c.RED}Error: {message}{c.CLEAR}')
+            if isinstance(exception,
+                          asyncio.TimeoutError):  # if you failed to connect because the connection timed out you probably are the new server
+                self.logger.info('Failed to connect because of timeout')
+                self.logger.debug(f'Info: {info}, exception type: {type(exception)}')
+                return 0
 
-    @staticmethod
-    def display_info(message) -> None:
-        print(f'{c.WHITE}EnvyIO: {message}{c.CLEAR}')
+            if isinstance(exception,
+                          websockets.exceptions.ConnectionClosed):  # the connection was closed for a websocket reason
+                self.logger.info('Failed to connect because of websockets.ConnectionClosed')
+                self.logger.debug(f'Info: {info}, exception type: {type(exception)}')
+                return 0
 
-    @staticmethod
-    def display_warning(message) -> None:
-        print(f'{c.YELLOW} Warning: {message}{c.CLEAR}')
+            if isinstance(exception,
+                          websockets.exceptions.InvalidStatusCode):  # if the connection was refused for some reason
+                self.logger.info('Failed to connect because of invalid status code')
+                self.logger.debug(f'Info: {info}, exception type: {type(exception)}')
+                status_code = exception.status_code
+
+                if status_code == 403:  # invalid passkey
+                    self.logger.debug(
+                        "server exists but I supplied the wrong hash, That's probably someone else's server")
+                    return 0
+
+                if status_code == 500:  # duplicate connection from host
+                    self.logger.debug('Another connection from this host to that server already exists')
+                    self.logger.warning(f'Envy already has another connection from {self.hostname}')
+                    input('Press Enter to close')
+                    return 0
+
+            if isinstance(exception, Exception):  # the connection failed for a general reason
+                self.logger.info('Failed to connect for a general reason')
+                self.logger.debug(f'Info: {info}, exception type: {type(exception)}')
+                return 0
+
+            self.logger.info(f'connection failed')
+            return 0
+
+        else:  # client was able to connect
+            self.connected = True
+            await self.client.start()  # program will hold here until client disconnects
+
+            self.logger.debug('cleaning up envy.client_dependant_tasks')
+            for i, task in enumerate(self.client_dependant_coroutines):  # cancel tasks
+                self.logger.debug(f'cancelling task {task.get_name()}')
+                self.coroutines.pop(i)
+                if task.done():
+                    self.logger.debug(f'cleaning up finished task: {task.get_name()}')
+                    continue
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    self.logger.debug(f'Cancelled Task {task.get_name()}')
+
+        return 0  # elect new server
+
+    def display_error(self, message) -> None:
+        if self.stand_alone is True:
+            self.logger.error(f'{c.RED}Error: {message}{c.CLEAR}')
+        else:
+            self.logger.error(f'Error: {message}')
+
+    def display_info(self, message) -> None:
+        if self.stand_alone is True:
+            self.logger.info(f'{c.WHITE}EnvyIO: {message}{c.CLEAR}')
+        else:
+            self.logger.info(f'Info: {message}')
+
+    def display_warning(self, message) -> None:
+        if self.stand_alone is True:
+            self.logger.warning(f'{c.YELLOW}Warning: {message}{c.CLEAR}')
+        else:
+            self.logger.warning(f'Warning: {message}')
