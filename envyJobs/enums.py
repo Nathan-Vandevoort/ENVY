@@ -28,6 +28,7 @@ class Status(str, Enum):
     DIRTY = 'dirty'
     IDLE = 'idle'
     WORKING = 'working'
+    STOPPED = 'stopped'
 
     def __str__(self):
         return self.value

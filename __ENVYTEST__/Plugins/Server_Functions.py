@@ -129,6 +129,15 @@ async def send_to_clients(server, clients: list, message: m.Message | m.Function
         await send_to_client(server, client, message)
 
 
+async def stop_client(server, client: str, hold_until: bool = False) -> None:
+    new_message = m.FunctionMessage(f'Stop_Working -> {client}')
+    new_message.set_target(Message_Purpose.CLIENT)
+    new_message.set_function('stop_working')
+    new_message.format_arguments(hold_until)
+
+    await send_to_client(server, client, new_message)
+
+
 async def update_client_attribute(server, client: str, attribute_name: str, attribute_value: any) -> None:
     """
     updates any client_attribute with any value
@@ -153,8 +162,7 @@ async def mark_task_as_finished(server, task_id: int) -> None:
     new_message.set_function('finish_task')
     new_message.format_arguments(task_id)
     await send_to_consoles(server, new_message)
-
-    server.job_scheduler.finish_task(task_id)
+    await server.job_scheduler.finish_task(task_id)
 
 async def mark_allocation_as_finished(server, allocation_id: int) -> None:
     """
@@ -168,8 +176,7 @@ async def mark_allocation_as_finished(server, allocation_id: int) -> None:
     new_message.set_function('finish_allocation')
     new_message.format_arguments(allocation_id)
     await send_to_consoles(server, new_message)
-
-    server.job_scheduler.finish_allocation(allocation_id)
+    await server.job_scheduler.finish_allocation(allocation_id)
 
 async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     """
@@ -185,8 +192,7 @@ async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     new_message.set_function('start_task')
     new_message.format_arguments(task_id, computer)
     await send_to_consoles(server, new_message)
-
-    server.job_scheduler.start_task(task_id, computer)
+    await server.job_scheduler.start_task(task_id, computer)
 
 async def console_sync_job(server, job_id: int) -> None:
     new_message = m.FunctionMessage('console_sync_job()')
@@ -199,15 +205,7 @@ async def console_sync_job(server, job_id: int) -> None:
 async def mark_job_as_finished(server, job_id: int) -> None:
     new_message = m.FunctionMessage('mark_job_as_finished()')
     new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('finish_job')
+    new_message.set_function('mark_job_as_finished')
     new_message.format_arguments(job_id)
     await send_to_consoles(server, new_message)
-
-    server.job_scheduler.finish_job(job_id)
-
-async def mark_job_as_dirty(server, job_id: int) -> None:
-    new_message = m.FunctionMessage('mark_job_as_dirty()')
-    new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('mark_job_as_dirty')
-    new_message.format_arguments(job_id)
-    await send_to_consoles(server, new_message)
+    await server.job_scheduler.finish_job(job_id)

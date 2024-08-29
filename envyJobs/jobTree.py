@@ -1,5 +1,5 @@
 import anytree.resolver
-from anytree import Node, RenderTree, Resolver
+from anytree import RenderTree, Resolver
 import networkUtils.message
 from envyDB import db
 import logging
@@ -42,7 +42,7 @@ class JobTree:
             active_allocations.extend(self.sync_job(job, skip_complete_allocations=self.skip_complete_allocations, skip_complete_tasks=self.skip_complete_tasks))
         return active_allocations
 
-    def sync_job(self, job_id: int, skip_complete_allocations: bool = True, skip_complete_tasks: bool = True) -> list:
+    def sync_job(self, job_id: int, skip_complete_allocations: bool = True, skip_complete_tasks: bool = True, return_new_job=False) -> (list, jobItem.JobItem):
         self.logger.debug(f'JobTree: syncing job: {job_id} from database to tree')
 
         job_values = self.db.get_job_values(job_id)
@@ -57,7 +57,7 @@ class JobTree:
 
         new_job = jobItem.JobItem(
             name=job_id,
-            label=job_name,
+            label=f'Job: {job_name}',
             job_name=job_name,
             purpose=job_purpose,
             job_type=job_type,
@@ -126,7 +126,7 @@ class JobTree:
 
                 new_task = jobItem.JobItem(
                     name=task_id,
-                    label=task_frame,
+                    label=f'Frame: {task_frame}',
                     frame=task_frame,
                     status=task_status,
                     progress=0,
@@ -157,9 +157,13 @@ class JobTree:
 
         new_job.progress = progress
         self.number_of_jobs += 1
+
+        if return_new_job is True:
+            return new_job
+
         return active_allocations
 
-    def finish_task(self, task_id: int) -> bool | None:
+    def finish_task(self, task_id: int) -> (jobItem.JobItem, None):
 
         job_id = self.db.get_task_value(task_id, 'Job_Id')
         allocation_id = self.db.get_task_value(task_id, 'Allocation_Id')
@@ -179,9 +183,9 @@ class JobTree:
         if len(allocation_node.children) == 0:
             self.finish_allocation(allocation_node)
 
-        return True
+        return task_node
 
-    def finish_allocation(self, allocation: Node | int) -> None:
+    def finish_allocation(self, allocation: jobItem.JobItem | int) -> (jobItem.JobItem, None):
         """
         Marks the current allocation as done in the database and removes it from the tree
         you must provide either an allocation ID or allocation node
@@ -207,7 +211,9 @@ class JobTree:
         if len(job_node.children) == 0:
             self.finish_job(job_node)
 
-    def finish_job(self, job: int | Node) -> None:
+        return allocation
+
+    def finish_job(self, job: int | jobItem.JobItem) -> (jobItem.JobItem, None):
         if isinstance(job, int):
             try:
                 job = self.resolver.get(self.root, f'/root/{job}')
@@ -221,8 +227,9 @@ class JobTree:
             job.parent = None
         self.number_of_jobs -= 1
         self.logger.debug(f'JobTree: Finished Job {job_id}')
+        return job
 
-    def reset_task(self, task: int | Node):
+    def reset_task(self, task: int | jobItem.JobItem):
         if isinstance(task, int):
             task = self.get_task(task)
         task.status = Job_Status.PENDING
@@ -253,7 +260,7 @@ class JobTree:
         self.logger.debug(f'JobTree: Reset allocation {allocation_id}')
         return True
 
-    def pick_allocation(self) -> Node | None:
+    def pick_allocation(self) -> jobItem.JobItem | None:
         if len(self.root.children) == 0:
             yield None
         for job in self.root.children:
@@ -281,7 +288,7 @@ class JobTree:
             return None
         return task_node
 
-    def start_allocation(self, computer: str, allocation: int | Node) -> None:
+    def start_allocation(self, computer: str, allocation: int | jobItem.JobItem) -> None:
         if isinstance(allocation, int):
             allocation = self.get_allocation(allocation)
         self.logger.debug(f'JobTree: starting Allocation({allocation.name}) for {computer}')
@@ -314,9 +321,8 @@ class JobTree:
             self.db.set_task_value(task_id, 'Status', Job_Status.INPROGRESS)
             self.db.set_task_value(task_id, 'Computer', computer)
 
-    def allocation_as_message(self, allocation: Node | int) -> networkUtils.message.FunctionMessage:
-        self.logger.debug("ALLOCATION AS MESSAGE")
-        if isinstance(allocation, Node):
+    def allocation_as_message(self, allocation: jobItem.JobItem | int) -> networkUtils.message.FunctionMessage:
+        if isinstance(allocation, jobItem.JobItem):
             allocation = allocation.name
         allocation_id = allocation
         allocation = self.db.get_allocation_values(allocation)

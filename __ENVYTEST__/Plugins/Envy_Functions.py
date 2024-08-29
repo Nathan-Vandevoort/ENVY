@@ -17,7 +17,7 @@ __version__ = "1.0.0"
 from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
 import json, sys
-from envyLib.colors import Colors as c
+import asyncio
 config = sys.modules.get('config_bridge')
 
 
@@ -139,6 +139,13 @@ async def start_task(envy, task_id: int) -> None:
     new_message.format_arguments(task_id, envy.hostname)
     envy.send(new_message)
 
+
+async def stop_working(envy, hold_until: bool) -> None:
+    await envy.set_status_stopped()
+    if hold_until is True:
+        return
+    await asyncio.sleep(5)
+    await envy.set_status_idle()
 
 async def dirty_task(envy, task_id: int) -> None:
     # todo implement

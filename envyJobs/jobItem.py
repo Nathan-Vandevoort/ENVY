@@ -9,13 +9,12 @@ class JobItem(NodeMixin):
         self._status = enums.Status.PENDING
         self._computer = 'N/A'
         self._data = [self._label, self._progress, self._status, self._computer]
-        self.__dict__.update(kwargs)
 
         if children:
             self.children = children
 
         self.parent = parent
-        self.configure_data()
+        self.configure_data(kwargs)
 
     @property
     def label(self):
@@ -56,18 +55,11 @@ class JobItem(NodeMixin):
     def data(self, column: int) -> any:
         return self._data[column]
 
-    def configure_data(self):
-        if hasattr(self, 'label'):
-            self._data[0] = self.label
+    def configure_data(self, kwargs):
+        self.__dict__.update(kwargs)
 
-        if hasattr(self, 'progress'):
-            self._data[1] = self.progress
-
-        if hasattr(self, 'status'):
-            self._data[2] = self.status
-
-        if hasattr(self, 'computer'):
-            self._data[3] = self.computer
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def child(self, row):
         child_count = len(self.children)

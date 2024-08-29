@@ -38,8 +38,8 @@ class MainWindow(QMainWindow):
         self.viewport_widget = QTextEdit('Viewport')
 
         right_layout = QVBoxLayout()
-        self.job_view_widget = jobTreeWidget.JobTreeWidget()
-        right_layout.addWidget(self.job_view_widget)
+        self.job_tree_widget = jobTreeWidget.JobTreeWidget()
+        right_layout.addWidget(self.job_tree_widget)
 
         self.console_widget = console_widget.ConsoleWidget(event_loop=self.event_loop)
         right_layout.addWidget(self.console_widget)
@@ -56,9 +56,10 @@ class MainWindow(QMainWindow):
         central_layout.addWidget(splitter)
         self.setCentralWidget(central_widget)
 
-        self.job_view_widget.finish_job_element.connect(self.console_widget.send_message)  # job view -> console when user marks job as finished
+        self.job_tree_widget.finish_job_element.connect(self.console_widget.send_message)  # job view -> console when user marks job as finished
 
-        self.console_widget.jobs_finish_job.connect(self.job_view_widget.mark_job_as_finished)  # console -> job view. when a job is marked finished update the view
+        self.console_widget.jobs_finish_job.connect(self.job_tree_widget.controller.mark_job_as_finished)  # console -> job view. when a job is marked finished update the view
+        self.console_widget.jobs_sync_job.connect(self.job_tree_widget.controller.sync_job)  # console -> job tree. When the server ingests a new job send a signal to the console to sync that new job
 
     def mousePressEvent(self, event):
 

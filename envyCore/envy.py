@@ -248,6 +248,10 @@ class Envy:
         self.status = Status.WORKING
         await NV.send_status_to_server(self)  # add a message to the send queue
 
+    async def set_status_stopped(self) -> None:
+        self.status = Status.STOPPED
+        await NV.send_status_to_server(self)
+
     async def async_exec(self, s: str) -> None:
         """
         this one is a copy of the one in envy_utils but I put it here so it has access to the prepared environment

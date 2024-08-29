@@ -192,3 +192,9 @@ async def mark_job_as_finished(console, job_id: int) -> None:
     if console.console_widget is None:
         return
     console.console_widget.jobs_finish_job.emit(job_id)
+
+
+async def sync_job(console, job_id: int) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_sync_job.emit(job_id)

@@ -181,8 +181,8 @@ class Client:
     # do from incoming connection
     async def consumer(self, message: m.FunctionMessage):
         target = message.get_target()
-        if target != Message_Purpose.CLIENT:
-            self.logger.warning(f"message is not for {Message_Purpose.CLIENT}")
+        if target != self.purpose:
+            self.logger.warning(f"message is not for {self.purpose}")
             return False
 
         self.receive_queue.put(message)

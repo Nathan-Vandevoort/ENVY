@@ -29,7 +29,7 @@ class Console:
         self.client_dependant_coroutines = []
 
         # networking
-        self.client = Client(event_loop=self.event_loop, send_queue=self.send_queue, receive_queue=self.receive_queue, logger=self.logger)
+        self.client = Client(event_loop=self.event_loop, send_queue=self.send_queue, receive_queue=self.receive_queue, logger=self.logger, purpose=Message_Purpose.CONSOLE)
 
         # Buffers
         self.clients = {}
