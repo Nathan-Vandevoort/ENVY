@@ -194,3 +194,20 @@ async def console_sync_job(server, job_id: int) -> None:
     new_message.set_function('sync_job')
     new_message.format_arguments(job_id)
     await send_to_consoles(server, new_message)
+
+
+async def mark_job_as_finished(server, job_id: int) -> None:
+    new_message = m.FunctionMessage('mark_job_as_finished()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('finish_job')
+    new_message.format_arguments(job_id)
+    await send_to_consoles(server, new_message)
+
+    server.job_scheduler.finish_job(job_id)
+
+async def mark_job_as_dirty(server, job_id: int) -> None:
+    new_message = m.FunctionMessage('mark_job_as_dirty()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('mark_job_as_dirty')
+    new_message.format_arguments(job_id)
+    await send_to_consoles(server, new_message)

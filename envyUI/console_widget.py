@@ -4,13 +4,16 @@ from qasync import QApplication, QEventLoop
 import prep_env
 import config_bridge as config
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QSplitter, QSizePolicy
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Signal, Slot
 from envyCore import console
 import io
 from envyLib import envy_logger
 from queue import Queue
 
 class ConsoleWidget(QWidget):
+
+    jobs_finish_job = Signal(int)
+
     def __init__(self, parent=None, event_loop=None):
         super().__init__(parent)
 
@@ -22,7 +25,7 @@ class ConsoleWidget(QWidget):
         self.output_stream_seeker = 0
         self.logger = envy_logger.get_logger(self.output_stream, html=True)
 
-        self.envy_console = console.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger)
+        self.envy_console = console.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger, console_widget=self)
 
         self.text_input_widget = QLineEdit(self)
         self.text_input_widget.returnPressed.connect(self.send_input)
@@ -65,6 +68,9 @@ class ConsoleWidget(QWidget):
             task.cancel()
 
         super().closeEvent(event)
+
+    def send_message(self, message):
+        self.envy_console.send(message)
 
 if __name__ == '__main__':
     class MainWindow(QMainWindow):

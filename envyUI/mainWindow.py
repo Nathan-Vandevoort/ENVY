@@ -56,6 +56,10 @@ class MainWindow(QMainWindow):
         central_layout.addWidget(splitter)
         self.setCentralWidget(central_widget)
 
+        self.job_view_widget.finish_job_element.connect(self.console_widget.send_message)  # job view -> console when user marks job as finished
+
+        self.console_widget.jobs_finish_job.connect(self.job_view_widget.mark_job_as_finished)  # console -> job view. when a job is marked finished update the view
+
     def mousePressEvent(self, event):
 
         # check if right click is pressed

@@ -98,28 +98,8 @@ async def install_maya_plugin(console) -> None:
     console.display_info('Maya plugin installed successfully.')
 
 
-async def print_jobs(console) -> None:
-    console.jobs_tree.print_tree()
-
-
 async def print_clients(console) -> None:
     console.display_info(console.clients_buffer)
-
-
-async def finish_task(console, task_id: int) -> None:
-    console.jobs_tree.finish_task(task_id)
-
-
-async def finish_allocation(console, allocation_id: int) -> None:
-    console.jobs_tree.finish_allocation(allocation_id)
-
-
-async def start_task(console, task_id: int, computer: str) -> None:
-    console.jobs_tree.start_task(task_id, computer)
-
-
-async def sync_job(console, job_id: int) -> None:
-    console.jobs_tree.sync_job(job_id)
 
 
 async def sign_out(console) -> None:
@@ -206,3 +186,9 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)
+
+# ------------------------------ UI ---------------------------------------------- #
+async def mark_job_as_finished(console, job_id: int) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_finish_job.emit(job_id)

@@ -3,15 +3,15 @@ import prep_env
 import config_bridge
 from PySide6.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PySide6.QtWidgets import QMainWindow, QApplication, QTreeView
-from .jobItem import JobItem
 from envyDB import db
 from envyJobs import jobTree
+from envyJobs.jobItem import JobItem
 
 class JobTreeModel(QAbstractItemModel):
     def __init__(self, root, parent=None):
         super(JobTreeModel, self).__init__(parent)
         self._rootItem = root
-        self.header = ['Job Name', 'Progress', 'Status', 'ID']
+        self.header = ['Job Name', 'Progress', 'Status', 'Computer']
 
     def rowCount(self, parent=QModelIndex()):
         if not parent.isValid():
@@ -28,7 +28,7 @@ class JobTreeModel(QAbstractItemModel):
             return QModelIndex()
 
         childItem = self.getItem(index)
-        parentItem = childItem.parent()
+        parentItem = childItem.parent
         if not parentItem or parentItem == self._rootItem:
             return QModelIndex()
 
@@ -72,6 +72,50 @@ class JobTreeModel(QAbstractItemModel):
             return None
         item = self.getItem(index)
         return item.data(index.column())
+
+    def item_from_path(self, path: tuple) -> (JobItem, None):
+        path_split_length = len(path)
+
+        job = self.get_job_from_id(int(path[0]))
+
+        if job is None:
+            return None
+
+        if path_split_length == 1:
+            return job
+
+        allocation = self.get_allocation_from_id(job, int(path[1]))
+
+        if allocation is None:
+            return None
+
+        if path_split_length == 2:
+            return allocation
+
+        task = self.get_task_from_id(allocation, int(path[2]))
+
+        if task is None:
+            return None
+
+        return task
+
+    def get_job_from_id(self, ID: int) -> (JobItem, None):
+        for job in self._rootItem._children:
+            if job.ID == ID:
+                return job
+        return None
+
+    def get_allocation_from_id(self, job: JobItem, ID: int) -> (JobItem, None):
+        for allocation in job._children:
+            if allocation.ID == ID:
+                return allocation
+        return None
+
+    def get_task_from_id(self, allocation: JobItem, ID: int) -> (JobItem, None):
+        for task in allocation._children:
+            if task.ID == ID:
+                return task
+        return None
 
 
 if __name__ == '__main__':

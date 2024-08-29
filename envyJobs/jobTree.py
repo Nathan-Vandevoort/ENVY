@@ -7,13 +7,14 @@ from envyLib.envy_utils import DummyLogger
 from envyJobs.enums import Status as Job_Status
 import json
 from networkUtils.message_purpose import Message_Purpose
+from envyJobs import jobItem
 
 
 class JobTree:
     def __init__(self, logger: logging.Logger = None):
         self.logger = logger or DummyLogger()
 
-        self.root = Node(name='root', node_type='root')
+        self.root = jobItem.JobItem(name='root', node_type='root', label='root')
         self.db = None
         self.resolver = Resolver()
         self.number_of_jobs = 0
@@ -54,8 +55,9 @@ class JobTree:
         job_dependencies = job_values[10]
         job_allocation = job_values[11]
 
-        new_job = Node(
+        new_job = jobItem.JobItem(
             name=job_id,
+            label=job_name,
             job_name=job_name,
             purpose=job_purpose,
             job_type=job_type,
@@ -89,8 +91,9 @@ class JobTree:
 
             allocation_computer = self.db.get_allocation_value(allocation_id, 'Computer')
 
-            new_allocation = Node(
+            new_allocation = jobItem.JobItem(
                 name=allocation_id,
+                label=str(allocation_id),
                 pending_tasks=[],
                 active_tasks=[],
                 status=allocation_status,
@@ -121,8 +124,9 @@ class JobTree:
                 if task_status == Job_Status.PENDING:
                     pending_tasks.append(task_id)
 
-                new_task = Node(
+                new_task = jobItem.JobItem(
                     name=task_id,
+                    label=task_frame,
                     frame=task_frame,
                     status=task_status,
                     progress=0,
@@ -140,6 +144,7 @@ class JobTree:
             progress = round(progress, 2)
 
             new_allocation.progress = progress
+            new_allocation.label = f'Range: {new_allocation.children[0].frame}-{new_allocation.children[-1].frame}'
 
         new_job.pending_allocations = pending_allocations
         new_job.active_allocations = active_allocations

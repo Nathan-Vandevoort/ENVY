@@ -7,14 +7,12 @@ from envyLib.colors import Colors as c
 import config_bridge as config
 from networkUtils import message as m
 from envyLib.envy_utils import DummyLogger
-from envyJobs import jobTree
-from envyDB import db
 import websockets
 
 CONSOLE = sys.modules.get('Console_Functions')  # import custom IO functions
 
 class Console:
-    def __init__(self, event_loop, input_queue=None, stand_alone: bool = True, logger: logging.Logger = None):
+    def __init__(self, event_loop, input_queue=None, stand_alone: bool = True, logger: logging.Logger = None, console_widget=None):
         self.event_loop = event_loop
         self.logger = logger or DummyLogger()
         self.send_queue = Queue(maxsize=0)
@@ -26,6 +24,7 @@ class Console:
         # console state
         self.connected = False
         self.stand_alone = stand_alone
+        self.console_widget = console_widget
         self.coroutines = []
         self.client_dependant_coroutines = []
 
@@ -34,20 +33,6 @@ class Console:
 
         # Buffers
         self.clients = {}
-
-        # job system
-        self.db = db.DB(logger=self.logger)
-        self.jobs_tree = self.configure_job_tree()
-
-    def configure_job_tree(self):
-        self.db.start()
-        jobs_tree = jobTree.JobTree(logger=self.logger)
-        jobs_tree.enable_read_only()
-        jobs_tree.skip_complete_allocations = False
-        jobs_tree.skip_complete_tasks = False
-        jobs_tree.set_db(self.db)
-        jobs_tree.build_from_db()
-        return jobs_tree
 
     def send(self, message: m.Message | m.FunctionMessage) -> None:
         self.send_queue.put(message)

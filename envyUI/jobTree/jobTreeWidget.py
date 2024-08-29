@@ -3,19 +3,25 @@ import prep_env
 import config_bridge
 from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
 from PySide6.QtGui import QAction
-from PySide6.QtCore import QTimer, QPoint, Qt
+from PySide6.QtCore import QTimer, QPoint, Qt, Signal, Slot
 from envyJobs import jobTree
 from envyDB import db
-from .jobItem import JobItem
-from .jobTreeModel import JobTreeModel
+from jobTreeModel import JobTreeModel
+from networkUtils.message_purpose import Message_Purpose as MP
+from networkUtils import message as m
 
 
 class JobTreeWidget(QTreeView):
+
+    dirty_job_element = Signal(object)
+    finish_job_element = Signal(object)
+
     def __init__(self, parent=None, logger=None):
         super().__init__(parent)
 
         self.data_base = None
         self.job_tree = None
+        self.model = None
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.open_context_menu)
         self.configure_tree()
@@ -30,9 +36,8 @@ class JobTreeWidget(QTreeView):
         self.job_tree.set_db(self.data_base)
         self.job_tree.build_from_db()
 
-        root_item = convert_anytree_to_jobitem(self.job_tree.root)
-        model = JobTreeModel(root_item)
-        self.setModel(model)
+        self.model = JobTreeModel(self.job_tree.root)
+        self.setModel(self.model)
 
     def open_context_menu(self, position: QPoint):
         index = self.indexAt(position)
@@ -55,14 +60,37 @@ class JobTreeWidget(QTreeView):
         context_menu.exec_(self.viewport().mapToGlobal(position))
 
     def dirty_action_triggered(self, index):
-        pass
+        if not index.isValid():
+            return
+        selected_item = self.model.getItem(index)
+        path = selected_item.get_absolute_path()
 
     def finish_action_triggered(self, index):
-        pass
+        if not index.isValid():
+            return
+        selected_item = self.model.getItem(index)
+        path = selected_item.get_absolute_path()
 
-    def select_workers_action_triggered(self, index):
-        pass
+        new_message = m.FunctionMessage('Finish_Job_element')
+        if len(path) == 1:
+            new_message.set_function('mark_job_as_finished')
+            new_message.set_target(MP.SERVER)
+            new_message.format_arguments(path[0])
 
+        if len(path) == 2:
+            new_message.set_function('mark_allocation_as_finished')
+            new_message.set_target(MP.SERVER)
+            new_message.format_arguments(path[1])
+
+        if len(path) == 3:
+            new_message.set_function('mark_task_as_finished')
+            new_message.set_target(MP.SERVER)
+            new_message.format_arguments(path[2])
+
+        self.finish_job_element.emit(new_message)
+
+    def mark_job_as_finished(self, job_id: int) -> None:
+        pass
 
 def convert_anytree_to_jobitem(anytree_node, parent_item=None):
     node_type = anytree_node.node_type
@@ -72,6 +100,7 @@ def convert_anytree_to_jobitem(anytree_node, parent_item=None):
         new_item.set_ID(anytree_node.name)
         new_item.set_status(anytree_node.status)
         new_item.set_progress(anytree_node.progress)
+        new_item.set_computer('N/A')
 
     if node_type == 'Allocation':
         children = anytree_node.children
@@ -82,12 +111,14 @@ def convert_anytree_to_jobitem(anytree_node, parent_item=None):
         new_item.set_ID(anytree_node.name)
         new_item.set_status(anytree_node.status)
         new_item.set_progress(anytree_node.progress)
+        new_item.set_computer(anytree_node.computer)
 
     if node_type == 'Task':
         new_item.set_name(str(anytree_node.frame))
         new_item.set_ID(anytree_node.name)
         new_item.set_status(anytree_node.status)
         new_item.set_progress(anytree_node.progress)
+        new_item.set_computer(anytree_node.computer)
 
     if node_type == 'root':
         new_item.set_name('root')

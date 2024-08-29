@@ -37,6 +37,10 @@ class Scheduler:
                 await SRV.send_to_client(self.server, computer_name, message)
                 return True
 
+    def finish_job(self, job_id: int):
+        self.logger.info(f'Scheduler: Finishing Job {job_id}')
+        self.job_tree.finish_job(job_id)
+
     def finish_task(self, task_id: int):
         self.logger.info(f'Scheduler: Finishing task {task_id}')
         self.job_tree.finish_task(task_id=task_id)
