@@ -3,7 +3,7 @@ from envyLib.envy_utils import DummyLogger
 from envyJobs.enums import Status
 import asyncio
 import envyJobs.ingestor as ingestor
-from envyJobs.jobTree import JobTree
+from envyJobs.jobTreeAbstractItemModel import JobTreeItemModel as JobTree
 import sys
 from envyDB import db
 import anytree
@@ -34,16 +34,18 @@ class Scheduler:
                 self.clients[computer_name]['Allocation'] = allocation.name
                 self.job_tree.start_allocation(computer_name, allocation)
                 message = self.job_tree.allocation_as_message(allocation)
+                await SRV.mark_allocation_as_started(self.server, allocation.name, computer_name)
                 await SRV.send_to_client(self.server, computer_name, message)
                 return True
 
-    async def finish_job(self, job_id: int):
+    async def finish_job(self, job_id: int, stop_workers: bool = False):
         self.logger.info(f'Scheduler: Finishing Job {job_id}')
 
-        for client in self.clients:
-            if self.clients[client]['Job'] == job_id:
-                self.logger.debug(f'Scheduler: stopping {client}')
-                await SRV.stop_client(self.server, client)
+        if stop_workers is True:
+            for client in self.clients:
+                if self.clients[client]['Job'] == job_id:
+                    self.logger.debug(f'Scheduler: stopping {client}')
+                    await SRV.stop_client(self.server, client)
 
         self.job_tree.finish_job(job_id)
 
@@ -55,13 +57,14 @@ class Scheduler:
         self.logger.info(f'Scheduler: {computer} started task {task_id}')
         self.job_tree.start_task(task_id, computer)
 
-    async def finish_allocation(self, allocation_id: int):
+    async def finish_allocation(self, allocation_id: int, stop_workers: bool = False):
         self.logger.info(f'Scheduler: finishing allocation {allocation_id}')
 
-        for client in self.clients:
-            if self.clients[client]['Allocation'] == allocation_id:
-                self.logger.debug(f'Scheduler: stopping {client}')
-                await SRV.stop_client(self.server, client)
+        if stop_workers is True:
+            for client in self.clients:
+                if self.clients[client]['Allocation'] == allocation_id:
+                    self.logger.debug(f'Scheduler: stopping {client}')
+                    await SRV.stop_client(self.server, client)
 
         self.job_tree.finish_allocation(allocation_id)
 

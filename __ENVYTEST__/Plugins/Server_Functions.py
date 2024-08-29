@@ -159,24 +159,42 @@ async def mark_task_as_finished(server, task_id: int) -> None:
     """
     new_message = m.FunctionMessage('mark_task_as_finished()')
     new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('finish_task')
+    new_message.set_function('mark_task_as_finished')
     new_message.format_arguments(task_id)
     await send_to_consoles(server, new_message)
     await server.job_scheduler.finish_task(task_id)
 
-async def mark_allocation_as_finished(server, allocation_id: int) -> None:
+
+async def mark_job_as_finished(server, job_id: int, from_console: bool = False) -> None:
+    new_message = m.FunctionMessage('mark_job_as_finished()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('mark_job_as_finished')
+    new_message.format_arguments(job_id)
+    await send_to_consoles(server, new_message)
+    await server.job_scheduler.finish_job(job_id, stop_workers=from_console)
+
+
+async def mark_allocation_as_finished(server, allocation_id: int, from_console: bool = False) -> None:
     """
     Marks an allocation of tasks as finished in the scheduler
     :param server: Reference to the server making the call
     :param allocation_id: Allocation ID to mark as finished
+    :param from_console: (bool) specifies if this function is a command from the console or just an envy instance reporting its completion
     :return: Void
     """
     new_message = m.FunctionMessage('mark_allocation_as_finished()')
     new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('finish_allocation')
+    new_message.set_function('mark_allocation_as_finished')
     new_message.format_arguments(allocation_id)
     await send_to_consoles(server, new_message)
-    await server.job_scheduler.finish_allocation(allocation_id)
+    await server.job_scheduler.finish_allocation(allocation_id, stop_workers=from_console)
+
+async def mark_allocation_as_started(server, allocation_id: int, computer: str) -> None:
+    new_message = m.FunctionMessage('mark_allocation_as_started()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('mark_allocation_as_started')
+    new_message.format_arguments(allocation_id, computer)
+    await send_to_consoles(server, new_message)
 
 async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     """
@@ -189,7 +207,7 @@ async def mark_task_as_started(server, task_id: int, computer: str) -> None:
 
     new_message = m.FunctionMessage('mark_task_as_started()')
     new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('start_task')
+    new_message.set_function('mark_task_as_started')
     new_message.format_arguments(task_id, computer)
     await send_to_consoles(server, new_message)
     await server.job_scheduler.start_task(task_id, computer)
@@ -200,12 +218,3 @@ async def console_sync_job(server, job_id: int) -> None:
     new_message.set_function('sync_job')
     new_message.format_arguments(job_id)
     await send_to_consoles(server, new_message)
-
-
-async def mark_job_as_finished(server, job_id: int) -> None:
-    new_message = m.FunctionMessage('mark_job_as_finished()')
-    new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('mark_job_as_finished')
-    new_message.format_arguments(job_id)
-    await send_to_consoles(server, new_message)
-    await server.job_scheduler.finish_job(job_id)

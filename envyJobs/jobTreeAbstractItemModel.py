@@ -1,19 +1,19 @@
 import anytree.resolver
-from anytree import RenderTree, Resolver
+from anytree import Resolver
 import networkUtils.message
-from envyDB import db
 import logging
 from envyLib.envy_utils import DummyLogger
 from envyJobs.enums import Status as Job_Status
 import json
 from networkUtils.message_purpose import Message_Purpose
 from envyJobs import jobItem
+from PySide6.QtCore import Qt, QAbstractItemModel, QModelIndex
 
 
-class JobTree:
-    def __init__(self, logger: logging.Logger = None):
+class JobTreeItemModel(QAbstractItemModel):
+    def __init__(self, parent=None, logger: logging.Logger = None):
+        super(JobTreeItemModel, self).__init__(parent=parent)
         self.logger = logger or DummyLogger()
-
         self.root = jobItem.JobItem(name='root', node_type='root', label='root')
         self.db = None
         self.resolver = Resolver()
@@ -21,6 +21,9 @@ class JobTree:
         self.read_only = False
         self.skip_complete_allocations = True
         self.skip_complete_tasks = True
+
+        #  UI Stuff
+        self.header = ['Job Name', 'Progress', 'Status', 'Computer']
 
     def set_db(self, db):
         self.db = db
@@ -44,6 +47,9 @@ class JobTree:
 
     def sync_job(self, job_id: int, skip_complete_allocations: bool = True, skip_complete_tasks: bool = True, return_new_job=False) -> (list, jobItem.JobItem):
         self.logger.debug(f'JobTree: syncing job: {job_id} from database to tree')
+
+        row = self.root.child_count()
+        self.beginInsertRows(self.index_from_item(self.root), row, row)
 
         job_values = self.db.get_job_values(job_id)
         job_name = job_values[1]
@@ -136,15 +142,19 @@ class JobTree:
                 )
             new_allocation.pending_tasks = pending_tasks
             new_allocation.active_tasks = active_tasks
-
             try:
                 progress = len(done_tasks) / (len(pending_tasks) + len(active_tasks) + len(done_tasks))
             except ZeroDivisionError:
                 progress = 0
             progress = round(progress, 2)
-
             new_allocation.progress = progress
-            new_allocation.label = f'Range: {new_allocation.children[0].frame}-{new_allocation.children[-1].frame}'
+
+            if len(new_allocation.children) < 1:
+                done_allocations.append(allocation_id)
+                new_allocation.parent = None
+                continue
+            else:
+                new_allocation.label = f'Range: {new_allocation.children[0].frame}-{new_allocation.children[-1].frame}'
 
         new_job.pending_allocations = pending_allocations
         new_job.active_allocations = active_allocations
@@ -157,6 +167,8 @@ class JobTree:
 
         new_job.progress = progress
         self.number_of_jobs += 1
+        self.endInsertRows()
+        self.logger.debug(f'JobTree: Finished syncing job {job_id}')
 
         if return_new_job is True:
             return new_job
@@ -211,6 +223,9 @@ class JobTree:
         if len(job_node.children) == 0:
             self.finish_job(job_node)
 
+        index = self.index_from_item(allocation, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
         return allocation
 
     def finish_job(self, job: int | jobItem.JobItem) -> (jobItem.JobItem, None):
@@ -227,6 +242,10 @@ class JobTree:
             job.parent = None
         self.number_of_jobs -= 1
         self.logger.debug(f'JobTree: Finished Job {job_id}')
+
+        index = self.index_from_item(job, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
         return job
 
     def reset_task(self, task: int | jobItem.JobItem):
@@ -288,7 +307,7 @@ class JobTree:
             return None
         return task_node
 
-    def start_allocation(self, computer: str, allocation: int | jobItem.JobItem) -> None:
+    def start_allocation(self, computer: str, allocation: int | jobItem.JobItem) -> (jobItem.JobItem, None):
         if isinstance(allocation, int):
             allocation = self.get_allocation(allocation)
         self.logger.debug(f'JobTree: starting Allocation({allocation.name}) for {computer}')
@@ -308,7 +327,12 @@ class JobTree:
             self.db.set_allocation_value(allocation.name, 'Status', Job_Status.INPROGRESS)
             self.db.set_allocation_value(allocation.name, 'Computer', computer)
 
-    def start_task(self, task_id: int, computer: str) -> None:
+        index = self.index_from_item(allocation, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
+        return allocation
+
+    def start_task(self, task_id: int, computer: str) -> (jobItem.JobItem, None):
         task_node = self.get_task(task_id)
 
         if task_node is None:
@@ -320,6 +344,11 @@ class JobTree:
         if self.read_only is False:
             self.db.set_task_value(task_id, 'Status', Job_Status.INPROGRESS)
             self.db.set_task_value(task_id, 'Computer', computer)
+
+        index = self.index_from_item(task_node, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
+        return task_node
 
     def allocation_as_message(self, allocation: jobItem.JobItem | int) -> networkUtils.message.FunctionMessage:
         if isinstance(allocation, jobItem.JobItem):
@@ -365,47 +394,75 @@ class JobTree:
         self.logger.debug(f'DB: Wrote Allocation: {allocation} as message')
         return new_message
 
-    def print_tree(self):
-        print(RenderTree(self.root))
+    # ----------------------------------------- QAbstractItemModel overrides -------------------------------------
+    
+    def rowCount(self, parent=QModelIndex()):
+        if not parent.isValid():
+            return self.root.child_count()
+        return parent.internalPointer().child_count()
 
-if __name__ == '__main__':
-    class CustomFormatter(logging.Formatter):
-        # Define color codes
-        grey = "\x1b[38;20m"
-        yellow = "\x1b[33;20m"
-        red = "\x1b[31;20m"
-        bold_red = "\x1b[31;1m"
-        reset = "\x1b[0m"
+    def columnCount(self, parent=QModelIndex()):
+        if not parent.isValid():
+            return self.root.columnCount()
+        return parent.internalPointer().columnCount()
 
-        # Define format
-        format = '%(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+    def parent(self, index):
+        if not index.isValid():
+            return QModelIndex()
 
-        FORMATS = {
-            logging.DEBUG: grey + format + reset,
-            logging.INFO: yellow + format + reset,
-            logging.WARNING: yellow + format + reset,
-            logging.ERROR: red + format + reset,
-            logging.CRITICAL: bold_red + format + reset
-        }
+        childItem = self.getItem(index)
+        parentItem = childItem.parent
+        if not parentItem or parentItem == self.root:
+            return QModelIndex()
 
-        def format(self, record):
-            log_fmt = self.FORMATS.get(record.levelno)
-            formatter = logging.Formatter(log_fmt)
-            return formatter.format(record)
+        return self.createIndex(parentItem.row(), 0, parentItem)
 
+    def index(self, row, column, parent=QModelIndex()):
+        if parent.isValid() and parent.column() != 0:
+            return QModelIndex()
 
-    handler = logging.StreamHandler()
-    handler.setFormatter(CustomFormatter())
-    logger = logging.getLogger(__name__)
-    logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
+        parentItem = self.getItem(parent)
+        if not parentItem:
+            return QModelIndex()
 
-    db = db.DB(logger=logger)
-    db.start()
+        childItem = parentItem.child(row)
+        if childItem:
+            return self.createIndex(row, column, childItem)
 
-    tree = JobTree(logger=logger)
-    tree.set_db(db)
-    tree.build_from_db()
+        return QModelIndex()
 
-    target_allocation = tree.get_allocation(4)
-    tree.print_tree()
+    def index_from_item(self, item: jobItem.JobItem, column=0) -> QModelIndex:
+        if item is None or item == self.root:
+            return QModelIndex()
+
+        parent_item = item.parent
+        if parent_item is None:
+            return QModelIndex()
+
+        row = parent_item.row()
+        return self.createIndex(row, column, item)
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return self.header[section]
+        return None
+
+    def setHeaderData(self, section, orientation, value, role=Qt.EditRole):
+        if role != Qt.EditRole or orientation != Qt.Horizontal:
+            return False
+
+        result = self.root.set_data(section, value)
+        return result
+
+    def getItem(self, index) -> jobItem.JobItem:
+        if index.isValid():
+            item = index.internalPointer()
+            if item:
+                return item
+        return self.root
+
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid() or (role != Qt.DisplayRole and role != Qt.EditRole):
+            return None
+        item = self.getItem(index)
+        return item.data(index.column())

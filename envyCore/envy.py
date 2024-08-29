@@ -117,7 +117,7 @@ class Envy:
     async def start_server(self):
         plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server.py')
         cmd = ['python', plugin_path]
-        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
         if self.check_server_file():
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
             await asyncio.sleep(1)

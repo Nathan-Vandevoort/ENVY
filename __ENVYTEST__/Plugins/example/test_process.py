@@ -13,7 +13,7 @@ class Process:
             while counter <= 25:
                 print(f'{counter * 4}%', flush=True)
                 counter += 1
-                time.sleep(.5)
+                time.sleep(.1)
             print(f'FINISHED {self.tasks[task]}', flush=True)
         sys.exit(0)
 

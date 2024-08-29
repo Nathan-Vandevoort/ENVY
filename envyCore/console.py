@@ -84,7 +84,7 @@ class Console:
 
         if purpose == Message_Purpose.FUNCTION_MESSAGE:
             function_string = message.as_function()
-            await self.execute(function_string)
+            self.event_loop.create_task(self.execute(function_string))
             return
 
         self.display_warning(f'Unknown message received {message}')
@@ -93,7 +93,7 @@ class Console:
     async def execute(self, function_string: str) -> any:
         self.display_info(f'Executing: {function_string}')
         try:
-            self.event_loop.create_task(self.async_exec(f'await CONSOLE.{function_string}'))
+            await self.async_exec(f'await CONSOLE.{function_string}')
         except Exception as e:
             self.display_error(f'Failed to execute {function_string} -> {e}')
 

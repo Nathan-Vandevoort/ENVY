@@ -5,9 +5,10 @@ from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
 from PySide6.QtGui import QAction
 from PySide6.QtCore import QTimer, QPoint, Qt, Signal, Slot
 from envyUI.jobTree import jobTreeController
-from envyUI.jobTree import jobTreeModel
+from envyJobs import jobTreeAbstractItemModel
 from networkUtils.message_purpose import Message_Purpose as MP
 from networkUtils import message as m
+from envyDB import db
 
 
 class JobTreeWidget(QTreeView):
@@ -18,15 +19,29 @@ class JobTreeWidget(QTreeView):
     def __init__(self, parent=None, logger=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setSelectionMode(QTreeView.ExtendedSelection)
         self.customContextMenuRequested.connect(self.open_context_menu)
-        self.model = jobTreeModel.JobTreeModel()
+
+        self.db = db.DB()
+        self.db.start()
+        self.model = jobTreeAbstractItemModel.JobTreeItemModel()
+        self.model.enable_read_only()
+        self.model.skip_complete_tasks = False
+        self.model.skip_complete_allocations = False
+        self.model.set_db(self.db)
+        self.model.build_from_db()
+
         self.controller = jobTreeController.JobTreeController(self.model)
         self.setModel(self.model)
 
     def open_context_menu(self, position: QPoint):
-        index = self.indexAt(position)
-        if not index.isValid():
-            return
+        indices = self.selectedIndexes()
+
+        if len(indices) <= 1:
+            index = self.indexAt(position)
+            if not index.isValid():
+                return
+            indices = [index]
 
         context_menu = QMenu(self)
         dirty_action = QAction('Dirty', self)
@@ -37,41 +52,41 @@ class JobTreeWidget(QTreeView):
         context_menu.addAction(finish_action)
         context_menu.addAction(select_workers_action)
 
-        dirty_action.triggered.connect(lambda: self.dirty_action_triggered(index))
-        finish_action.triggered.connect(lambda: self.finish_action_triggered(index))
-        select_workers_action.triggered.connect(lambda: self.select_workers_action_triggered(index))
+        dirty_action.triggered.connect(lambda: self.dirty_action_triggered(indices))
+        finish_action.triggered.connect(lambda: self.finish_action_triggered(indices))
+        select_workers_action.triggered.connect(lambda: self.select_workers_action_triggered(indices))
 
         context_menu.exec_(self.viewport().mapToGlobal(position))
 
-    def dirty_action_triggered(self, index):
-        if not index.isValid():
-            return
-        selected_item = self.model.getItem(index)
-        path = selected_item.get_absolute_path()
+    def dirty_action_triggered(self, indices):
+        for index in indices:
+            if not index.isValid():
+                return
+            selected_item = self.model.getItem(index)
+            path = selected_item.get_absolute_path()
 
-    def finish_action_triggered(self, index):
-        if not index.isValid():
-            return
-        selected_item = self.model.getItem(index)
-        job_type = selected_item.node_type
+    def finish_action_triggered(self, indices):
+        for index in indices:
+            if not index.isValid():
+                return
+            selected_item = self.model.getItem(index)
+            job_type = selected_item.node_type
 
-        new_message = m.FunctionMessage('Finish_Job_element')
-        if job_type == 'Job':
-            new_message.set_function('mark_job_as_finished')
-            new_message.set_target(MP.SERVER)
-            new_message.format_arguments(selected_item.name)
+            new_message = m.FunctionMessage('Finish_Job_element')
+            if job_type == 'Job':
+                new_message.set_function('mark_job_as_finished')
+                new_message.set_target(MP.SERVER)
+                new_message.format_arguments(selected_item.name, from_console=True)
 
-        if job_type == 'Allocation':
-            new_message.set_function('mark_allocation_as_finished')
-            new_message.set_target(MP.SERVER)
-            new_message.format_arguments(selected_item.name)
+            if job_type == 'Allocation':
+                new_message.set_function('mark_allocation_as_finished')
+                new_message.set_target(MP.SERVER)
+                new_message.format_arguments(selected_item.name, from_console=True)
 
-        if job_type == 'Task':
-            new_message.set_function('mark_task_as_finished')
-            new_message.set_target(MP.SERVER)
-            new_message.format_arguments(selected_item.name)
+            if job_type == 'Task':
+                return
 
-        self.finish_job_element.emit(new_message)
+            self.finish_job_element.emit(new_message)
 
 if __name__ == '__main__':
     class MainWindow(QMainWindow):

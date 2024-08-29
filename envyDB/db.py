@@ -212,6 +212,7 @@ class DB:
         if result is not None:
 
             return result[0]
+
         else:
 
             raise IndexError('Column does not exist')

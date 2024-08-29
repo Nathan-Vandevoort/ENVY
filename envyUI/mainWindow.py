@@ -10,6 +10,7 @@ __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
 import prep_env
+import asyncio, sys
 from PySide6.QtCore import Qt, QRect, QEvent, QPoint, QThread
 from PySide6.QtGui import QCursor, QVector2D, QTransform
 from PySide6.QtWidgets import QMainWindow, QWidget, QSizeGrip, QVBoxLayout, QHBoxLayout, QTextEdit, QTreeView, QSplitter
@@ -60,6 +61,10 @@ class MainWindow(QMainWindow):
 
         self.console_widget.jobs_finish_job.connect(self.job_tree_widget.controller.mark_job_as_finished)  # console -> job view. when a job is marked finished update the view
         self.console_widget.jobs_sync_job.connect(self.job_tree_widget.controller.sync_job)  # console -> job tree. When the server ingests a new job send a signal to the console to sync that new job
+        self.console_widget.jobs_start_task.connect(self.job_tree_widget.controller.mark_task_as_started)  # console -> job tree. Tells the job tree that a client has started a different task
+        self.console_widget.jobs_finish_task.connect(self.job_tree_widget.controller.mark_task_as_finished)  # console -> job tree. Tells the tree that a task has been finished
+        self.console_widget.jobs_start_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_started)  # console -> job tree. Tells the tree a new allocation has been started
+        self.console_widget.jobs_finish_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_finished)  # console -> job tree. tells the tree that an allocation has been finished
 
     def mousePressEvent(self, event):
 
@@ -75,9 +80,15 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
 
+        tasks = [t for t in asyncio.all_tasks(self.event_loop) if t is not asyncio.current_task()]
+        for task in tasks:
+            task.cancel()
+        self.event_loop.stop()
+
         children = self.findChildren(QWidget)
 
         for child in children:
             child.close()
 
         super().closeEvent(event)
+        sys.exit(0)

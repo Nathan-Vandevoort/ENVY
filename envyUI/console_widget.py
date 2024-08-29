@@ -15,6 +15,11 @@ class ConsoleWidget(QWidget):
     jobs_sync_job = Signal(float)  # these are floats because ittie bittie 4Byte ints cant hold my raw power. Remember to cast them to int in the slot
 
     jobs_finish_job = Signal(float)
+    jobs_finish_allocation = Signal(float)
+    jobs_finish_task = Signal(float)
+
+    jobs_start_allocation = Signal(tuple)
+    jobs_start_task = Signal(tuple)
 
     def __init__(self, parent=None, event_loop=None):
         super().__init__(parent)

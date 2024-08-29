@@ -191,10 +191,34 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
 async def mark_job_as_finished(console, job_id: int) -> None:
     if console.console_widget is None:
         return
-    console.console_widget.jobs_finish_job.emit(job_id)
+    console.console_widget.jobs_finish_job.emit(float(job_id))
+
+
+async def mark_allocation_as_finished(console, allocation_id: int) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_finish_allocation.emit(float(allocation_id))
+
+
+async def mark_allocation_as_started(console, allocation_id: int, computer: str) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_start_allocation.emit((allocation_id, computer))
+
+
+async def mark_task_as_finished(console, task_id: int) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_finish_task.emit(float(task_id))
+
+
+async def mark_task_as_started(console, task_id: int, computer: str) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_start_task.emit((task_id, computer))
 
 
 async def sync_job(console, job_id: int) -> None:
     if console.console_widget is None:
         return
-    console.console_widget.jobs_sync_job.emit(job_id)
+    console.console_widget.jobs_sync_job.emit(float(job_id))
