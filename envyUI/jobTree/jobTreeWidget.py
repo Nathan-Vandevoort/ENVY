@@ -2,7 +2,7 @@ import sys
 import prep_env
 import config_bridge
 from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QFont
 from PySide6.QtCore import QTimer, QPoint, Qt, Signal, Slot
 from envyUI.jobTree import jobTreeController
 from envyJobs import jobTreeAbstractItemModel
@@ -34,14 +34,31 @@ class JobTreeWidget(QTreeView):
         self.controller = jobTreeController.JobTreeController(self.model)
         self.setModel(self.model)
 
+        # display settings
+        #   resize header elements
+        self.header().resizeSection(0, 200)
+        self.header().resizeSection(1, 80)
+        self.header().resizeSection(2, 80)
+        self.header().resizeSection(3, 80)
+
+        #   font
+        font = QFont('Segoe UI', 10)
+        self.setFont(font)
+
+        #   alternating colors
+        self.setAlternatingRowColors(True)
+
+
     def open_context_menu(self, position: QPoint):
         indices = self.selectedIndexes()
 
-        if len(indices) <= 1:
-            index = self.indexAt(position)
+        valid_items = []
+        for index in indices:
             if not index.isValid():
-                return
-            indices = [index]
+                continue
+            if self.model.getItem(index) in valid_items:
+                continue
+            valid_items.append(self.model.getItem(index))
 
         context_menu = QMenu(self)
         dirty_action = QAction('Dirty', self)
@@ -52,24 +69,18 @@ class JobTreeWidget(QTreeView):
         context_menu.addAction(finish_action)
         context_menu.addAction(select_workers_action)
 
-        dirty_action.triggered.connect(lambda: self.dirty_action_triggered(indices))
-        finish_action.triggered.connect(lambda: self.finish_action_triggered(indices))
-        select_workers_action.triggered.connect(lambda: self.select_workers_action_triggered(indices))
+        dirty_action.triggered.connect(lambda: self.dirty_action_triggered(valid_items))
+        finish_action.triggered.connect(lambda: self.finish_action_triggered(valid_items))
+        select_workers_action.triggered.connect(lambda: self.select_workers_action_triggered(valid_items))
 
         context_menu.exec_(self.viewport().mapToGlobal(position))
 
-    def dirty_action_triggered(self, indices):
-        for index in indices:
-            if not index.isValid():
-                return
-            selected_item = self.model.getItem(index)
+    def dirty_action_triggered(self, items):
+        for selected_item in items:
             path = selected_item.get_absolute_path()
 
-    def finish_action_triggered(self, indices):
-        for index in indices:
-            if not index.isValid():
-                return
-            selected_item = self.model.getItem(index)
+    def finish_action_triggered(self, items):
+        for selected_item in items:
             job_type = selected_item.node_type
 
             new_message = m.FunctionMessage('Finish_Job_element')
@@ -82,9 +93,6 @@ class JobTreeWidget(QTreeView):
                 new_message.set_function('mark_allocation_as_finished')
                 new_message.set_target(MP.SERVER)
                 new_message.format_arguments(selected_item.name, from_console=True)
-
-            if job_type == 'Task':
-                return
 
             self.finish_job_element.emit(new_message)
 

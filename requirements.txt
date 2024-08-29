@@ -4,3 +4,4 @@ websockets==12.0
 safe-exit==0.1.2
 PySide6==6.7.2
 qasync==0.27.1
+QDarkStyle==3.2.3

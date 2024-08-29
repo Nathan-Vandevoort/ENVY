@@ -63,7 +63,7 @@ class JobTreeItemModel(QAbstractItemModel):
 
         new_job = jobItem.JobItem(
             name=job_id,
-            label=f'Job: {job_name}',
+            label=f'{job_name}',
             job_name=job_name,
             purpose=job_purpose,
             job_type=job_type,
@@ -175,6 +175,13 @@ class JobTreeItemModel(QAbstractItemModel):
 
         return active_allocations
 
+    @staticmethod
+    def check_if_children_are_done(node: jobItem.JobItem) -> bool:
+        for child in node.children:
+            if child.status != Job_Status.DONE:
+                return False
+        return True
+
     def finish_task(self, task_id: int) -> (jobItem.JobItem, None):
 
         job_id = self.db.get_task_value(task_id, 'Job_Id')
@@ -192,8 +199,11 @@ class JobTreeItemModel(QAbstractItemModel):
             task_node.parent = None
 
         self.logger.info(f'JobTree: {task_node.computer} Finished task {task_id}')
-        if len(allocation_node.children) == 0:
+        if self.check_if_children_are_done(allocation_node) is True:
             self.finish_allocation(allocation_node)
+
+        index = self.index_from_item(task_node, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
 
         return task_node
 
@@ -220,7 +230,7 @@ class JobTreeItemModel(QAbstractItemModel):
             allocation.parent = None
 
         self.logger.debug(f'JobTree: Finished allocation {allocation_id}')
-        if len(job_node.children) == 0:
+        if self.check_if_children_are_done(job_node) is True:
             self.finish_job(job_node)
 
         index = self.index_from_item(allocation, column=2)
@@ -255,6 +265,10 @@ class JobTreeItemModel(QAbstractItemModel):
         task.computer = None
         task.progress = 0
         self.logger.debug(f'JobTree: Reset task {task}')
+
+        index = self.index_from_item(task, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
         return True
 
     def reset_allocation(self, allocation_id: int):

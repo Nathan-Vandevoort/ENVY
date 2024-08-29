@@ -5,6 +5,7 @@ import prep_env
 import config_bridge as config
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QSplitter, QSizePolicy
 from PySide6.QtCore import QTimer, Signal, Slot
+from PySide6.QtGui import QFont
 from envyCore import console
 import io
 from envyLib import envy_logger
@@ -55,6 +56,9 @@ class ConsoleWidget(QWidget):
         self.coroutines.append(envy_console_task)
 
         self.setLayout(layout)
+
+        font = QFont('Courier New', 8)
+        self.setFont(font)
 
     def send_input(self):
         input_string = self.text_input_widget.text() + '\n'

@@ -30,15 +30,16 @@ class CustomFormatterHTML(logging.Formatter):
     purple = '<span style="color:#EE82EE">'
     black = '<span style="color:black">'
     yellow = '<span style="color:#FFD700">'
-    red = '<span style="color:red">'
+    red = '<span style="color:#CD5C5C">'
     bold_red = '<span style="color:#8B0000">'
+    white = '<span style="color:white">'
 
     # Define format
-    format = '%(levelname)s - [%(filename)s:%(lineno)d] - <span style="color:black">%(message)s'
+    format = '%(levelname)s - [%(filename)s:%(lineno)d] - <span style="color:white">%(message)s'
 
     FORMATS = {
         logging.DEBUG: purple + format,
-        logging.INFO: black + format,
+        logging.INFO: white + format,
         logging.WARNING: yellow + format,
         logging.ERROR: red + format,
         logging.CRITICAL: bold_red + format

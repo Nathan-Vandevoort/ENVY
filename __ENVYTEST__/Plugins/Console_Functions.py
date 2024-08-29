@@ -3,7 +3,7 @@
 """
 Console_Functions.py: A "standard library" for Envy functions.
 Any function written in here can be executed by any console
-All functions in here must be NOT be async
+All functions in here must be async
 the first argument in every function MUST be a reference to the console instance calling the function even if you dont use it.
 Check out EXAMPLE to see how to write your own functions
 feel free to use any of the existing functions as a template to build your own!
@@ -186,6 +186,7 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)
+
 
 # ------------------------------ UI ---------------------------------------------- #
 async def mark_job_as_finished(console, job_id: int) -> None:

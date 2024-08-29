@@ -2,3 +2,21 @@
     On created
 2. fix job processor duplicate job in sop job processor and NVcache portion
 3. have job throw an error if it failed to write
+
+Scheduler.py
+    If a computer finishes a allocation/job mark that attribute on the client as None
+
+database
+    implement job dirtying reason
+
+Envy_Functions.py
+    Implement progress updates
+    implement job dirtying
+
+UI
+    Impliment dirtying jobs from jobs tree
+    have the tree show the reason a job was dirtied
+    Create node view widget
+    implement tree view selecting widgets based off their job
+
+    implement state into the main window. For example if the console is not connected to envy have that effect the window

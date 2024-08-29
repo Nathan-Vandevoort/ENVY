@@ -51,7 +51,7 @@ class Client:
             logger = self.logger
         server_ip = eutils.get_server_ip(logger=logger)
         uri = f"ws://{server_ip}:{self.port}/{purpose}"
-        logger.debug(f"attempting to connect with server at {uri}")
+        self.logger.debug(f"attempting to connect with server at {uri}")
 
         headers = {
             'Passkey': self.hash,
@@ -167,7 +167,7 @@ class Client:
             async for message in self.websocket:
                 deserialized_message = json.loads(message)
                 message_object = m.build_from_message_dict(deserialized_message)
-                self.logger.info(f"received message from: server -> ({message_object})")
+                self.logger.debug(f"received message from: server -> ({message_object})")
                 status = await self.consumer(message_object)
                 if not status:
                     self.logger.warning(f'unknown message received ({message_object}) -> {message_object.as_dict()}')

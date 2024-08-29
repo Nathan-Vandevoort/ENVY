@@ -4,6 +4,6 @@ Process to add a new marking menu action to the job tree widget
 1. Create a signal for the marking menu event
     Format a function message to be sent to the console
 2. In mainWindow.py connect that signal to the console_widget.send_message Slot
-4. In server_functions.py Create a function which will receive that function message. Gather data. And then send back a function message to the console
-5. In console_functions.py create a function which will receive the message from the server. Create a new signal for that message
-6. In jobTreeController.py create a Slot for that signal from the console widget. Have it call an update function in the jobTreeModel
+3. In server_functions.py Create a function which will receive that function message. Gather data. And then send back a function message to the console
+4. In console_functions.py create a function which will receive the message from the server. Create a new signal for that message
+5. In jobTreeController.py create a Slot for that signal from the console widget. Have it call an update function in the jobTreeModel

@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # set the window flag to frameless
-        #self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
 
         # Envy backend
         self.event_loop = event_loop
@@ -37,15 +37,17 @@ class MainWindow(QMainWindow):
 
         # Widgets
         self.viewport_widget = QTextEdit('Viewport')
-
-        right_layout = QVBoxLayout()
         self.job_tree_widget = jobTreeWidget.JobTreeWidget()
-        right_layout.addWidget(self.job_tree_widget)
-
         self.console_widget = console_widget.ConsoleWidget(event_loop=self.event_loop)
-        right_layout.addWidget(self.console_widget)
+
+        right_splitter = QSplitter(Qt.Vertical)
+        right_splitter.addWidget(self.job_tree_widget)
+        right_splitter.addWidget(self.console_widget)
+        right_splitter.setSizes([1, 0])
 
         right_container = QWidget()
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(right_splitter)
         right_container.setLayout(right_layout)
 
         splitter = QSplitter(Qt.Horizontal)
@@ -56,6 +58,12 @@ class MainWindow(QMainWindow):
         central_layout = QHBoxLayout(central_widget)
         central_layout.addWidget(splitter)
         self.setCentralWidget(central_widget)
+
+        #  window settings
+        self.setWindowTitle("Envy Console")
+        self.resize(1600, 600)
+
+        # --------------------------- Connections -----------------------------------#
 
         self.job_tree_widget.finish_job_element.connect(self.console_widget.send_message)  # job view -> console when user marks job as finished
 
@@ -91,4 +99,4 @@ class MainWindow(QMainWindow):
             child.close()
 
         super().closeEvent(event)
-        sys.exit(0)
+        quit(0)
