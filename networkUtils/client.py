@@ -39,10 +39,8 @@ class Client:
     async def health_check_server(self) -> bool:
         self.logger.debug('health checking server')
         status, exception, data = await self.connect(purpose=Message_Purpose.HEALTH_CHECK, use_logger=False)
-
         if not status:
             return False
-
         return True
 
     async def connect(self, purpose=Message_Purpose.CLIENT, timeout=2.5, use_logger: bool = True) -> tuple:

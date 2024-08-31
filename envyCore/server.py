@@ -65,9 +65,7 @@ class Server:
                 return 500, [("Content-Type", "text/plain")], b"connection from client already exists"
 
         if path == '/console':
-            if name in self.consoles:
-                self.logger.debug(f'rejecting console connection,Reason: console already exists {name}')
-                return 500, [("Content-Type", "text/plain")], b"connection from console already exists"
+            pass
 
         if passkey != self.hash:
             self.logger.debug("Invalid Passkey, rejecting connection")
@@ -101,7 +99,7 @@ class Server:
 
         if websocket.path == '/console':
             console = request_headers['Name']
-            self.register_console(console, client_ip, websocket)
+            await self.register_console(console, client_ip, websocket)
 
             # Start tasks per connection
             consumer_task = asyncio.create_task(self.console_handler(websocket, console))
@@ -215,29 +213,38 @@ class Server:
 
     async def register_client(self, client, ip, websocket):
         self.logger.info(f"Registering client: {client}")
-        self.clients[client] = {
+        new_client_data = {
             'IP': ip,
             'Socket': websocket,
             'Status': Status.IDLE,
             'Job': None,
             'Allocation': None,
         }
+        self.clients[client] = new_client_data
         update_clients_file(self.server_directory, self.clients)
-        await SRV.send_clients_to_console(self)
 
-    def register_console(self, console, ip, websocket):
-        # Register new console
+        json_safe_client_data = {
+            'IP': ip,
+            'Status': Status.IDLE,
+            'Job': None,
+            'Allocation': None,
+        }
+
+        await SRV.console_register_client(self, client, json_safe_client_data)
+
+    async def register_console(self, console, ip, websocket):
         self.logger.debug(f'Registering console {console}')
         self.consoles[console] = {
             'IP': ip,
             'Socket': websocket
         }
+        await SRV.send_clients_to_console(self)
 
     async def unregister_client(self, client):
         self.logger.info(f'Unregistering Client {client}')
         del self.clients[client]
         update_clients_file(self.server_directory, self.clients)
-        await SRV.send_clients_to_console(self)
+        await SRV.console_unregister_client(self, client)
 
     def unregister_console(self, console):
         self.logger.info(f'Unregistering Console {console}')
@@ -332,7 +339,7 @@ if __name__ == '__main__':
 
     logger = logging.getLogger(__name__)
     logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     receive_queue = Queue(maxsize=0)
     loop = asyncio.new_event_loop()
     ldr = Server(receive_queue=receive_queue, event_loop=loop, logger=logger)

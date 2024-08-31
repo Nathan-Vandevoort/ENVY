@@ -91,7 +91,7 @@ def get_server_ip(logger: logging.Logger = None) -> str:  # returns the ip addre
     """
     logger = logger or DummyLogger()
     logger.debug('getting server IP')
-    server_file_path = ENVYPATH + 'Connections/server.txt'
+    server_file_path = os.path.join(ENVYPATH, 'Connections', 'server.txt')
 
     # check if server file exists. If it does not create exist you are the server
     if not os.path.isfile(server_file_path):
@@ -141,8 +141,7 @@ def get_clients_from_file(logger: logging.Logger = None) -> dict:
     :return: clients dictionary from disk
     """
     logger = logger or DummyLogger()
-    clients_file_path = os.path.join(ENVYPATH, 'Connections/clients.json')
-
+    clients_file_path = os.path.join(ENVYPATH, 'Connections', 'clients.json')
     clients = None
     logger.debug(f'opening clients file at {clients_file_path}')
     with open(clients_file_path, 'r') as clients_file:

@@ -22,6 +22,10 @@ class ConsoleWidget(QWidget):
     jobs_start_allocation = Signal(tuple)
     jobs_start_task = Signal(tuple)
 
+    register_client = Signal(tuple)
+    unregister_client = Signal(str)
+    set_clients = Signal(dict)
+
     def __init__(self, parent=None, event_loop=None):
         super().__init__(parent)
 

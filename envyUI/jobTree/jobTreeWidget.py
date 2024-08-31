@@ -17,7 +17,7 @@ class JobTreeWidget(QTreeView):
     finish_job_element = Signal(object)
 
     def __init__(self, parent=None, logger=None):
-        super().__init__(parent)
+        super().__init__(parent=parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setSelectionMode(QTreeView.ExtendedSelection)
         self.customContextMenuRequested.connect(self.open_context_menu)

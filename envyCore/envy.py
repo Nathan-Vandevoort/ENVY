@@ -16,6 +16,7 @@ import psutil
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = os.environ['ENVYPATH']
+REPOPATH = config.Config.REPOPATH
 ENVY_FUNCTIONS = eutils.list_functions_in_file(os.path.join(ENVYPATH, 'Plugins', 'Envy_Functions' + '.py'))
 
 
@@ -115,8 +116,10 @@ class Envy:
             return False
 
     async def start_server(self):
-        plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server.py')
+        plugin_path = os.path.join(REPOPATH, 'envyCore', 'server.py')
+        self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
+        self.logger.debug(f'{cmd}')
         flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
         if self.check_server_file():
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())

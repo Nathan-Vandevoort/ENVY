@@ -13,17 +13,19 @@ import prep_env
 import asyncio, sys
 from PySide6.QtCore import Qt, QRect, QEvent, QPoint, QThread
 from PySide6.QtGui import QCursor, QVector2D, QTransform
-from PySide6.QtWidgets import QMainWindow, QWidget, QSizeGrip, QVBoxLayout, QHBoxLayout, QTextEdit, QTreeView, QSplitter
-import console_widget
-from jobTree import jobTreeWidget
+from PySide6.QtWidgets import QMainWindow, QWidget, QSizeGrip, QVBoxLayout, QHBoxLayout, QTextEdit, QTreeView, QSplitter, QApplication
+from envyUI import console_widget
+from envyUI.jobTree import jobTreeWidget
+from envyUI.viewport import viewportWidget
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, event_loop):
+    def __init__(self, event_loop, application: QApplication):
         super().__init__()
 
         # set the window flag to frameless
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        #self.setWindowFlags(Qt.FramelessWindowHint)
+        self.qapp = application
 
         # Envy backend
         self.event_loop = event_loop
@@ -33,10 +35,15 @@ class MainWindow(QMainWindow):
         self.mousePos = None
         self.initialPos = None
 
+        #  window settings
+        self.setWindowTitle("Envy Console")
+        self.resize(1600, 600)
+
         # settings
 
         # Widgets
-        self.viewport_widget = QTextEdit('Viewport')
+        screen_geometry = self.qapp.primaryScreen().geometry()
+        self.viewport_widget = viewportWidget.ViewportWidget(width=950, height=550)
         self.job_tree_widget = jobTreeWidget.JobTreeWidget()
         self.console_widget = console_widget.ConsoleWidget(event_loop=self.event_loop)
 
@@ -53,15 +60,12 @@ class MainWindow(QMainWindow):
         splitter = QSplitter(Qt.Horizontal)
         splitter.addWidget(self.viewport_widget)
         splitter.addWidget(right_container)
+        splitter.setSizes([1000, 600])
 
         central_widget = QWidget()
         central_layout = QHBoxLayout(central_widget)
         central_layout.addWidget(splitter)
         self.setCentralWidget(central_widget)
-
-        #  window settings
-        self.setWindowTitle("Envy Console")
-        self.resize(1600, 600)
 
         # --------------------------- Connections -----------------------------------#
 
@@ -73,6 +77,10 @@ class MainWindow(QMainWindow):
         self.console_widget.jobs_finish_task.connect(self.job_tree_widget.controller.mark_task_as_finished)  # console -> job tree. Tells the tree that a task has been finished
         self.console_widget.jobs_start_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_started)  # console -> job tree. Tells the tree a new allocation has been started
         self.console_widget.jobs_finish_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_finished)  # console -> job tree. tells the tree that an allocation has been finished
+
+        self.console_widget.register_client.connect(self.viewport_widget.controller.register_client)  # console -> viewport telling the viewport hey I just got a new client
+        self.console_widget.unregister_client.connect(self.viewport_widget.controller.unregister_client)  # console -> viewport telling the viewport hey I just lost connection to a client
+        self.console_widget.set_clients.connect(self.viewport_widget.controller.set_clients)  # console -> viewport telling the viewport to sync to new clients
 
     def mousePressEvent(self, event):
 

@@ -1,6 +1,7 @@
 from networkUtils import message as m
 from networkUtils.message_purpose import Message_Purpose
 import sys
+import json
 __config__ = sys.modules.get('__config__')
 
 async def send_to_console(server, console: str, message: m.Message | m.FunctionMessage) -> None:
@@ -65,14 +66,13 @@ async def send_clients_to_console(server, target_consoles: str | list = None) ->
 
     clients = server.clients
     clients = {k: {k2: v2 for k2, v2 in v.items() if k2 != 'Socket'} for k, v in clients.items()}
-    buffer_name = 'clients_buffer'
 
     server.logger.debug(f'sending (clients) to console: {target_consoles}')
     for console in target_consoles:
         message = m.FunctionMessage(f'send_clients_to_console()')
         message.set_target(Message_Purpose.CONSOLE)
-        message.set_function('fill_buffer')
-        message.format_arguments(buffer_name, data=clients)
+        message.set_function('set_clients')
+        message.format_arguments(data=clients)
         await send_to_console(server, console, message)
 
 
@@ -217,4 +217,18 @@ async def console_sync_job(server, job_id: int) -> None:
     new_message.set_target(Message_Purpose.CONSOLE)
     new_message.set_function('sync_job')
     new_message.format_arguments(job_id)
+    await send_to_consoles(server, new_message)
+
+async def console_register_client(server, client: str, client_data: dict) -> None:
+    new_message = m.FunctionMessage(f'console_register_client() {client}')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('register_client')
+    new_message.format_arguments(client, data=client_data)
+    await send_to_consoles(server, new_message)
+
+async def console_unregister_client(server, client: str) -> None:
+    new_message = m.FunctionMessage(f'console_register_client() {client}')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('unregister_client')
+    new_message.format_arguments(client)
     await send_to_consoles(server, new_message)

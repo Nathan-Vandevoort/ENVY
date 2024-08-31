@@ -20,6 +20,7 @@ from envyLib.colors import Colors as c
 import shutil
 import sys
 import os
+import json
 __config__ = sys.modules.get('__config__')
 
 
@@ -186,6 +187,27 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)
+
+
+async def register_client(console, client: str, data: dict) -> None:
+    console.clients_buffer[client] = data
+    if console.console_widget is None:
+        return
+    console.console_widget.register_client.emit((client, data))
+
+
+async def unregister_client(console, client: str) -> None:
+    del console.clients_buffer[client]
+    if console.console_widget is None:
+        return
+    console.console_widget.unregister_client.emit(client)
+
+
+async def set_clients(console, data: dict) -> None:
+    console.clients_buffer = data
+    if console.console_widget is None:
+        return
+    console.console_widget.set_clients.emit(data)
 
 
 # ------------------------------ UI ---------------------------------------------- #
