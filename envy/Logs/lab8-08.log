@@ -1,0 +1,192 @@
+
+
+2024-08-27 22:39:44.581937
+22:39:442024-08-27 22:39:44,692 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-27 22:39:44,709 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-27 22:39:54,719 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-27 22:39:54,721 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-27 22:39:54,721 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-27 22:39:54,721 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-27 22:39:54,722 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-27 22:39:55,760 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-27 22:39:55,762 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-27 22:39:55,768 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.125
+2024-08-27 22:39:55,768 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.125:37020/client
+2024-08-27 22:39:55,772 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-27 22:39:55,772 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-27 22:39:55,773 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.125
+2024-08-27 22:39:55,791 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab8-08', ))
+2024-08-27 22:39:55,838 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:39:55,838 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'lab8-08', )
+2024-08-27 22:39:57,812 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (6, 3591794551, '[121, 122, 123, 124, 125]', 'lab8-08', 'inprogress'))
+2024-08-27 22:39:57,926 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 6, "Purpose": "cache", "Tasks": {"121": 21, "122": 22, "123": 23, "124": 24, "125": 25}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:39:57,958 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:39:58,022 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 121)
+2024-08-27 22:40:11,109 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 121)
+2024-08-27 22:40:11,171 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 122)
+2024-08-27 22:40:12,181 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-27 22:40:12,190 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 9656
+2024-08-27 22:40:12,190 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 20284
+
+
+2024-08-27 22:40:17.549655
+22:40:172024-08-27 22:40:17,636 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-27 22:40:17,650 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-27 22:40:19,694 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-27 22:40:19,696 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-27 22:40:19,696 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-27 22:40:19,696 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-27 22:40:19,697 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-27 22:40:20,704 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-27 22:40:20,704 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-27 22:40:20,710 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.125
+2024-08-27 22:40:20,710 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.125:37020/client
+2024-08-27 22:40:21,219 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-27 22:40:21,219 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-27 22:40:21,220 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.125
+2024-08-27 22:40:21,229 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab8-08', ))
+2024-08-27 22:40:21,263 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:40:21,263 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'lab8-08', )
+2024-08-27 22:40:22,985 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (6, 3591794551, '[121, 122, 123, 124, 125]', 'lab8-08', 'inprogress'))
+2024-08-27 22:40:23,036 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 6, "Purpose": "cache", "Tasks": {"122": 22, "123": 23, "124": 24, "125": 25}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:40:23,143 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:40:23,206 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 122)
+2024-08-27 22:40:36,198 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 122)
+2024-08-27 22:40:36,260 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 123)
+2024-08-27 22:40:45,932 - __main__ - INFO - [client.py:170] - received message from: server -> (restart_envy())
+2024-08-27 22:40:45,963 - __main__ - DEBUG - [envy.py:261] - executing: await NV.restart_envy(self, )
+2024-08-27 22:40:45,963 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-27 22:40:45,971 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 9740
+2024-08-27 22:40:45,972 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 24452
+2024-08-27 22:40:45,972 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 13324
+
+
+2024-08-27 22:40:47.028267
+22:40:472024-08-27 22:40:47,096 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-27 22:40:47,106 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-27 22:40:49,128 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-27 22:40:49,130 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-27 22:40:49,130 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-27 22:40:49,130 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-27 22:40:49,130 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-27 22:40:50,128 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-27 22:40:50,129 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-27 22:40:50,135 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.125
+2024-08-27 22:40:50,135 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.125:37020/client
+2024-08-27 22:40:50,138 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-27 22:40:50,138 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-27 22:40:50,138 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.125
+2024-08-27 22:40:50,147 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab8-08', ))
+2024-08-27 22:40:50,206 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:40:50,238 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'lab8-08', )
+2024-08-27 22:40:52,057 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (6, 3591794551, '[121, 122, 123, 124, 125]', 'lab8-08', 'inprogress'))
+2024-08-27 22:40:52,085 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 6, "Purpose": "cache", "Tasks": {"123": 23, "124": 24, "125": 25}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:40:52,111 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:40:52,167 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 123)
+2024-08-27 22:41:05,261 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 123)
+2024-08-27 22:41:05,324 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 124)
+2024-08-27 22:41:18,246 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 124)
+2024-08-27 22:41:18,309 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 125)
+2024-08-27 22:41:31,313 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 125)
+2024-08-27 22:41:31,375 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 6)
+2024-08-27 22:41:31,422 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:41:32,221 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (7, 3591794551, '[126, 127, 128, 129, 130]', 'lab8-08', 'inprogress'))
+2024-08-27 22:41:32,284 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 7, "Purpose": "cache", "Tasks": {"126": 26, "127": 27, "128": 28, "129": 29, "130": 30}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:41:32,349 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:41:32,391 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 126)
+2024-08-27 22:41:45,473 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 126)
+2024-08-27 22:41:45,535 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 127)
+2024-08-27 22:41:58,398 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 127)
+2024-08-27 22:41:58,460 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 128)
+2024-08-27 22:42:11,474 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 128)
+2024-08-27 22:42:11,537 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 129)
+2024-08-27 22:42:24,470 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 129)
+2024-08-27 22:42:24,532 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 130)
+2024-08-27 22:42:37,438 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 130)
+2024-08-27 22:42:37,498 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 7)
+2024-08-27 22:42:37,546 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:42:38,481 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (8, 3591794551, '[131, 132, 133, 134, 135]', 'lab8-08', 'inprogress'))
+2024-08-27 22:42:38,508 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 8, "Purpose": "cache", "Tasks": {"131": 31, "132": 32, "133": 33, "134": 34, "135": 35}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:42:38,578 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:42:38,647 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 131)
+2024-08-27 22:42:51,652 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 131)
+2024-08-27 22:42:51,716 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 132)
+2024-08-27 22:43:04,653 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 132)
+2024-08-27 22:43:04,716 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 133)
+2024-08-27 22:43:17,651 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 133)
+2024-08-27 22:43:17,713 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 134)
+2024-08-27 22:43:30,729 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 134)
+2024-08-27 22:43:30,792 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 135)
+2024-08-27 22:43:43,694 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 135)
+2024-08-27 22:43:43,758 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 8)
+2024-08-27 22:43:43,805 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:43:44,741 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (9, 3591794551, '[136, 137, 138, 139, 140]', 'lab8-08', 'inprogress'))
+2024-08-27 22:43:44,791 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 9, "Purpose": "cache", "Tasks": {"136": 36, "137": 37, "138": 38, "139": 39, "140": 40}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:43:44,837 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:43:44,898 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 136)
+2024-08-27 22:43:57,945 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 136)
+2024-08-27 22:43:58,007 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 137)
+2024-08-27 22:44:10,967 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 137)
+2024-08-27 22:44:11,031 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 138)
+2024-08-27 22:44:23,990 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 138)
+2024-08-27 22:44:24,053 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 139)
+2024-08-27 22:44:36,942 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 139)
+2024-08-27 22:44:37,006 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 140)
+2024-08-27 22:44:50,006 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 140)
+2024-08-27 22:44:50,067 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 9)
+2024-08-27 22:44:50,115 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:44:51,019 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (10, 3591794551, '[141, 142, 143, 144, 145]', 'lab8-08', 'inprogress'))
+2024-08-27 22:44:51,096 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 10, "Purpose": "cache", "Tasks": {"141": 41, "142": 42, "143": 43, "144": 44, "145": 45}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:44:51,156 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:44:51,205 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 141)
+2024-08-27 22:45:04,257 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 141)
+2024-08-27 22:45:04,319 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 142)
+2024-08-27 22:45:17,211 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 142)
+2024-08-27 22:45:17,273 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 143)
+2024-08-27 22:45:30,291 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 143)
+2024-08-27 22:45:30,355 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 144)
+2024-08-27 22:45:43,233 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 144)
+2024-08-27 22:45:43,295 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 145)
+2024-08-27 22:45:56,308 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 145)
+2024-08-27 22:45:56,371 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 10)
+2024-08-27 22:45:56,419 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:45:57,306 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (11, 3591794551, '[146, 147, 148, 149, 150]', 'lab8-08', 'inprogress'))
+2024-08-27 22:45:57,401 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 11, "Purpose": "cache", "Tasks": {"146": 46, "147": 47, "148": 48, "149": 49, "150": 50}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:45:57,462 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:45:57,525 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 146)
+2024-08-27 22:46:10,579 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 146)
+2024-08-27 22:46:10,643 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 147)
+2024-08-27 22:46:12,288 - __main__ - INFO - [client.py:170] - received message from: server -> (restart_envy())
+2024-08-27 22:46:12,397 - __main__ - DEBUG - [envy.py:261] - executing: await NV.restart_envy(self, )
+2024-08-27 22:46:12,397 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-27 22:46:12,405 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 1408
+2024-08-27 22:46:12,405 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 23352
+2024-08-27 22:46:12,405 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 9972
+
+
+2024-08-27 22:46:13.406448
+22:46:132024-08-27 22:46:13,451 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-27 22:46:13,461 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-27 22:46:15,488 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-27 22:46:15,490 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-27 22:46:15,490 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-27 22:46:15,490 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-27 22:46:15,490 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-27 22:46:16,514 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-27 22:46:16,515 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-27 22:46:16,521 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.125
+2024-08-27 22:46:16,521 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.125:37020/client
+2024-08-27 22:46:16,524 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-27 22:46:16,524 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-27 22:46:16,524 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.125
+2024-08-27 22:46:16,576 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:46:16,578 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab8-08', ))
+2024-08-27 22:46:16,687 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'lab8-08', )
+2024-08-27 22:46:18,249 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (11, 3591794551, '[146, 147, 148, 149, 150]', 'lab8-08', 'inprogress'))
+2024-08-27 22:46:18,339 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 11, "Purpose": "cache", "Tasks": {"147": 47, "148": 48, "149": 49, "150": 50}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-27 22:46:18,400 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-27 22:46:18,463 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 147)
+2024-08-27 22:46:31,503 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 147)
+2024-08-27 22:46:31,551 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 148)
+2024-08-27 22:46:31,914 - __main__ - INFO - [client.py:170] - received message from: server -> (sign_out())
+2024-08-27 22:46:31,930 - __main__ - DEBUG - [envy.py:261] - executing: await NV.sign_out(self, )

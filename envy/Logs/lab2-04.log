@@ -1,0 +1,154 @@
+
+
+2024-08-17 18:40:15.005173
+18:40:152024-08-17 18:40:15,068 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 18:40:15,071 - __main__ - INFO - [client.py:141] - Client: Connected
+2024-08-17 18:40:15,124 - __main__ - INFO - [client.py:158] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 18:40:16,800 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176524)
+2024-08-17 18:40:17,099 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 25
+2024-08-17 18:40:44,948 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176528)
+2024-08-17 18:40:45,383 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 29
+2024-08-17 18:41:13,150 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176532)
+2024-08-17 18:41:13,601 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 33
+2024-08-17 18:41:41,414 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176536)
+2024-08-17 18:41:41,857 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 37
+2024-08-17 18:42:09,658 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176540)
+2024-08-17 18:42:10,092 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 41
+2024-08-17 18:42:37,887 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176544)
+2024-08-17 18:42:38,352 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 45
+2024-08-17 18:43:06,060 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176548)
+2024-08-17 18:43:06,103 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 49
+2024-08-17 18:43:32,276 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176552)
+2024-08-17 18:43:32,325 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 53
+2024-08-17 18:43:58,493 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176556)
+2024-08-17 18:43:58,553 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 57
+2024-08-17 18:44:24,720 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176560)
+2024-08-17 18:44:24,770 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 61
+2024-08-17 18:44:50,926 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176564)
+2024-08-17 18:44:50,996 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 65
+2024-08-17 18:45:17,159 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176568)
+2024-08-17 18:45:17,216 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 69
+2024-08-17 18:45:43,410 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176572)
+2024-08-17 18:45:43,933 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 73
+2024-08-17 18:46:11,638 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176577)
+2024-08-17 18:46:11,682 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 78
+2024-08-17 18:46:41,216 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176581)
+2024-08-17 18:46:41,463 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 82
+2024-08-17 18:47:09,358 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176585)
+2024-08-17 18:47:09,723 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 86
+2024-08-17 18:47:37,553 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176589)
+2024-08-17 18:47:37,954 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 90
+2024-08-17 18:47:48,349 - __main__ - WARNING - [client.py:145] - connection closed with server
+2024-08-17 18:47:48,349 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 18:47:58,376 - __main__ - INFO - [client.py:141] - Client: Connected
+2024-08-17 18:47:58,390 - __main__ - INFO - [client.py:158] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 18:48:04,063 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 88635817656)
+2024-08-17 18:48:04,691 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 7
+2024-08-17 18:48:32,248 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 886358176517)
+2024-08-17 18:48:32,379 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 18
+2024-08-17 18:52:22,086 - __main__ - WARNING - [client.py:145] - connection closed with server
+2024-08-17 18:52:22,199 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 18:52:32,219 - __main__ - INFO - [client.py:141] - Client: Connected
+2024-08-17 18:52:32,235 - __main__ - INFO - [client.py:158] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 18:52:33,554 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 46307501616)
+2024-08-17 18:52:33,726 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 7
+2024-08-17 18:52:57,822 - __main__ - WARNING - [client.py:145] - connection closed with server
+2024-08-17 18:52:57,822 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 18:52:58,862 - __main__ - INFO - [client.py:141] - Client: Connected
+2024-08-17 18:52:58,866 - __main__ - INFO - [client.py:158] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-04', ))
+2024-08-17 18:53:00,643 - __main__ - INFO - [client.py:158] - received message from: server -> (Task: 46307501616)
+2024-08-17 18:53:00,985 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 7
+
+
+2024-08-17 19:36:24.484364
+19:36:242024-08-17 19:36:24,539 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 19:36:24,541 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:36:24,585 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:36:47,938 - __main__ - INFO - [client.py:161] - received message from: server -> (Task: 48719275252)
+2024-08-17 19:36:48,252 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 3
+2024-08-17 19:38:25,282 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 19:38:25,282 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 19:38:35,304 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:38:35,359 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 19:38:56,386 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 19:38:56,395 - __main__ - INFO - [envy.py:213] - electing new server
+
+
+2024-08-17 19:39:08.392566
+19:39:082024-08-17 19:39:08,444 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 19:39:08,447 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:39:08,461 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:40:11,581 - __main__ - INFO - [client.py:161] - received message from: server -> (Task: 94919487431)
+2024-08-17 19:40:11,916 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 2
+2024-08-17 19:47:07,959 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 19:47:07,959 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 19:47:17,980 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:47:18,032 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:48:49,436 - __main__ - INFO - [client.py:161] - received message from: server -> (restart_envy())
+
+
+2024-08-17 19:48:50.697498
+19:48:502024-08-17 19:48:50,752 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 19:48:50,754 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:48:50,803 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:48:53,776 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 19:48:53,776 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 19:49:03,795 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:49:03,846 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:49:38,447 - __main__ - INFO - [client.py:161] - received message from: server -> (Task: 56152314652)
+2024-08-17 19:49:38,810 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 3
+2024-08-17 19:56:40,635 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 19:56:40,635 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 19:56:50,663 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 19:56:50,679 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 19:57:05,757 - __main__ - INFO - [client.py:161] - received message from: server -> (Task: 84609263772)
+2024-08-17 19:57:06,041 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 3
+2024-08-17 20:04:55,119 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:04:55,119 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:05:05,139 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:05:05,154 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB2-12', ))
+2024-08-17 20:05:05,821 - __main__ - INFO - [client.py:161] - received message from: server -> (Task: 14336104412)
+2024-08-17 20:05:06,153 - __main__ - INFO - [envy_plugin.py:17] - Plugin-Debug: Initialized -> Frame: 3
+2024-08-17 20:13:30,316 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:13:30,316 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:13:40,342 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:13:40,358 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:30:30,936 - __main__ - INFO - [client.py:161] - received message from: server -> (restart_envy())
+
+
+2024-08-17 20:30:32.359033
+20:30:322024-08-17 20:30:32,408 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 20:30:32,411 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:30:32,466 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:30:35,403 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:30:35,403 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:30:36,441 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:30:36,496 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:30:49,239 - __main__ - INFO - [client.py:161] - received message from: server -> (restart_envy())
+
+
+2024-08-17 20:30:50.659074
+20:30:502024-08-17 20:30:50,709 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 20:30:50,711 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:30:50,724 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:30:52,227 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:30:52,227 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:30:53,259 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:30:53,309 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:46:43,383 - __main__ - INFO - [client.py:161] - received message from: server -> (restart_envy())
+
+
+2024-08-17 20:46:44.470618
+20:46:442024-08-17 20:46:44,520 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-17 20:46:44,522 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:46:44,535 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-03', ))
+2024-08-17 20:46:47,526 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:46:47,526 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:46:48,575 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:46:48,579 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-04', ))
+2024-08-17 20:58:02,901 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:58:02,901 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-17 20:58:03,940 - __main__ - INFO - [client.py:144] - Client: Connected
+2024-08-17 20:58:03,953 - __main__ - INFO - [client.py:161] - received message from: server -> (fill_buffer(self, 'server_name', 'lab2-04', ))
+2024-08-17 20:58:23,559 - __main__ - WARNING - [client.py:148] - connection closed with server
+2024-08-17 20:58:23,559 - __main__ - INFO - [envy.py:213] - electing new server

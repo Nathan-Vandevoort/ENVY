@@ -1,0 +1,5 @@
+This document is intended to be a record of any http status codes I use
+This exists because I am a monkey and I dont know anything about the correct status codes to use
+
+500: computer already exists within server's clients or consoles dictionary so connection is refused
+403: Invalid passkey

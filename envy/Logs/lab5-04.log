@@ -1,0 +1,758 @@
+
+
+2024-08-19 22:34:40.689423
+22:34:402024-08-19 22:34:40,756 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-19 22:34:40,760 - __main__ - INFO - [client.py:145] - Client: Connected
+2024-08-19 22:34:40,804 - __main__ - INFO - [client.py:162] - received message from: server -> (fill_buffer(self, 'server_name', 'lab5-01', ))
+2024-08-19 22:34:41,724 - __main__ - INFO - [client.py:162] - received message from: server -> (Job: something_else Allocation: (7, 2, '[17, 18, 19]', 'lab5-04', 'inprogress'))
+
+
+2024-08-23 19:49:58.028472
+19:49:582024-08-23 19:49:58,101 - __main__ - DEBUG - [envy.py:57] - choosing role
+2024-08-23 19:49:58,113 - __main__ - DEBUG - [client.py:39] - health checking server
+2024-08-23 19:50:08,124 - __main__ - DEBUG - [envy.py:65] - server health check status: False
+2024-08-23 19:50:08,127 - __main__ - DEBUG - [envy.py:74] - I am the server
+2024-08-23 19:50:08,127 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-23 19:50:08,127 - __main__ - DEBUG - [envy.py:148] - envy.connect: Purpose is server
+2024-08-23 19:50:08,127 - __main__ - DEBUG - [envy.py:105] - writing server file
+2024-08-23 19:50:09,149 - __main__ - DEBUG - [envy_utils.py:94] - getting server IP
+2024-08-23 19:50:09,149 - __main__ - DEBUG - [envy_utils.py:106] - server file found
+2024-08-23 19:50:09,157 - __main__ - DEBUG - [envy_utils.py:110] - server ip address is: 10.1.16.60
+2024-08-23 19:50:09,157 - __main__ - DEBUG - [client.py:53] - attempting to connect with server at ws://10.1.16.60:37020/client
+2024-08-23 19:50:19,167 - __main__ - INFO - [envy.py:155] - Failed to connect to server
+2024-08-23 19:50:19,167 - __main__ - INFO - [envy.py:159] - Failed to connect because of timeout
+2024-08-23 19:50:19,167 - __main__ - DEBUG - [envy.py:160] - Info: , exception type: <class 'TimeoutError'>
+2024-08-23 19:50:19,167 - __main__ - INFO - [envy.py:213] - electing new server
+2024-08-23 19:50:19,167 - __main__ - DEBUG - [envy_utils.py:148] - opening clients file at Z:/school/envy/__envytest__/Connections/clients.json
+2024-08-23 19:50:19,182 - __main__ - DEBUG - [envy_utils.py:153] - returning clients: {}
+
+
+2024-08-23 20:00:34.956628
+20:00:342024-08-23 20:00:35,009 - __main__ - DEBUG - [envy.py:57] - choosing role
+2024-08-23 20:00:35,021 - __main__ - DEBUG - [client.py:39] - health checking server
+2024-08-23 20:00:37,038 - __main__ - DEBUG - [envy.py:65] - server health check status: False
+2024-08-23 20:00:37,040 - __main__ - DEBUG - [envy.py:74] - I am the server
+2024-08-23 20:00:37,040 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-23 20:00:37,040 - __main__ - DEBUG - [envy.py:148] - envy.connect: Purpose is server
+2024-08-23 20:00:37,040 - __main__ - DEBUG - [envy.py:105] - writing server file
+2024-08-23 20:00:38,070 - __main__ - DEBUG - [envy_utils.py:94] - getting server IP
+2024-08-23 20:00:38,071 - __main__ - DEBUG - [envy_utils.py:106] - server file found
+2024-08-23 20:00:38,077 - __main__ - DEBUG - [envy_utils.py:110] - server ip address is: 10.1.16.25
+2024-08-23 20:00:38,077 - __main__ - DEBUG - [client.py:53] - attempting to connect with server at ws://10.1.16.25:37020/client
+2024-08-23 20:00:38,080 - __main__ - DEBUG - [client.py:134] - networkUtils.client started
+2024-08-23 20:00:38,080 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-23 20:00:38,080 - __main__ - DEBUG - [client.py:158] - connected to: 10.1.16.25
+2024-08-23 20:00:38,093 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab5-04', ))
+2024-08-23 20:00:38,134 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 20:00:38,585 - __main__ - DEBUG - [envy.py:256] - executing: await NV.fill_buffer(self, 'server_name', 'lab5-04', )
+2024-08-23 20:00:40,061 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: NV_jobProcessor1_001 Allocation: (28, 9, '[801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900]', 'lab5-04', 'inprogress'))
+2024-08-23 20:00:40,097 - __main__ - DEBUG - [envy.py:256] - executing: await NV.PLUGIN_eHoudini(self, '{"Allocation_Id": 28, "Purpose": "simulation", "Tasks": {"801": 1001, "802": 1002, "803": 1003, "804": 1004, "805": 1005, "806": 1006, "807": 1007, "808": 1008, "809": 1009, "810": 1010, "811": 1011, "812": 1012, "813": 1013, "814": 1014, "815": 1015, "816": 1016, "817": 1017, "818": 1018, "819": 1019, "820": 1020, "821": 1021, "822": 1022, "823": 1023, "824": 1024, "825": 1025, "826": 1026, "827": 1027, "828": 1028, "829": 1029, "830": 1030, "831": 1031, "832": 1032, "833": 1033, "834": 1034, "835": 1035, "836": 1036, "837": 1037, "838": 1038, "839": 1039, "840": 1040, "841": 1041, "842": 1042, "843": 1043, "844": 1044, "845": 1045, "846": 1046, "847": 1047, "848": 1048, "849": 1049, "850": 1050, "851": 1051, "852": 1052, "853": 1053, "854": 1054, "855": 1055, "856": 1056, "857": 1057, "858": 1058, "859": 1059, "860": 1060, "861": 1061, "862": 1062, "863": 1063, "864": 1064, "865": 1065, "866": 1066, "867": 1067, "868": 1068, "869": 1069, "870": 1070, "871": 1071, "872": 1072, "873": 1073, "874": 1074, "875": 1075, "876": 1076, "877": 1077, "878": 1078, "879": 1079, "880": 1080, "881": 1081, "882": 1082, "883": 1083, "884": 1084, "885": 1085, "886": 1086, "887": 1087, "888": 1088, "889": 1089, "890": 1090, "891": 1091, "892": 1092, "893": 1093, "894": 1094, "895": 1095, "896": 1096, "897": 1097, "898": 1098, "899": 1099, "900": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {"/obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude": 4.0}}', )
+2024-08-23 20:00:40,136 - __main__ - INFO - [Envy_Functions.py:172] - eHoudini: Started
+2024-08-23 20:00:40,136 - __main__ - DEBUG - [plugin.py:33] - Allocation Data String: {"Allocation_Id": 28, "Purpose": "simulation", "Tasks": {"801": 1001, "802": 1002, "803": 1003, "804": 1004, "805": 1005, "806": 1006, "807": 1007, "808": 1008, "809": 1009, "810": 1010, "811": 1011, "812": 1012, "813": 1013, "814": 1014, "815": 1015, "816": 1016, "817": 1017, "818": 1018, "819": 1019, "820": 1020, "821": 1021, "822": 1022, "823": 1023, "824": 1024, "825": 1025, "826": 1026, "827": 1027, "828": 1028, "829": 1029, "830": 1030, "831": 1031, "832": 1032, "833": 1033, "834": 1034, "835": 1035, "836": 1036, "837": 1037, "838": 1038, "839": 1039, "840": 1040, "841": 1041, "842": 1042, "843": 1043, "844": 1044, "845": 1045, "846": 1046, "847": 1047, "848": 1048, "849": 1049, "850": 1050, "851": 1051, "852": 1052, "853": 1053, "854": 1054, "855": 1055, "856": 1056, "857": 1057, "858": 1058, "859": 1059, "860": 1060, "861": 1061, "862": 1062, "863": 1063, "864": 1064, "865": 1065, "866": 1066, "867": 1067, "868": 1068, "869": 1069, "870": 1070, "871": 1071, "872": 1072, "873": 1073, "874": 1074, "875": 1075, "876": 1076, "877": 1077, "878": 1078, "879": 1079, "880": 1080, "881": 1081, "882": 1082, "883": 1083, "884": 1084, "885": 1085, "886": 1086, "887": 1087, "888": 1088, "889": 1089, "890": 1090, "891": 1091, "892": 1092, "893": 1093, "894": 1094, "895": 1095, "896": 1096, "897": 1097, "898": 1098, "899": 1099, "900": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {"/obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude": 4.0}}
+2024-08-23 20:00:40,137 - __main__ - DEBUG - [plugin.py:107] - eHoudini: starting resumable simulation process
+2024-08-23 20:00:40,150 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 20:00:40,150 - __main__ - INFO - [plugin.py:76] - eHoudini: Started hython_process
+2024-08-23 20:00:40,151 - __main__ - INFO - [plugin.py:145] - eHoudini: Monitoring output
+2024-08-23 20:00:40,151 - __main__ - INFO - [plugin.py:151] - eHoudini: Monitoring error
+2024-08-23 20:00:41,330 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | log started Fri Aug 23 20:00:41 2024
+2024-08-23 20:00:41,331 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | Arnold 7.3.1.1 [25d993ed] windows x86_64 clang-15.0.7 oiio-2.4.1 osl-1.13.0 vdb-7.1.1 adlsdk-8.0.7.50 clmhub-3.1.1.43 rlm-14.2.5 optix-8.0.0 2024/04/22 19:04:10
+2024-08-23 20:00:41,332 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | running on lab5-04, pid=66440
+2024-08-23 20:00:41,332 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  1 x AMD Ryzen Threadripper PRO 3945WX 12-Cores  (12 cores, 24 logical) with 130925MB
+2024-08-23 20:00:41,332 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  NVIDIA driver version 555.85
+2024-08-23 20:00:41,332 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  GPU 0: NVIDIA GeForce RTX 3080 @ 1710MHz (compute 8.6) with 10239MB (8973MB available) (NVLink:0)
+2024-08-23 20:00:41,333 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  Windows 10 (version 10.0, build 19045)
+2024-08-23 20:00:41,333 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  soft limit for open files changed from 8192 to 2048
+2024-08-23 20:00:41,333 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |
+2024-08-23 20:00:41,349 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   261MB         | loading plugins from C:\solidangle\htoa\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\scripts\bin\..\plugins ...
+2024-08-23 20:00:41,352 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  alembic_proc.dll: alembic uses Arnold 7.3.1.1
+2024-08-23 20:00:41,356 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte uses Arnold 7.3.1.1
+2024-08-23 20:00:41,356 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_filter uses Arnold 7.3.1.1
+2024-08-23 20:00:41,356 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_manifest_driver uses Arnold 7.3.1.1
+2024-08-23 20:00:41,358 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  htoa_mandelbulb_proc.dll: mandelbulb uses Arnold 7.3.1.1
+2024-08-23 20:00:41,449 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   279MB         |  usd_proc.dll: usd uses Arnold 7.3.1.1
+2024-08-23 20:00:41,455 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   280MB         | loaded 6 plugins from 4 lib(s) in 0:00.10
+2024-08-23 20:00:41,457 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   287MB         | [htoa_op] Begin registration ...
+2024-08-23 20:00:41,461 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   288MB         | [obj_procedurals] Registering procedurals ...
+2024-08-23 20:00:41,462 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   281MB         | [obj_procedurals] procedural registration done.
+2024-08-23 20:00:41,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   313MB         | [rop_operators] Registering operators ...
+2024-08-23 20:00:41,677 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   313MB         | [rop_operators] operator registration done.
+2024-08-23 20:00:42,567 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   360MB         | [vop_shaders] Registering shaders ...
+2024-08-23 20:00:42,580 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_shaders] shader registration done.
+2024-08-23 20:00:42,580 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_imagers] Registering imagers ...
+2024-08-23 20:00:42,582 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_imagers] imager registration done.
+2024-08-23 20:00:42,582 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [htoa_op] USD shader translation registration
+2024-08-23 20:00:42,960 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | [htoa_op] End registration.
+2024-08-23 20:00:42,960 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         |
+2024-08-23 20:00:42,961 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | releasing resources
+2024-08-23 20:00:42,963 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | Arnold shutdown
+2024-08-23 20:00:50,940 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1001
+2024-08-23 20:00:50,940 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f1 -> 1001
+2024-08-23 20:00:50,941 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 20:00:50,941 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 20:00:50,942 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 20:00:50,942 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 20:00:50,942 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 2.0
+2024-08-23 20:00:51,000 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/NVversion -> 2.0
+2024-08-23 20:00:51,000 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1.0
+2024-08-23 20:00:51,001 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/substeps -> 1.0
+2024-08-23 20:00:51,001 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 4.0
+2024-08-23 20:00:51,024 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude -> 4.0
+2024-08-23 20:00:52,402 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 0%
+2024-08-23 20:00:52,403 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:52,454 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 801)
+2024-08-23 20:00:52,518 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 802)
+2024-08-23 20:00:52,821 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 1%
+2024-08-23 20:00:52,821 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:52,898 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 802)
+2024-08-23 20:00:52,962 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 803)
+2024-08-23 20:00:53,042 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 2%
+2024-08-23 20:00:53,042 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:53,121 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 803)
+2024-08-23 20:00:53,184 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 804)
+2024-08-23 20:00:53,221 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 3%
+2024-08-23 20:00:53,221 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:53,254 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 804)
+2024-08-23 20:00:53,310 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 805)
+2024-08-23 20:00:53,563 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 4%
+2024-08-23 20:00:53,563 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:53,594 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 805)
+2024-08-23 20:00:53,657 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 806)
+2024-08-23 20:00:53,781 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 5%
+2024-08-23 20:00:53,781 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:53,815 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 806)
+2024-08-23 20:00:53,879 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 807)
+2024-08-23 20:00:54,005 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 6%
+2024-08-23 20:00:54,006 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:54,056 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 807)
+2024-08-23 20:00:54,125 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 808)
+2024-08-23 20:00:54,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 7%
+2024-08-23 20:00:54,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:54,293 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 808)
+2024-08-23 20:00:54,356 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 809)
+2024-08-23 20:00:54,458 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 8%
+2024-08-23 20:00:54,458 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:54,516 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 809)
+2024-08-23 20:00:54,580 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 810)
+2024-08-23 20:00:54,880 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 9%
+2024-08-23 20:00:54,880 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:54,928 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 810)
+2024-08-23 20:00:54,992 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 811)
+2024-08-23 20:00:55,143 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 10%
+2024-08-23 20:00:55,143 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:55,166 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 811)
+2024-08-23 20:00:55,214 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 812)
+2024-08-23 20:00:55,418 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 11%
+2024-08-23 20:00:55,418 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:55,501 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 812)
+2024-08-23 20:00:55,573 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 813)
+2024-08-23 20:00:55,665 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 12%
+2024-08-23 20:00:55,665 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:55,725 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 813)
+2024-08-23 20:00:55,788 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 814)
+2024-08-23 20:00:55,923 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 13%
+2024-08-23 20:00:55,923 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:55,962 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 814)
+2024-08-23 20:00:56,023 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 815)
+2024-08-23 20:00:56,545 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 14%
+2024-08-23 20:00:56,546 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:56,640 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 815)
+2024-08-23 20:00:56,709 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 816)
+2024-08-23 20:00:56,830 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 15%
+2024-08-23 20:00:56,831 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:56,894 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 816)
+2024-08-23 20:00:56,958 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 817)
+2024-08-23 20:00:57,120 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 16%
+2024-08-23 20:00:57,121 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:57,226 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 817)
+2024-08-23 20:00:57,290 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 818)
+2024-08-23 20:00:57,467 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 17%
+2024-08-23 20:00:57,467 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:57,576 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 818)
+2024-08-23 20:00:57,624 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 819)
+2024-08-23 20:00:57,823 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 18%
+2024-08-23 20:00:57,823 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:57,892 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 819)
+2024-08-23 20:00:57,955 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 820)
+2024-08-23 20:00:58,450 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 19%
+2024-08-23 20:00:58,450 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:58,566 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 820)
+2024-08-23 20:00:58,630 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 821)
+2024-08-23 20:00:58,821 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 20%
+2024-08-23 20:00:58,821 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:58,916 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 821)
+2024-08-23 20:00:58,980 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 822)
+2024-08-23 20:00:59,162 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 21%
+2024-08-23 20:00:59,162 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:59,264 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 822)
+2024-08-23 20:00:59,327 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 823)
+2024-08-23 20:00:59,556 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 22%
+2024-08-23 20:00:59,557 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:00:59,614 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 823)
+2024-08-23 20:00:59,677 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 824)
+2024-08-23 20:00:59,954 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 23%
+2024-08-23 20:00:59,955 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:00,061 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 824)
+2024-08-23 20:01:00,125 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 825)
+2024-08-23 20:01:00,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 24%
+2024-08-23 20:01:00,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:00,738 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 825)
+2024-08-23 20:01:00,802 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 826)
+2024-08-23 20:01:01,117 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 25%
+2024-08-23 20:01:01,117 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:01,198 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 826)
+2024-08-23 20:01:01,262 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 827)
+2024-08-23 20:01:01,517 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 26%
+2024-08-23 20:01:01,518 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:01,564 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 827)
+2024-08-23 20:01:01,626 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 828)
+2024-08-23 20:01:01,921 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 27%
+2024-08-23 20:01:01,921 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:02,024 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 828)
+2024-08-23 20:01:02,086 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 829)
+2024-08-23 20:01:02,393 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 28%
+2024-08-23 20:01:02,394 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:02,480 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 829)
+2024-08-23 20:01:02,546 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 830)
+2024-08-23 20:01:03,359 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 29%
+2024-08-23 20:01:03,359 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:03,383 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 830)
+2024-08-23 20:01:03,448 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 831)
+2024-08-23 20:01:03,809 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 30%
+2024-08-23 20:01:03,810 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:03,844 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 831)
+2024-08-23 20:01:03,919 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 832)
+2024-08-23 20:01:04,341 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 31%
+2024-08-23 20:01:04,342 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:04,435 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 832)
+2024-08-23 20:01:04,499 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 833)
+2024-08-23 20:01:04,898 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 32%
+2024-08-23 20:01:04,899 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:05,009 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 833)
+2024-08-23 20:01:05,073 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 834)
+2024-08-23 20:01:05,395 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 33%
+2024-08-23 20:01:05,396 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:05,437 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 834)
+2024-08-23 20:01:05,502 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 835)
+2024-08-23 20:01:06,532 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 34%
+2024-08-23 20:01:06,532 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:06,574 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 835)
+2024-08-23 20:01:06,621 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 836)
+2024-08-23 20:01:07,065 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 35%
+2024-08-23 20:01:07,066 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:07,131 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 836)
+2024-08-23 20:01:07,202 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 837)
+
+
+2024-08-23 20:01:11.867297
+20:01:112024-08-23 20:01:11,917 - __main__ - DEBUG - [envy.py:57] - choosing role
+2024-08-23 20:01:11,932 - __main__ - DEBUG - [client.py:39] - health checking server
+2024-08-23 20:01:13,958 - __main__ - DEBUG - [envy.py:65] - server health check status: False
+2024-08-23 20:01:13,960 - __main__ - DEBUG - [envy.py:74] - I am the server
+2024-08-23 20:01:13,960 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-23 20:01:13,960 - __main__ - DEBUG - [envy.py:148] - envy.connect: Purpose is server
+2024-08-23 20:01:13,960 - __main__ - DEBUG - [envy.py:105] - writing server file
+2024-08-23 20:01:14,980 - __main__ - DEBUG - [envy_utils.py:94] - getting server IP
+2024-08-23 20:01:14,981 - __main__ - DEBUG - [envy_utils.py:106] - server file found
+2024-08-23 20:01:14,987 - __main__ - DEBUG - [envy_utils.py:110] - server ip address is: 10.1.16.25
+2024-08-23 20:01:14,987 - __main__ - DEBUG - [client.py:53] - attempting to connect with server at ws://10.1.16.25:37020/client
+2024-08-23 20:01:14,990 - __main__ - DEBUG - [client.py:134] - networkUtils.client started
+2024-08-23 20:01:14,990 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-23 20:01:14,990 - __main__ - DEBUG - [client.py:158] - connected to: 10.1.16.25
+2024-08-23 20:01:15,005 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab5-04', ))
+2024-08-23 20:01:15,059 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 20:01:15,480 - __main__ - DEBUG - [envy.py:256] - executing: await NV.fill_buffer(self, 'server_name', 'lab5-04', )
+2024-08-23 20:01:17,059 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: NV_jobProcessor1_001 Allocation: (28, 9, '[801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900]', 'lab5-04', 'inprogress'))
+2024-08-23 20:01:17,484 - __main__ - DEBUG - [envy.py:256] - executing: await NV.PLUGIN_eHoudini(self, '{"Allocation_Id": 28, "Purpose": "simulation", "Tasks": {"837": 1037, "838": 1038, "839": 1039, "840": 1040, "841": 1041, "842": 1042, "843": 1043, "844": 1044, "845": 1045, "846": 1046, "847": 1047, "848": 1048, "849": 1049, "850": 1050, "851": 1051, "852": 1052, "853": 1053, "854": 1054, "855": 1055, "856": 1056, "857": 1057, "858": 1058, "859": 1059, "860": 1060, "861": 1061, "862": 1062, "863": 1063, "864": 1064, "865": 1065, "866": 1066, "867": 1067, "868": 1068, "869": 1069, "870": 1070, "871": 1071, "872": 1072, "873": 1073, "874": 1074, "875": 1075, "876": 1076, "877": 1077, "878": 1078, "879": 1079, "880": 1080, "881": 1081, "882": 1082, "883": 1083, "884": 1084, "885": 1085, "886": 1086, "887": 1087, "888": 1088, "889": 1089, "890": 1090, "891": 1091, "892": 1092, "893": 1093, "894": 1094, "895": 1095, "896": 1096, "897": 1097, "898": 1098, "899": 1099, "900": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {"/obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude": 4.0}}', )
+2024-08-23 20:01:17,504 - __main__ - INFO - [Envy_Functions.py:172] - eHoudini: Started
+2024-08-23 20:01:17,504 - __main__ - DEBUG - [plugin.py:33] - Allocation Data String: {"Allocation_Id": 28, "Purpose": "simulation", "Tasks": {"837": 1037, "838": 1038, "839": 1039, "840": 1040, "841": 1041, "842": 1042, "843": 1043, "844": 1044, "845": 1045, "846": 1046, "847": 1047, "848": 1048, "849": 1049, "850": 1050, "851": 1051, "852": 1052, "853": 1053, "854": 1054, "855": 1055, "856": 1056, "857": 1057, "858": 1058, "859": 1059, "860": 1060, "861": 1061, "862": 1062, "863": 1063, "864": 1064, "865": 1065, "866": 1066, "867": 1067, "868": 1068, "869": 1069, "870": 1070, "871": 1071, "872": 1072, "873": 1073, "874": 1074, "875": 1075, "876": 1076, "877": 1077, "878": 1078, "879": 1079, "880": 1080, "881": 1081, "882": 1082, "883": 1083, "884": 1084, "885": 1085, "886": 1086, "887": 1087, "888": 1088, "889": 1089, "890": 1090, "891": 1091, "892": 1092, "893": 1093, "894": 1094, "895": 1095, "896": 1096, "897": 1097, "898": 1098, "899": 1099, "900": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {"/obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude": 4.0}}
+2024-08-23 20:01:17,505 - __main__ - DEBUG - [plugin.py:107] - eHoudini: starting resumable simulation process
+2024-08-23 20:01:17,516 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 20:01:17,516 - __main__ - INFO - [plugin.py:76] - eHoudini: Started hython_process
+2024-08-23 20:01:17,517 - __main__ - INFO - [plugin.py:145] - eHoudini: Monitoring output
+2024-08-23 20:01:17,517 - __main__ - INFO - [plugin.py:151] - eHoudini: Monitoring error
+2024-08-23 20:01:18,648 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | log started Fri Aug 23 20:01:18 2024
+2024-08-23 20:01:18,649 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | Arnold 7.3.1.1 [25d993ed] windows x86_64 clang-15.0.7 oiio-2.4.1 osl-1.13.0 vdb-7.1.1 adlsdk-8.0.7.50 clmhub-3.1.1.43 rlm-14.2.5 optix-8.0.0 2024/04/22 19:04:10
+2024-08-23 20:01:18,649 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | running on lab5-04, pid=74328
+2024-08-23 20:01:18,650 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  1 x AMD Ryzen Threadripper PRO 3945WX 12-Cores  (12 cores, 24 logical) with 130925MB
+2024-08-23 20:01:18,650 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  NVIDIA driver version 555.85
+2024-08-23 20:01:18,650 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  GPU 0: NVIDIA GeForce RTX 3080 @ 1710MHz (compute 8.6) with 10239MB (8973MB available) (NVLink:0)
+2024-08-23 20:01:18,651 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  Windows 10 (version 10.0, build 19045)
+2024-08-23 20:01:18,651 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  soft limit for open files changed from 8192 to 2048
+2024-08-23 20:01:18,651 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |
+2024-08-23 20:01:18,667 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   261MB         | loading plugins from C:\solidangle\htoa\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\scripts\bin\..\plugins ...
+2024-08-23 20:01:18,671 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  alembic_proc.dll: alembic uses Arnold 7.3.1.1
+2024-08-23 20:01:18,673 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte uses Arnold 7.3.1.1
+2024-08-23 20:01:18,674 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_filter uses Arnold 7.3.1.1
+2024-08-23 20:01:18,674 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_manifest_driver uses Arnold 7.3.1.1
+2024-08-23 20:01:18,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  htoa_mandelbulb_proc.dll: mandelbulb uses Arnold 7.3.1.1
+2024-08-23 20:01:18,766 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   279MB         |  usd_proc.dll: usd uses Arnold 7.3.1.1
+2024-08-23 20:01:18,772 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   280MB         | loaded 6 plugins from 4 lib(s) in 0:00.10
+2024-08-23 20:01:18,774 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   288MB         | [htoa_op] Begin registration ...
+2024-08-23 20:01:18,778 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   287MB         | [obj_procedurals] Registering procedurals ...
+2024-08-23 20:01:18,780 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   281MB         | [obj_procedurals] procedural registration done.
+2024-08-23 20:01:18,991 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   314MB         | [rop_operators] Registering operators ...
+2024-08-23 20:01:18,992 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   314MB         | [rop_operators] operator registration done.
+2024-08-23 20:01:19,837 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   360MB         | [vop_shaders] Registering shaders ...
+2024-08-23 20:01:19,850 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_shaders] shader registration done.
+2024-08-23 20:01:19,850 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_imagers] Registering imagers ...
+2024-08-23 20:01:19,851 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_imagers] imager registration done.
+2024-08-23 20:01:19,852 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [htoa_op] USD shader translation registration
+2024-08-23 20:01:20,219 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | [htoa_op] End registration.
+2024-08-23 20:01:20,220 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         |
+2024-08-23 20:01:20,220 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | releasing resources
+2024-08-23 20:01:20,223 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   365MB         | Arnold shutdown
+2024-08-23 20:01:28,205 - __main__ - DEBUG - [plugin.py:159] - eHoudini: $ENVY:NEWSTARTFRAME=1
+2024-08-23 20:01:28,205 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1036
+2024-08-23 20:01:28,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f1 -> 1036
+2024-08-23 20:01:28,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 20:01:28,207 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 20:01:28,207 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 20:01:28,207 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 20:01:28,208 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 2.0
+2024-08-23 20:01:28,268 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/NVversion -> 2.0
+2024-08-23 20:01:28,268 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1.0
+2024-08-23 20:01:28,269 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/substeps -> 1.0
+2024-08-23 20:01:28,270 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 4.0
+2024-08-23 20:01:28,293 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/attribadjustvector_velocity/dirlen_amplitude -> 4.0
+2024-08-23 20:01:28,857 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 0%
+2024-08-23 20:01:28,858 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:30,545 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 2%
+2024-08-23 20:01:30,546 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:30,582 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 837)
+2024-08-23 20:01:30,658 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 838)
+2024-08-23 20:01:31,153 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 3%
+2024-08-23 20:01:31,154 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:31,264 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 838)
+2024-08-23 20:01:31,336 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 839)
+2024-08-23 20:01:31,707 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 5%
+2024-08-23 20:01:31,708 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:31,815 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 839)
+2024-08-23 20:01:31,883 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 840)
+2024-08-23 20:01:32,942 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 6%
+2024-08-23 20:01:32,942 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:33,033 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 840)
+2024-08-23 20:01:33,097 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 841)
+2024-08-23 20:01:33,559 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 8%
+2024-08-23 20:01:33,560 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:33,584 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 841)
+2024-08-23 20:01:33,634 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 842)
+2024-08-23 20:01:34,158 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 9%
+2024-08-23 20:01:34,158 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:34,269 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 842)
+2024-08-23 20:01:34,352 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 843)
+2024-08-23 20:01:34,819 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 11%
+2024-08-23 20:01:34,819 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:34,931 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 843)
+2024-08-23 20:01:34,995 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 844)
+2024-08-23 20:01:35,512 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 13%
+2024-08-23 20:01:35,513 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:35,599 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 844)
+2024-08-23 20:01:35,670 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 845)
+2024-08-23 20:01:37,102 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 14%
+2024-08-23 20:01:37,103 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:37,166 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 845)
+2024-08-23 20:01:37,244 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 846)
+2024-08-23 20:01:37,775 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 16%
+2024-08-23 20:01:37,775 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:37,875 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 846)
+2024-08-23 20:01:37,947 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 847)
+2024-08-23 20:01:38,451 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 17%
+2024-08-23 20:01:38,451 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:38,561 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 847)
+2024-08-23 20:01:38,626 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 848)
+2024-08-23 20:01:39,144 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 19%
+2024-08-23 20:01:39,145 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:39,231 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 848)
+2024-08-23 20:01:39,319 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 849)
+2024-08-23 20:01:39,868 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 20%
+2024-08-23 20:01:39,868 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:39,962 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 849)
+2024-08-23 20:01:40,027 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 850)
+2024-08-23 20:01:41,562 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 22%
+2024-08-23 20:01:41,562 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:41,632 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 850)
+2024-08-23 20:01:41,702 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 851)
+2024-08-23 20:01:42,369 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 23%
+2024-08-23 20:01:42,370 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:42,445 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 851)
+2024-08-23 20:01:42,509 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 852)
+2024-08-23 20:01:43,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 25%
+2024-08-23 20:01:43,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:43,250 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 852)
+2024-08-23 20:01:43,324 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 853)
+2024-08-23 20:01:44,046 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 27%
+2024-08-23 20:01:44,046 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:44,156 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 853)
+2024-08-23 20:01:44,219 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 854)
+2024-08-23 20:01:44,847 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 28%
+2024-08-23 20:01:44,847 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:44,885 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 854)
+2024-08-23 20:01:44,965 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 855)
+2024-08-23 20:01:46,782 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 30%
+2024-08-23 20:01:46,782 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:46,886 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 855)
+2024-08-23 20:01:46,953 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 856)
+2024-08-23 20:01:47,670 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 31%
+2024-08-23 20:01:47,670 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:47,777 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 856)
+2024-08-23 20:01:47,843 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 857)
+2024-08-23 20:01:48,627 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 33%
+2024-08-23 20:01:48,628 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:48,684 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 857)
+2024-08-23 20:01:48,748 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 858)
+2024-08-23 20:01:49,595 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 34%
+2024-08-23 20:01:49,595 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:49,649 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 858)
+2024-08-23 20:01:49,724 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 859)
+2024-08-23 20:01:50,524 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 36%
+2024-08-23 20:01:50,524 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:50,559 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 859)
+2024-08-23 20:01:50,624 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 860)
+2024-08-23 20:01:52,801 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 38%
+2024-08-23 20:01:52,801 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:52,910 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 860)
+2024-08-23 20:01:52,974 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 861)
+2024-08-23 20:01:53,739 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 39%
+2024-08-23 20:01:53,740 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:53,821 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 861)
+2024-08-23 20:01:53,892 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 862)
+2024-08-23 20:01:54,784 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 41%
+2024-08-23 20:01:54,785 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:54,836 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 862)
+2024-08-23 20:01:54,903 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 863)
+2024-08-23 20:01:55,766 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 42%
+2024-08-23 20:01:55,766 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:55,868 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 863)
+2024-08-23 20:01:55,933 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 864)
+2024-08-23 20:01:56,867 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 44%
+2024-08-23 20:01:56,867 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:56,901 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 864)
+2024-08-23 20:01:56,971 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 865)
+2024-08-23 20:01:59,387 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 45%
+2024-08-23 20:01:59,388 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:01:59,449 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 865)
+2024-08-23 20:01:59,513 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 866)
+2024-08-23 20:02:00,514 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 47%
+2024-08-23 20:02:00,514 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:00,584 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 866)
+2024-08-23 20:02:00,655 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 867)
+2024-08-23 20:02:01,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 48%
+2024-08-23 20:02:01,676 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:01,714 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 867)
+2024-08-23 20:02:01,779 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 868)
+2024-08-23 20:02:02,734 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 50%
+2024-08-23 20:02:02,734 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:02,846 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 868)
+2024-08-23 20:02:02,913 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 869)
+2024-08-23 20:02:03,838 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 52%
+2024-08-23 20:02:03,839 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:03,940 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 869)
+2024-08-23 20:02:04,008 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 870)
+2024-08-23 20:02:06,282 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 53%
+2024-08-23 20:02:06,282 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:06,397 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 870)
+2024-08-23 20:02:06,461 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 871)
+2024-08-23 20:02:07,488 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 55%
+2024-08-23 20:02:07,488 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:07,527 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 871)
+2024-08-23 20:02:07,595 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 872)
+2024-08-23 20:02:08,697 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 56%
+2024-08-23 20:02:08,697 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:08,796 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 872)
+2024-08-23 20:02:08,873 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 873)
+2024-08-23 20:02:09,831 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 58%
+2024-08-23 20:02:09,831 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:09,879 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 873)
+2024-08-23 20:02:09,975 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 874)
+2024-08-23 20:02:10,985 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 59%
+2024-08-23 20:02:10,986 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:11,099 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 874)
+2024-08-23 20:02:11,164 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 875)
+2024-08-23 20:02:13,638 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 61%
+2024-08-23 20:02:13,639 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:13,686 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 875)
+2024-08-23 20:02:13,750 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 876)
+2024-08-23 20:02:14,793 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 62%
+2024-08-23 20:02:14,793 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:14,891 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 876)
+2024-08-23 20:02:14,970 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 877)
+2024-08-23 20:02:16,025 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 64%
+2024-08-23 20:02:16,025 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:16,077 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 877)
+2024-08-23 20:02:16,171 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 878)
+2024-08-23 20:02:17,226 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 66%
+2024-08-23 20:02:17,226 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:17,305 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 878)
+2024-08-23 20:02:17,370 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 879)
+2024-08-23 20:02:18,449 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 67%
+2024-08-23 20:02:18,449 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:18,558 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 879)
+2024-08-23 20:02:18,626 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 880)
+2024-08-23 20:02:21,256 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 69%
+2024-08-23 20:02:21,257 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:21,348 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 880)
+2024-08-23 20:02:21,436 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 881)
+2024-08-23 20:02:22,541 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 70%
+2024-08-23 20:02:22,541 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:22,599 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 881)
+2024-08-23 20:02:22,687 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 882)
+2024-08-23 20:02:23,800 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 72%
+2024-08-23 20:02:23,800 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:23,887 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 882)
+2024-08-23 20:02:23,973 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 883)
+2024-08-23 20:02:25,165 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 73%
+2024-08-23 20:02:25,166 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:25,268 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 883)
+2024-08-23 20:02:25,342 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 884)
+2024-08-23 20:02:26,469 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 75%
+2024-08-23 20:02:26,469 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:26,570 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 884)
+2024-08-23 20:02:26,662 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 885)
+2024-08-23 20:02:29,502 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 77%
+2024-08-23 20:02:29,502 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:29,606 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 885)
+2024-08-23 20:02:29,676 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 886)
+2024-08-23 20:02:30,824 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 78%
+2024-08-23 20:02:30,825 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:30,886 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 886)
+2024-08-23 20:02:30,968 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 887)
+2024-08-23 20:02:32,171 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 80%
+2024-08-23 20:02:32,171 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:32,266 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 887)
+2024-08-23 20:02:32,348 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 888)
+2024-08-23 20:02:33,526 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 81%
+2024-08-23 20:02:33,526 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:33,581 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 888)
+2024-08-23 20:02:33,645 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 889)
+2024-08-23 20:02:35,023 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 83%
+2024-08-23 20:02:35,024 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:35,066 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 889)
+2024-08-23 20:02:35,129 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 890)
+2024-08-23 20:02:38,422 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 84%
+2024-08-23 20:02:38,423 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:38,501 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 890)
+2024-08-23 20:02:38,570 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 891)
+2024-08-23 20:02:39,866 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 86%
+2024-08-23 20:02:39,867 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:39,977 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 891)
+2024-08-23 20:02:40,043 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 892)
+2024-08-23 20:02:41,315 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 87%
+2024-08-23 20:02:41,316 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:41,355 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 892)
+2024-08-23 20:02:41,459 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 893)
+2024-08-23 20:02:42,789 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 89%
+2024-08-23 20:02:42,790 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:42,834 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 893)
+2024-08-23 20:02:42,907 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 894)
+2024-08-23 20:02:44,323 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 91%
+2024-08-23 20:02:44,324 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:44,406 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 894)
+2024-08-23 20:02:44,477 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 895)
+2024-08-23 20:02:47,915 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 92%
+2024-08-23 20:02:47,915 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:47,986 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 895)
+2024-08-23 20:02:48,061 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 896)
+2024-08-23 20:02:49,464 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 94%
+2024-08-23 20:02:49,464 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:49,508 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 896)
+2024-08-23 20:02:49,574 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 897)
+2024-08-23 20:02:50,995 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 95%
+2024-08-23 20:02:50,995 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:51,110 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 897)
+2024-08-23 20:02:51,174 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 898)
+2024-08-23 20:02:52,601 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 97%
+2024-08-23 20:02:52,602 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:52,686 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 898)
+2024-08-23 20:02:52,751 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 899)
+2024-08-23 20:02:54,199 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 98%
+2024-08-23 20:02:54,199 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:54,305 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 899)
+2024-08-23 20:02:54,388 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 900)
+2024-08-23 20:02:58,029 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 100%
+2024-08-23 20:02:58,030 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 20:02:58,132 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 900)
+2024-08-23 20:03:31,070 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Pressed target button /obj/billowy_smoke/smoke_sim/execute
+2024-08-23 20:03:32,478 - __main__ - INFO - [Envy_Functions.py:179] - eHoudini: Exited
+2024-08-23 20:03:32,572 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task_allocation(): 28)
+2024-08-23 20:03:32,636 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+
+
+2024-08-23 21:02:40.487629
+21:02:402024-08-23 21:02:40,537 - __main__ - DEBUG - [envy.py:57] - choosing role
+2024-08-23 21:02:40,539 - __main__ - DEBUG - [client.py:39] - health checking server
+2024-08-23 21:02:42,579 - __main__ - DEBUG - [envy.py:65] - server health check status: False
+2024-08-23 21:02:42,581 - __main__ - DEBUG - [envy.py:74] - I am the server
+2024-08-23 21:02:42,581 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-23 21:02:42,582 - __main__ - DEBUG - [envy.py:148] - envy.connect: Purpose is server
+2024-08-23 21:02:42,582 - __main__ - DEBUG - [envy.py:105] - writing server file
+2024-08-23 21:02:43,604 - __main__ - DEBUG - [envy_utils.py:94] - getting server IP
+2024-08-23 21:02:43,605 - __main__ - DEBUG - [envy_utils.py:106] - server file found
+2024-08-23 21:02:43,611 - __main__ - DEBUG - [envy_utils.py:110] - server ip address is: 10.1.16.25
+2024-08-23 21:02:43,611 - __main__ - DEBUG - [client.py:53] - attempting to connect with server at ws://10.1.16.25:37020/client
+2024-08-23 21:02:43,613 - __main__ - DEBUG - [client.py:134] - networkUtils.client started
+2024-08-23 21:02:43,613 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-23 21:02:43,614 - __main__ - DEBUG - [client.py:158] - connected to: 10.1.16.25
+2024-08-23 21:02:43,628 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab5-04', ))
+2024-08-23 21:02:43,667 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 21:02:44,137 - __main__ - DEBUG - [envy.py:256] - executing: await NV.fill_buffer(self, 'server_name', 'lab5-04', )
+2024-08-23 21:04:40,023 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: NV_jobProcessor1_001 Allocation: (29, 10, '[901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000]', 'lab5-04', 'inprogress'))
+2024-08-23 21:04:40,523 - __main__ - DEBUG - [envy.py:256] - executing: await NV.PLUGIN_eHoudini(self, '{"Allocation_Id": 29, "Purpose": "simulation", "Tasks": {"901": 1001, "902": 1002, "903": 1003, "904": 1004, "905": 1005, "906": 1006, "907": 1007, "908": 1008, "909": 1009, "910": 1010, "911": 1011, "912": 1012, "913": 1013, "914": 1014, "915": 1015, "916": 1016, "917": 1017, "918": 1018, "919": 1019, "920": 1020, "921": 1021, "922": 1022, "923": 1023, "924": 1024, "925": 1025, "926": 1026, "927": 1027, "928": 1028, "929": 1029, "930": 1030, "931": 1031, "932": 1032, "933": 1033, "934": 1034, "935": 1035, "936": 1036, "937": 1037, "938": 1038, "939": 1039, "940": 1040, "941": 1041, "942": 1042, "943": 1043, "944": 1044, "945": 1045, "946": 1046, "947": 1047, "948": 1048, "949": 1049, "950": 1050, "951": 1051, "952": 1052, "953": 1053, "954": 1054, "955": 1055, "956": 1056, "957": 1057, "958": 1058, "959": 1059, "960": 1060, "961": 1061, "962": 1062, "963": 1063, "964": 1064, "965": 1065, "966": 1066, "967": 1067, "968": 1068, "969": 1069, "970": 1070, "971": 1071, "972": 1072, "973": 1073, "974": 1074, "975": 1075, "976": 1076, "977": 1077, "978": 1078, "979": 1079, "980": 1080, "981": 1081, "982": 1082, "983": 1083, "984": 1084, "985": 1085, "986": 1086, "987": 1087, "988": 1088, "989": 1089, "990": 1090, "991": 1091, "992": 1092, "993": 1093, "994": 1094, "995": 1095, "996": 1096, "997": 1097, "998": 1098, "999": 1099, "1000": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {}}', )
+2024-08-23 21:04:40,548 - __main__ - INFO - [Envy_Functions.py:172] - eHoudini: Started
+2024-08-23 21:04:40,549 - __main__ - DEBUG - [plugin.py:33] - Allocation Data String: {"Allocation_Id": 29, "Purpose": "simulation", "Tasks": {"901": 1001, "902": 1002, "903": 1003, "904": 1004, "905": 1005, "906": 1006, "907": 1007, "908": 1008, "909": 1009, "910": 1010, "911": 1011, "912": 1012, "913": 1013, "914": 1014, "915": 1015, "916": 1016, "917": 1017, "918": 1018, "919": 1019, "920": 1020, "921": 1021, "922": 1022, "923": 1023, "924": 1024, "925": 1025, "926": 1026, "927": 1027, "928": 1028, "929": 1029, "930": 1030, "931": 1031, "932": 1032, "933": 1033, "934": 1034, "935": 1035, "936": 1036, "937": 1037, "938": 1038, "939": 1039, "940": 1040, "941": 1041, "942": 1042, "943": 1043, "944": 1044, "945": 1045, "946": 1046, "947": 1047, "948": 1048, "949": 1049, "950": 1050, "951": 1051, "952": 1052, "953": 1053, "954": 1054, "955": 1055, "956": 1056, "957": 1057, "958": 1058, "959": 1059, "960": 1060, "961": 1061, "962": 1062, "963": 1063, "964": 1064, "965": 1065, "966": 1066, "967": 1067, "968": 1068, "969": 1069, "970": 1070, "971": 1071, "972": 1072, "973": 1073, "974": 1074, "975": 1075, "976": 1076, "977": 1077, "978": 1078, "979": 1079, "980": 1080, "981": 1081, "982": 1082, "983": 1083, "984": 1084, "985": 1085, "986": 1086, "987": 1087, "988": 1088, "989": 1089, "990": 1090, "991": 1091, "992": 1092, "993": 1093, "994": 1094, "995": 1095, "996": 1096, "997": 1097, "998": 1098, "999": 1099, "1000": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/smoke_sim/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/smoke_sim/f2": 1100}, "Substeps": {"/obj/billowy_smoke/smoke_sim/substeps": 1.0}, "Version": {"/obj/billowy_smoke/smoke_sim/NVversion": 2.0}, "Target_Button": "/obj/billowy_smoke/smoke_sim/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation"}, "Parameters": {}}
+2024-08-23 21:04:40,549 - __main__ - DEBUG - [plugin.py:107] - eHoudini: starting resumable simulation process
+2024-08-23 21:04:40,563 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 21:04:40,563 - __main__ - INFO - [plugin.py:76] - eHoudini: Started hython_process
+2024-08-23 21:04:40,564 - __main__ - INFO - [plugin.py:145] - eHoudini: Monitoring output
+2024-08-23 21:04:40,564 - __main__ - INFO - [plugin.py:151] - eHoudini: Monitoring error
+2024-08-23 21:04:41,712 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | log started Fri Aug 23 21:04:41 2024
+2024-08-23 21:04:41,713 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | Arnold 7.3.1.1 [25d993ed] windows x86_64 clang-15.0.7 oiio-2.4.1 osl-1.13.0 vdb-7.1.1 adlsdk-8.0.7.50 clmhub-3.1.1.43 rlm-14.2.5 optix-8.0.0 2024/04/22 19:04:10
+2024-08-23 21:04:41,713 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         | running on lab5-04, pid=60532
+2024-08-23 21:04:41,714 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  1 x AMD Ryzen Threadripper PRO 3945WX 12-Cores  (12 cores, 24 logical) with 130925MB
+2024-08-23 21:04:41,714 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  NVIDIA driver version 555.85
+2024-08-23 21:04:41,714 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  GPU 0: NVIDIA GeForce RTX 3080 @ 1710MHz (compute 8.6) with 10239MB (8531MB available) (NVLink:0)
+2024-08-23 21:04:41,715 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  Windows 10 (version 10.0, build 19045)
+2024-08-23 21:04:41,715 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |  soft limit for open files changed from 8192 to 2048
+2024-08-23 21:04:41,715 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   247MB         |
+2024-08-23 21:04:41,731 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         | loading plugins from C:\solidangle\htoa\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\scripts\bin\..\plugins ...
+2024-08-23 21:04:41,735 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  alembic_proc.dll: alembic uses Arnold 7.3.1.1
+2024-08-23 21:04:41,738 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte uses Arnold 7.3.1.1
+2024-08-23 21:04:41,738 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_filter uses Arnold 7.3.1.1
+2024-08-23 21:04:41,739 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_manifest_driver uses Arnold 7.3.1.1
+2024-08-23 21:04:41,741 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   262MB         |  htoa_mandelbulb_proc.dll: mandelbulb uses Arnold 7.3.1.1
+2024-08-23 21:04:41,831 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   280MB         |  usd_proc.dll: usd uses Arnold 7.3.1.1
+2024-08-23 21:04:41,837 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   280MB         | loaded 6 plugins from 4 lib(s) in 0:00.10
+2024-08-23 21:04:41,839 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   288MB         | [htoa_op] Begin registration ...
+2024-08-23 21:04:41,843 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   284MB         | [obj_procedurals] Registering procedurals ...
+2024-08-23 21:04:41,845 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   282MB         | [obj_procedurals] procedural registration done.
+2024-08-23 21:04:42,055 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   314MB         | [rop_operators] Registering operators ...
+2024-08-23 21:04:42,055 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:00   314MB         | [rop_operators] operator registration done.
+2024-08-23 21:04:42,915 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   360MB         | [vop_shaders] Registering shaders ...
+2024-08-23 21:04:42,928 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_shaders] shader registration done.
+2024-08-23 21:04:42,928 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   364MB         | [vop_imagers] Registering imagers ...
+2024-08-23 21:04:42,930 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   365MB         | [vop_imagers] imager registration done.
+2024-08-23 21:04:42,930 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   365MB         | [htoa_op] USD shader translation registration
+2024-08-23 21:04:43,327 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | [htoa_op] End registration.
+2024-08-23 21:04:43,327 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         |
+2024-08-23 21:04:43,328 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   380MB         | releasing resources
+2024-08-23 21:04:43,330 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 00:00:01   365MB         | Arnold shutdown
+2024-08-23 21:04:51,528 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1001
+2024-08-23 21:04:51,529 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f1 -> 1001
+2024-08-23 21:04:51,529 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 21:04:51,530 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 21:04:51,530 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1100
+2024-08-23 21:04:51,530 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/f2 -> 1100
+2024-08-23 21:04:51,531 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 2.0
+2024-08-23 21:04:51,591 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/NVversion -> 2.0
+2024-08-23 21:04:51,591 - __main__ - DEBUG - [plugin.py:159] - eHoudini: 1.0
+2024-08-23 21:04:51,592 - __main__ - DEBUG - [plugin.py:159] - eHoudini: Set parameter: /obj/billowy_smoke/smoke_sim/substeps -> 1.0
+2024-08-23 21:04:53,004 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 0%
+2024-08-23 21:04:53,005 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:53,063 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 901)
+2024-08-23 21:04:53,111 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 902)
+2024-08-23 21:04:53,285 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 1%
+2024-08-23 21:04:53,286 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:53,399 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 902)
+2024-08-23 21:04:53,461 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 903)
+2024-08-23 21:04:53,462 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 2%
+2024-08-23 21:04:53,463 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:53,524 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 903)
+2024-08-23 21:04:53,585 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 904)
+2024-08-23 21:04:53,629 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 3%
+2024-08-23 21:04:53,629 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:53,742 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 904)
+2024-08-23 21:04:53,805 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 905)
+2024-08-23 21:04:53,930 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 4%
+2024-08-23 21:04:53,930 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:53,978 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 905)
+2024-08-23 21:04:54,042 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 906)
+2024-08-23 21:04:54,135 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 5%
+2024-08-23 21:04:54,135 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:54,200 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 906)
+2024-08-23 21:04:54,263 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 907)
+2024-08-23 21:04:54,314 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 6%
+2024-08-23 21:04:54,314 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:54,421 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 907)
+2024-08-23 21:04:54,487 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 908)
+2024-08-23 21:04:54,495 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 7%
+2024-08-23 21:04:54,495 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:54,547 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 908)
+2024-08-23 21:04:54,595 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 909)
+2024-08-23 21:04:54,729 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 8%
+2024-08-23 21:04:54,730 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:54,753 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 909)
+2024-08-23 21:04:54,817 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 910)
+2024-08-23 21:04:55,109 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 9%
+2024-08-23 21:04:55,110 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:55,211 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 910)
+2024-08-23 21:04:55,275 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 911)
+2024-08-23 21:04:55,316 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 10%
+2024-08-23 21:04:55,316 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:55,432 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 911)
+2024-08-23 21:04:55,495 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 912)
+2024-08-23 21:04:55,563 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 11%
+2024-08-23 21:04:55,563 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:55,670 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 912)
+2024-08-23 21:04:55,734 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 913)
+2024-08-23 21:04:55,787 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 12%
+2024-08-23 21:04:55,787 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:55,894 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 913)
+2024-08-23 21:04:55,958 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 914)
+2024-08-23 21:04:56,056 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 13%
+2024-08-23 21:04:56,056 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:56,134 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 914)
+2024-08-23 21:04:56,181 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 915)
+2024-08-23 21:04:56,559 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 14%
+2024-08-23 21:04:56,560 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:56,652 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 915)
+2024-08-23 21:04:56,721 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 916)
+2024-08-23 21:04:56,813 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 15%
+2024-08-23 21:04:56,813 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:56,892 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 916)
+2024-08-23 21:04:56,957 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 917)
+2024-08-23 21:04:57,070 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 16%
+2024-08-23 21:04:57,070 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:57,113 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 917)
+2024-08-23 21:04:57,192 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 918)
+2024-08-23 21:04:57,347 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 17%
+2024-08-23 21:04:57,347 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:57,366 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 918)
+2024-08-23 21:04:57,445 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 919)
+2024-08-23 21:04:57,663 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 18%
+2024-08-23 21:04:57,664 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:57,730 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 919)
+2024-08-23 21:04:57,794 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 920)
+2024-08-23 21:04:58,279 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 19%
+2024-08-23 21:04:58,279 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:58,319 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 920)
+2024-08-23 21:04:58,378 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 921)
+2024-08-23 21:04:58,574 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 20%
+2024-08-23 21:04:58,575 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:58,661 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 921)
+2024-08-23 21:04:58,725 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 922)
+2024-08-23 21:04:58,889 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 21%
+2024-08-23 21:04:58,890 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:58,997 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 922)
+2024-08-23 21:04:59,064 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 923)
+2024-08-23 21:04:59,205 - __main__ - DEBUG - [plugin.py:159] - eHoudini: ALF_PROGRESS 22%
+2024-08-23 21:04:59,206 - __main__ - DEBUG - [plugin.py:159] - eHoudini: FINISHED
+2024-08-23 21:04:59,237 - __main__ - DEBUG - [client.py:116] - sending message to server: (finish_task(): 923)
+2024-08-23 21:04:59,301 - __main__ - DEBUG - [client.py:116] - sending message to server: (start_task(): 924)
+
+
+2024-08-23 21:05:24.222130
+21:05:242024-08-23 21:05:24,275 - __main__ - DEBUG - [envy.py:57] - choosing role
+2024-08-23 21:05:24,283 - __main__ - DEBUG - [client.py:39] - health checking server
+2024-08-23 21:05:24,289 - __main__ - DEBUG - [envy.py:65] - server health check status: True
+2024-08-23 21:05:24,289 - __main__ - DEBUG - [envy.py:68] - I am a Client
+2024-08-23 21:05:24,289 - __main__ - INFO - [envy.py:127] - Started Envy
+2024-08-23 21:05:24,290 - __main__ - DEBUG - [envy.py:148] - envy.connect: Purpose is client
+2024-08-23 21:05:24,290 - __main__ - DEBUG - [envy_utils.py:94] - getting server IP
+2024-08-23 21:05:24,290 - __main__ - DEBUG - [envy_utils.py:106] - server file found
+2024-08-23 21:05:24,291 - __main__ - DEBUG - [envy_utils.py:110] - server ip address is: 10.1.16.26
+2024-08-23 21:05:24,291 - __main__ - DEBUG - [client.py:53] - attempting to connect with server at ws://10.1.16.26:37020/client
+2024-08-23 21:05:24,294 - __main__ - DEBUG - [client.py:134] - networkUtils.client started
+2024-08-23 21:05:24,294 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-23 21:05:24,294 - __main__ - DEBUG - [client.py:158] - connected to: 10.1.16.26
+2024-08-23 21:05:24,343 - __main__ - DEBUG - [client.py:116] - sending message to server: (send_status_to_server())
+2024-08-23 21:05:24,343 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'LAB5-05', ))
+2024-08-23 21:05:24,796 - __main__ - DEBUG - [envy.py:256] - executing: await NV.fill_buffer(self, 'server_name', 'LAB5-05', )

@@ -1,0 +1,948 @@
+
+
+2024-08-29 18:32:14.681171
+18:32:142024-08-29 18:32:14,773 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-29 18:32:14,787 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-29 18:32:14,789 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.179:37020/health_check
+2024-08-29 18:32:24,793 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-29 18:32:24,795 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-29 18:32:24,795 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-29 18:32:24,795 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-29 18:32:24,795 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-29 18:32:25,819 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-29 18:32:25,819 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-29 18:32:25,825 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.179
+2024-08-29 18:32:25,825 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.179:37020/client
+2024-08-29 18:32:35,831 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-29 18:32:35,831 - __main__ - INFO - [envy.py:164] - Failed to connect because of timeout
+2024-08-29 18:32:35,831 - __main__ - DEBUG - [envy.py:165] - Info: , exception type: <class 'TimeoutError'>
+2024-08-29 18:32:35,831 - __main__ - INFO - [envy.py:218] - electing new server
+2024-08-29 18:32:35,831 - __main__ - DEBUG - [envy_utils.py:147] - opening clients file at Z:/school/envy_repo/__envytest__/Connections/clients.json
+2024-08-29 18:32:35,839 - __main__ - DEBUG - [envy_utils.py:152] - returning clients: {'VR1P620-02': {'IP': '10.1.16.179', 'Status': 'idle', 'Job': None, 'Allocation': None}}
+2024-08-29 18:32:35,840 - __main__ - DEBUG - [envy.py:232] - New server: VR1P620-02
+2024-08-29 18:32:40,841 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-29 18:32:40,841 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-29 18:32:40,841 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-29 18:32:40,842 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-29 18:32:40,851 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.89
+2024-08-29 18:32:40,851 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.89:37020/client
+2024-08-29 18:32:40,853 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-29 18:32:40,853 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-29 18:32:40,853 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.89
+2024-08-29 18:32:40,859 - __main__ - DEBUG - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab1-08', ))
+2024-08-29 18:32:40,918 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:40,966 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:40,966 - __main__ - DEBUG - [envy.py:265] - executing: await NV.fill_buffer(self, 'server_name', 'lab1-08', )
+2024-08-29 18:32:42,126 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (512, 1283246636, '[912]', 'lab1-08', 'inprogress'))
+2024-08-29 18:32:42,164 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 512, "Purpose": "cache", "Tasks": {"912": 112}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:32:42,213 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:42,272 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 912)
+2024-08-29 18:32:45,023 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 912)
+2024-08-29 18:32:45,085 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 512)
+2024-08-29 18:32:45,132 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:46,189 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (513, 1283246636, '[913]', 'lab1-08', 'inprogress'))
+2024-08-29 18:32:46,231 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 513, "Purpose": "cache", "Tasks": {"913": 113}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:32:46,261 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:46,308 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 913)
+2024-08-29 18:32:49,050 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 913)
+2024-08-29 18:32:49,114 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 513)
+2024-08-29 18:32:49,160 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:50,263 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (514, 1283246636, '[914]', 'lab1-08', 'inprogress'))
+2024-08-29 18:32:50,349 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 514, "Purpose": "cache", "Tasks": {"914": 114}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:32:50,418 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:50,460 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 914)
+2024-08-29 18:32:53,145 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 914)
+2024-08-29 18:32:53,207 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 514)
+2024-08-29 18:32:53,255 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:54,314 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (515, 1283246636, '[915]', 'lab1-08', 'inprogress'))
+2024-08-29 18:32:54,355 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 515, "Purpose": "cache", "Tasks": {"915": 115}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:32:54,386 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:54,425 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 915)
+2024-08-29 18:32:57,150 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 915)
+2024-08-29 18:32:57,212 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 515)
+2024-08-29 18:32:57,260 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:58,363 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (516, 1283246636, '[916]', 'lab1-08', 'inprogress'))
+2024-08-29 18:32:58,453 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 516, "Purpose": "cache", "Tasks": {"916": 116}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:32:58,501 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:32:58,565 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 916)
+2024-08-29 18:33:01,257 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 916)
+2024-08-29 18:33:01,321 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 516)
+2024-08-29 18:33:01,369 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:02,423 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (517, 1283246636, '[917]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:02,450 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 517, "Purpose": "cache", "Tasks": {"917": 117}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:02,512 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:02,559 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 917)
+2024-08-29 18:33:05,263 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 917)
+2024-08-29 18:33:05,326 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 517)
+2024-08-29 18:33:05,372 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:06,464 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (518, 1283246636, '[918]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:06,567 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 518, "Purpose": "cache", "Tasks": {"918": 118}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:06,631 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:06,678 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 918)
+2024-08-29 18:33:09,361 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 918)
+2024-08-29 18:33:09,423 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 518)
+2024-08-29 18:33:09,471 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:10,564 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (519, 1283246636, '[919]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:10,663 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 519, "Purpose": "cache", "Tasks": {"919": 119}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:10,741 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:10,803 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 919)
+2024-08-29 18:33:13,454 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 919)
+2024-08-29 18:33:13,515 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 519)
+2024-08-29 18:33:13,560 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:14,640 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (520, 1283246636, '[920]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:14,750 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 520, "Purpose": "cache", "Tasks": {"920": 120}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:14,797 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:14,858 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 920)
+2024-08-29 18:33:17,579 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 920)
+2024-08-29 18:33:17,641 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 520)
+2024-08-29 18:33:17,686 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:18,693 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (521, 1283246636, '[921]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:18,768 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 521, "Purpose": "cache", "Tasks": {"921": 121}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:18,830 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:18,892 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 921)
+2024-08-29 18:33:21,589 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 921)
+2024-08-29 18:33:21,652 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 521)
+2024-08-29 18:33:21,697 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:22,745 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (522, 1283246636, '[922]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:22,787 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 522, "Purpose": "cache", "Tasks": {"922": 122}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:22,849 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:22,897 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 922)
+2024-08-29 18:33:25,587 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 922)
+2024-08-29 18:33:25,648 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 522)
+2024-08-29 18:33:25,694 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:26,813 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (523, 1283246636, '[923]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:26,901 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 523, "Purpose": "cache", "Tasks": {"923": 123}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:26,947 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:26,990 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 923)
+2024-08-29 18:33:29,709 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 923)
+2024-08-29 18:33:29,772 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 523)
+2024-08-29 18:33:29,820 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:31,158 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (524, 1283246636, '[924]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:31,250 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 524, "Purpose": "cache", "Tasks": {"924": 124}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:31,330 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:31,377 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 924)
+2024-08-29 18:33:34,064 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 924)
+2024-08-29 18:33:34,128 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 524)
+2024-08-29 18:33:34,190 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:35,187 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (525, 1283246636, '[925]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:35,249 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 525, "Purpose": "cache", "Tasks": {"925": 125}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:35,361 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:35,423 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 925)
+2024-08-29 18:33:38,038 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 925)
+2024-08-29 18:33:38,101 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 525)
+2024-08-29 18:33:38,147 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:39,235 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (526, 1283246636, '[926]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:39,322 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 526, "Purpose": "cache", "Tasks": {"926": 126}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:39,425 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:39,482 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 926)
+2024-08-29 18:33:42,130 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 926)
+2024-08-29 18:33:42,192 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 526)
+2024-08-29 18:33:42,238 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:43,287 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (527, 1283246636, '[927]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:43,330 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 527, "Purpose": "cache", "Tasks": {"927": 127}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:43,394 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:43,456 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 927)
+2024-08-29 18:33:46,122 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 927)
+2024-08-29 18:33:46,186 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 527)
+2024-08-29 18:33:46,234 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:47,324 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (528, 1283246636, '[928]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:47,430 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 528, "Purpose": "cache", "Tasks": {"928": 128}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:47,477 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:47,539 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 928)
+2024-08-29 18:33:50,251 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 928)
+2024-08-29 18:33:50,315 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 528)
+2024-08-29 18:33:50,363 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:51,364 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (529, 1283246636, '[929]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:51,459 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 529, "Purpose": "cache", "Tasks": {"929": 129}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:51,533 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:51,603 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 929)
+2024-08-29 18:33:54,263 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 929)
+2024-08-29 18:33:54,327 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 529)
+2024-08-29 18:33:54,373 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:55,429 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (530, 1283246636, '[930]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:55,453 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 530, "Purpose": "cache", "Tasks": {"930": 130}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:55,533 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:55,581 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 930)
+2024-08-29 18:33:58,276 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 930)
+2024-08-29 18:33:58,339 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 530)
+2024-08-29 18:33:58,386 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:59,465 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (531, 1283246636, '[931]', 'lab1-08', 'inprogress'))
+2024-08-29 18:33:59,497 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 531, "Purpose": "cache", "Tasks": {"931": 131}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:33:59,529 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:33:59,574 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 931)
+2024-08-29 18:34:02,306 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 931)
+2024-08-29 18:34:02,370 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 531)
+2024-08-29 18:34:02,416 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:03,517 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (532, 1283246636, '[932]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:03,613 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 532, "Purpose": "cache", "Tasks": {"932": 132}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:03,681 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:03,723 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 932)
+2024-08-29 18:34:06,392 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 932)
+2024-08-29 18:34:06,453 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 532)
+2024-08-29 18:34:06,499 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:07,561 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (533, 1283246636, '[933]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:07,593 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 533, "Purpose": "cache", "Tasks": {"933": 133}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:07,641 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:07,688 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 933)
+2024-08-29 18:34:10,389 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 933)
+2024-08-29 18:34:10,452 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 533)
+2024-08-29 18:34:10,499 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:11,623 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (534, 1283246636, '[934]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:11,685 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 534, "Purpose": "cache", "Tasks": {"934": 134}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:11,748 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:11,796 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 934)
+2024-08-29 18:34:14,478 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 934)
+2024-08-29 18:34:14,540 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 534)
+2024-08-29 18:34:14,587 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:15,683 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (535, 1283246636, '[935]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:15,792 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 535, "Purpose": "cache", "Tasks": {"935": 135}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:15,855 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:15,902 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 935)
+2024-08-29 18:34:18,583 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 935)
+2024-08-29 18:34:18,646 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 535)
+2024-08-29 18:34:18,693 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:19,709 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (536, 1283246636, '[936]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:19,805 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 536, "Purpose": "cache", "Tasks": {"936": 136}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:19,915 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:19,977 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 936)
+2024-08-29 18:34:22,605 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 936)
+2024-08-29 18:34:22,667 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 536)
+2024-08-29 18:34:22,715 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:23,776 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (537, 1283246636, '[937]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:23,808 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 537, "Purpose": "cache", "Tasks": {"937": 137}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:23,871 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:23,933 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 937)
+2024-08-29 18:34:26,603 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 937)
+2024-08-29 18:34:26,666 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 537)
+2024-08-29 18:34:26,713 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:27,834 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (538, 1283246636, '[938]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:27,911 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 538, "Purpose": "cache", "Tasks": {"938": 138}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:27,975 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:28,022 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 938)
+2024-08-29 18:34:31,037 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 938)
+2024-08-29 18:34:31,100 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 538)
+2024-08-29 18:34:31,147 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:31,898 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (539, 1283246636, '[939]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:32,019 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 539, "Purpose": "cache", "Tasks": {"939": 139}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:32,067 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:32,131 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 939)
+2024-08-29 18:34:34,833 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 939)
+2024-08-29 18:34:34,895 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 539)
+2024-08-29 18:34:34,942 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:47,117 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (540, 1283246636, '[940]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:47,139 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 540, "Purpose": "cache", "Tasks": {"940": 140}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:47,235 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:47,299 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 940)
+2024-08-29 18:34:49,941 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 940)
+2024-08-29 18:34:50,004 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 540)
+2024-08-29 18:34:50,052 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:51,176 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (541, 1283246636, '[941]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:51,268 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 541, "Purpose": "cache", "Tasks": {"941": 141}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:51,300 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:51,364 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 941)
+2024-08-29 18:34:54,047 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 941)
+2024-08-29 18:34:54,109 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 541)
+2024-08-29 18:34:54,157 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:55,233 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (542, 1283246636, '[942]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:55,262 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 542, "Purpose": "cache", "Tasks": {"942": 142}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:55,278 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:55,340 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 942)
+2024-08-29 18:34:58,067 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 942)
+2024-08-29 18:34:58,129 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 542)
+2024-08-29 18:34:58,177 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:59,296 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 14-19-04 Allocation: (543, 1283246636, '[943]', 'lab1-08', 'inprogress'))
+2024-08-29 18:34:59,376 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 543, "Purpose": "cache", "Tasks": {"943": 143}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:34:59,439 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:34:59,503 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 943)
+2024-08-29 18:35:02,170 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 943)
+2024-08-29 18:35:02,233 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 543)
+2024-08-29 18:35:02,296 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:02,599 - __main__ - DEBUG - [client.py:170] - received message from: server -> (restart_envy())
+2024-08-29 18:35:02,693 - __main__ - DEBUG - [envy.py:265] - executing: await NV.restart_envy(self, )
+2024-08-29 18:35:02,693 - __main__ - DEBUG - [envy.py:277] - envy: exiting
+2024-08-29 18:35:02,702 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 10804
+2024-08-29 18:35:02,703 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 12200
+
+
+2024-08-29 18:35:03.888244
+18:35:032024-08-29 18:35:03,948 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-29 18:35:03,961 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-29 18:35:03,963 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.89:37020/health_check
+2024-08-29 18:35:05,985 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-29 18:35:05,987 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-29 18:35:05,987 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-29 18:35:05,987 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-29 18:35:05,987 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-29 18:35:06,997 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-29 18:35:06,997 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-29 18:35:07,004 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.89
+2024-08-29 18:35:07,004 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.89:37020/client
+2024-08-29 18:35:08,106 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-29 18:35:08,107 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-29 18:35:08,107 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.89
+2024-08-29 18:35:08,162 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:08,163 - __main__ - DEBUG - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab1-08', ))
+2024-08-29 18:35:08,196 - __main__ - DEBUG - [envy.py:265] - executing: await NV.fill_buffer(self, 'server_name', 'lab1-08', )
+2024-08-29 18:35:10,139 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 18-34-32 Allocation: (701, 290314829, '[1101]', 'lab1-08', 'inprogress'))
+2024-08-29 18:35:10,182 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 701, "Purpose": "cache", "Tasks": {"1101": 1}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:35:10,275 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:10,339 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1101)
+2024-08-29 18:35:12,990 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1101)
+2024-08-29 18:35:13,052 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 701)
+2024-08-29 18:35:13,100 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:14,161 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: potato - 29-08-2024 18-34-32 Allocation: (702, 290314829, '[1102]', 'lab1-08', 'inprogress'))
+2024-08-29 18:35:14,194 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 702, "Purpose": "cache", "Tasks": {"1102": 2}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-29 18:35:14,266 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:14,320 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1102)
+2024-08-29 18:35:14,979 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Stop_Working -> lab1-08)
+2024-08-29 18:35:15,065 - __main__ - DEBUG - [envy.py:265] - executing: await NV.stop_working(self, False, )
+2024-08-29 18:35:15,160 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:15,335 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 702)
+2024-08-29 18:35:15,400 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:20,080 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:21,772 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: NVCache2_001 Allocation: (851, 8582584742, '[1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259, 1260, 1261, 1262, 1263, 1264, 1265, 1266, 1267, 1268, 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292, 1293, 1294, 1295, 1296, 1297, 1298, 1299, 1300, 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312, 1313, 1314, 1315, 1316, 1317, 1318, 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330, 1331, 1332, 1333, 1334, 1335, 1336, 1337, 1338, 1339, 1340, 1341, 1342, 1343, 1344, 1345, 1346, 1347, 1348, 1349, 1350]', 'lab1-08', 'inprogress'))
+2024-08-29 18:35:21,808 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_eHoudini(self, '{"Allocation_Id": 851, "Purpose": "simulation", "Tasks": {"1251": 1001, "1252": 1002, "1253": 1003, "1254": 1004, "1255": 1005, "1256": 1006, "1257": 1007, "1258": 1008, "1259": 1009, "1260": 1010, "1261": 1011, "1262": 1012, "1263": 1013, "1264": 1014, "1265": 1015, "1266": 1016, "1267": 1017, "1268": 1018, "1269": 1019, "1270": 1020, "1271": 1021, "1272": 1022, "1273": 1023, "1274": 1024, "1275": 1025, "1276": 1026, "1277": 1027, "1278": 1028, "1279": 1029, "1280": 1030, "1281": 1031, "1282": 1032, "1283": 1033, "1284": 1034, "1285": 1035, "1286": 1036, "1287": 1037, "1288": 1038, "1289": 1039, "1290": 1040, "1291": 1041, "1292": 1042, "1293": 1043, "1294": 1044, "1295": 1045, "1296": 1046, "1297": 1047, "1298": 1048, "1299": 1049, "1300": 1050, "1301": 1051, "1302": 1052, "1303": 1053, "1304": 1054, "1305": 1055, "1306": 1056, "1307": 1057, "1308": 1058, "1309": 1059, "1310": 1060, "1311": 1061, "1312": 1062, "1313": 1063, "1314": 1064, "1315": 1065, "1316": 1066, "1317": 1067, "1318": 1068, "1319": 1069, "1320": 1070, "1321": 1071, "1322": 1072, "1323": 1073, "1324": 1074, "1325": 1075, "1326": 1076, "1327": 1077, "1328": 1078, "1329": 1079, "1330": 1080, "1331": 1081, "1332": 1082, "1333": 1083, "1334": 1084, "1335": 1085, "1336": 1086, "1337": 1087, "1338": 1088, "1339": 1089, "1340": 1090, "1341": 1091, "1342": 1092, "1343": 1093, "1344": 1094, "1345": 1095, "1346": 1096, "1347": 1097, "1348": 1098, "1349": 1099, "1350": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/NVCache2/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/NVCache2/f2": 1100}, "Substeps": {"/obj/billowy_smoke/NVCache2/substeps": 1.0}, "Version": {"/obj/billowy_smoke/NVCache2/NVversion": 1.0}, "Target_Button": "/obj/billowy_smoke/NVCache2/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation", "Job_Id": 8582584742}, "Parameters": {}}', )
+2024-08-29 18:35:22,185 - __main__ - INFO - [Envy_Functions.py:175] - eHoudini: Started
+2024-08-29 18:35:22,185 - __main__ - DEBUG - [plugin.py:37] - Allocation Data String: {"Allocation_Id": 851, "Purpose": "simulation", "Tasks": {"1251": 1001, "1252": 1002, "1253": 1003, "1254": 1004, "1255": 1005, "1256": 1006, "1257": 1007, "1258": 1008, "1259": 1009, "1260": 1010, "1261": 1011, "1262": 1012, "1263": 1013, "1264": 1014, "1265": 1015, "1266": 1016, "1267": 1017, "1268": 1018, "1269": 1019, "1270": 1020, "1271": 1021, "1272": 1022, "1273": 1023, "1274": 1024, "1275": 1025, "1276": 1026, "1277": 1027, "1278": 1028, "1279": 1029, "1280": 1030, "1281": 1031, "1282": 1032, "1283": 1033, "1284": 1034, "1285": 1035, "1286": 1036, "1287": 1037, "1288": 1038, "1289": 1039, "1290": 1040, "1291": 1041, "1292": 1042, "1293": 1043, "1294": 1044, "1295": 1045, "1296": 1046, "1297": 1047, "1298": 1048, "1299": 1049, "1300": 1050, "1301": 1051, "1302": 1052, "1303": 1053, "1304": 1054, "1305": 1055, "1306": 1056, "1307": 1057, "1308": 1058, "1309": 1059, "1310": 1060, "1311": 1061, "1312": 1062, "1313": 1063, "1314": 1064, "1315": 1065, "1316": 1066, "1317": 1067, "1318": 1068, "1319": 1069, "1320": 1070, "1321": 1071, "1322": 1072, "1323": 1073, "1324": 1074, "1325": 1075, "1326": 1076, "1327": 1077, "1328": 1078, "1329": 1079, "1330": 1080, "1331": 1081, "1332": 1082, "1333": 1083, "1334": 1084, "1335": 1085, "1336": 1086, "1337": 1087, "1338": 1088, "1339": 1089, "1340": 1090, "1341": 1091, "1342": 1092, "1343": 1093, "1344": 1094, "1345": 1095, "1346": 1096, "1347": 1097, "1348": 1098, "1349": 1099, "1350": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/NVCache2/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/NVCache2/f2": 1100}, "Substeps": {"/obj/billowy_smoke/NVCache2/substeps": 1.0}, "Version": {"/obj/billowy_smoke/NVCache2/NVversion": 1.0}, "Target_Button": "/obj/billowy_smoke/NVCache2/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation", "Job_Id": 8582584742}, "Parameters": {}}
+2024-08-29 18:35:22,186 - __main__ - DEBUG - [plugin.py:113] - eHoudini: starting resumable simulation process
+2024-08-29 18:35:22,198 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:22,198 - __main__ - INFO - [plugin.py:81] - eHoudini: Started hython_process
+2024-08-29 18:35:22,198 - __main__ - INFO - [plugin.py:154] - eHoudini: Monitoring output
+2024-08-29 18:35:22,199 - __main__ - INFO - [plugin.py:161] - eHoudini: Monitoring error
+2024-08-29 18:35:22,249 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1251)
+2024-08-29 18:35:23,347 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | log started Thu Aug 29 18:35:23 2024
+2024-08-29 18:35:23,348 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | Arnold 7.3.1.1 [25d993ed] windows x86_64 clang-15.0.7 oiio-2.4.1 osl-1.13.0 vdb-7.1.1 adlsdk-8.0.7.50 clmhub-3.1.1.43 rlm-14.2.5 optix-8.0.0 2024/04/22 19:04:10
+2024-08-29 18:35:23,348 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | running on lab1-08, pid=11732
+2024-08-29 18:35:23,349 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  1 x AMD Ryzen Threadripper PRO 3945WX 12-Cores  (12 cores, 24 logical) with 130925MB
+2024-08-29 18:35:23,349 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  NVIDIA driver version 555.85
+2024-08-29 18:35:23,349 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  GPU 0: NVIDIA GeForce RTX 3080 @ 1710MHz (compute 8.6) with 10239MB (9013MB available) (NVLink:0)
+2024-08-29 18:35:23,349 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  Windows 10 (version 10.0, build 19045)
+2024-08-29 18:35:23,350 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  soft limit for open files changed from 8192 to 2048
+2024-08-29 18:35:23,350 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |
+2024-08-29 18:35:23,368 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   261MB         | loading plugins from C:\solidangle\htoa\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\scripts\bin\..\plugins ...
+2024-08-29 18:35:23,371 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  alembic_proc.dll: alembic uses Arnold 7.3.1.1
+2024-08-29 18:35:23,373 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte uses Arnold 7.3.1.1
+2024-08-29 18:35:23,374 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_filter uses Arnold 7.3.1.1
+2024-08-29 18:35:23,374 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_manifest_driver uses Arnold 7.3.1.1
+2024-08-29 18:35:23,376 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  htoa_mandelbulb_proc.dll: mandelbulb uses Arnold 7.3.1.1
+2024-08-29 18:35:23,466 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   279MB         |  usd_proc.dll: usd uses Arnold 7.3.1.1
+2024-08-29 18:35:23,472 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   280MB         | loaded 6 plugins from 4 lib(s) in 0:00.10
+2024-08-29 18:35:23,475 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   287MB         | [htoa_op] Begin registration ...
+2024-08-29 18:35:23,479 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   293MB         | [obj_procedurals] Registering procedurals ...
+2024-08-29 18:35:23,480 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   285MB         | [obj_procedurals] procedural registration done.
+2024-08-29 18:35:23,680 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   313MB         | [rop_operators] Registering operators ...
+2024-08-29 18:35:23,681 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   313MB         | [rop_operators] operator registration done.
+2024-08-29 18:35:24,523 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   360MB         | [vop_shaders] Registering shaders ...
+2024-08-29 18:35:24,536 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   363MB         | [vop_shaders] shader registration done.
+2024-08-29 18:35:24,537 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   363MB         | [vop_imagers] Registering imagers ...
+2024-08-29 18:35:24,538 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | [vop_imagers] imager registration done.
+2024-08-29 18:35:24,538 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | [htoa_op] USD shader translation registration
+2024-08-29 18:35:24,937 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   379MB         | [htoa_op] End registration.
+2024-08-29 18:35:24,938 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   380MB         |
+2024-08-29 18:35:24,939 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   380MB         | releasing resources
+2024-08-29 18:35:24,941 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | Arnold shutdown
+2024-08-29 18:35:32,958 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1001
+2024-08-29 18:35:32,959 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f1 -> 1001
+2024-08-29 18:35:32,960 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1100
+2024-08-29 18:35:32,960 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f2 -> 1100
+2024-08-29 18:35:32,960 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1100
+2024-08-29 18:35:32,960 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f2 -> 1100
+2024-08-29 18:35:32,961 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1.0
+2024-08-29 18:35:33,019 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/NVversion -> 1.0
+2024-08-29 18:35:33,019 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1.0
+2024-08-29 18:35:33,020 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/substeps -> 1.0
+2024-08-29 18:35:34,521 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 0%
+2024-08-29 18:35:34,521 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 0%
+2024-08-29 18:35:34,522 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:34,544 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1251)
+2024-08-29 18:35:34,592 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1252)
+2024-08-29 18:35:34,946 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 1%
+2024-08-29 18:35:34,947 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 1%
+2024-08-29 18:35:34,948 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:35,022 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1252)
+2024-08-29 18:35:35,070 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1253)
+2024-08-29 18:35:35,140 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 2%
+2024-08-29 18:35:35,140 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 2%
+2024-08-29 18:35:35,141 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:35,212 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1253)
+2024-08-29 18:35:35,260 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1254)
+2024-08-29 18:35:35,302 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 3%
+2024-08-29 18:35:35,302 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 3%
+2024-08-29 18:35:35,303 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:35,403 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1254)
+2024-08-29 18:35:35,450 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1255)
+2024-08-29 18:35:35,607 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 4%
+2024-08-29 18:35:35,607 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 4%
+2024-08-29 18:35:35,608 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:35,686 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1255)
+2024-08-29 18:35:35,732 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1256)
+2024-08-29 18:35:35,806 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 5%
+2024-08-29 18:35:35,806 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 5%
+2024-08-29 18:35:35,807 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:35,876 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1256)
+2024-08-29 18:35:35,924 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1257)
+2024-08-29 18:35:35,988 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 6%
+2024-08-29 18:35:35,988 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 6%
+2024-08-29 18:35:35,989 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:36,064 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1257)
+2024-08-29 18:35:36,112 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1258)
+2024-08-29 18:35:36,182 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 7%
+2024-08-29 18:35:36,182 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 7%
+2024-08-29 18:35:36,183 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:36,256 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1258)
+2024-08-29 18:35:36,304 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1259)
+2024-08-29 18:35:36,410 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 8%
+2024-08-29 18:35:36,410 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 8%
+2024-08-29 18:35:36,412 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:36,448 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1259)
+2024-08-29 18:35:36,494 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1260)
+2024-08-29 18:35:36,804 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 9%
+2024-08-29 18:35:36,804 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 9%
+2024-08-29 18:35:36,805 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:36,824 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1260)
+2024-08-29 18:35:36,873 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1261)
+2024-08-29 18:35:37,012 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 10%
+2024-08-29 18:35:37,013 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 10%
+2024-08-29 18:35:37,014 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:37,111 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1261)
+2024-08-29 18:35:37,159 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1262)
+2024-08-29 18:35:37,264 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 11%
+2024-08-29 18:35:37,264 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 11%
+2024-08-29 18:35:37,265 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:37,304 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1262)
+2024-08-29 18:35:37,351 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1263)
+2024-08-29 18:35:37,496 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 12%
+2024-08-29 18:35:37,496 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 12%
+2024-08-29 18:35:37,497 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:37,589 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1263)
+2024-08-29 18:35:37,637 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1264)
+2024-08-29 18:35:37,760 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 13%
+2024-08-29 18:35:37,761 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 13%
+2024-08-29 18:35:37,762 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:37,780 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1264)
+2024-08-29 18:35:37,844 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1265)
+2024-08-29 18:35:38,285 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 14%
+2024-08-29 18:35:38,285 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 14%
+2024-08-29 18:35:38,286 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:38,351 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1265)
+2024-08-29 18:35:38,399 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1266)
+2024-08-29 18:35:38,542 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 15%
+2024-08-29 18:35:38,543 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 15%
+2024-08-29 18:35:38,544 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:38,637 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1266)
+2024-08-29 18:35:38,685 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1267)
+2024-08-29 18:35:38,814 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 16%
+2024-08-29 18:35:38,814 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 16%
+2024-08-29 18:35:38,815 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:38,845 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1267)
+2024-08-29 18:35:38,907 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1268)
+2024-08-29 18:35:39,083 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 17%
+2024-08-29 18:35:39,083 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 17%
+2024-08-29 18:35:39,084 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:39,142 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1268)
+2024-08-29 18:35:39,205 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1269)
+2024-08-29 18:35:39,406 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 18%
+2024-08-29 18:35:39,407 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 18%
+2024-08-29 18:35:39,408 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:39,429 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1269)
+2024-08-29 18:35:39,478 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1270)
+2024-08-29 18:35:40,326 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 19%
+2024-08-29 18:35:40,326 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 19%
+2024-08-29 18:35:40,328 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:40,373 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1270)
+2024-08-29 18:35:40,421 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1271)
+2024-08-29 18:35:40,631 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 20%
+2024-08-29 18:35:40,632 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 20%
+2024-08-29 18:35:40,632 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:40,645 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1271)
+2024-08-29 18:35:40,692 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1272)
+2024-08-29 18:35:40,943 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 21%
+2024-08-29 18:35:40,944 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 21%
+2024-08-29 18:35:40,944 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:41,027 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1272)
+2024-08-29 18:35:41,075 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1273)
+2024-08-29 18:35:41,263 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 22%
+2024-08-29 18:35:41,263 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 22%
+2024-08-29 18:35:41,264 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:41,315 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1273)
+2024-08-29 18:35:41,347 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1274)
+2024-08-29 18:35:41,640 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 23%
+2024-08-29 18:35:41,641 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 23%
+2024-08-29 18:35:41,642 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:41,699 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1274)
+2024-08-29 18:35:41,747 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1275)
+2024-08-29 18:35:42,427 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 24%
+2024-08-29 18:35:42,428 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 24%
+2024-08-29 18:35:42,429 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:42,460 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1275)
+2024-08-29 18:35:42,506 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1276)
+2024-08-29 18:35:42,780 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 25%
+2024-08-29 18:35:42,780 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 25%
+2024-08-29 18:35:42,781 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:42,842 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1276)
+2024-08-29 18:35:42,890 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1277)
+2024-08-29 18:35:43,141 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 26%
+2024-08-29 18:35:43,141 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 26%
+2024-08-29 18:35:43,142 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:43,222 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1277)
+2024-08-29 18:35:43,269 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1278)
+2024-08-29 18:35:43,513 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 27%
+2024-08-29 18:35:43,514 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 27%
+2024-08-29 18:35:43,515 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:43,597 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1278)
+2024-08-29 18:35:43,645 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1279)
+2024-08-29 18:35:43,962 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 28%
+2024-08-29 18:35:43,962 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 28%
+2024-08-29 18:35:43,963 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:35:43,981 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1279)
+2024-08-29 18:35:44,028 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1280)
+2024-08-29 18:35:45,067 - __main__ - DEBUG - [envy.py:277] - envy: exiting
+2024-08-29 18:35:45,075 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 14296
+2024-08-29 18:35:45,076 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 16436
+2024-08-29 18:35:45,076 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 23348
+2024-08-29 18:35:45,076 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 11732
+2024-08-29 18:35:45,077 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 19556
+2024-08-29 18:35:45,077 - __main__ - INFO - [plugin.py:221] - eHoudini: exit function called
+2024-08-29 18:35:45,077 - __main__ - INFO - [plugin.py:222] - eHoudini: Terminating child process
+2024-08-29 18:35:45,078 - __main__ - DEBUG - [plugin.py:173] - eHoudini: task monitor_output()
+2024-08-29 18:35:45,078 - __main__ - DEBUG - [plugin.py:178] - eHoudini: Ending coroutines
+2024-08-29 18:35:45,079 - __main__ - DEBUG - [plugin.py:173] - eHoudini: task monitor_error()
+2024-08-29 18:35:45,079 - __main__ - DEBUG - [plugin.py:178] - eHoudini: Ending coroutines
+2024-08-29 18:35:45,079 - __main__ - INFO - [Envy_Functions.py:179] - eHoudini: Exited
+2024-08-29 18:35:45,080 - __main__ - DEBUG - [client.py:179] - consumer_handler: no close frame received or sent
+
+
+2024-08-29 18:35:54.048466
+18:35:542024-08-29 18:35:54,094 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-29 18:35:54,096 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-29 18:35:54,097 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.89:37020/health_check
+2024-08-29 18:35:56,122 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-29 18:35:56,124 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-29 18:35:56,124 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-29 18:35:56,124 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-29 18:35:56,125 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-29 18:35:57,131 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-29 18:35:57,131 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-29 18:35:57,137 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.89
+2024-08-29 18:35:57,137 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.89:37020/client
+2024-08-29 18:35:58,144 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-29 18:35:58,144 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-29 18:35:58,145 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.89
+2024-08-29 18:35:58,198 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:35:58,198 - __main__ - DEBUG - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'lab1-08', ))
+2024-08-29 18:35:58,222 - __main__ - DEBUG - [envy.py:265] - executing: await NV.fill_buffer(self, 'server_name', 'lab1-08', )
+2024-08-29 18:35:59,890 - __main__ - DEBUG - [client.py:170] - received message from: server -> (Job: NVCache2_001 Allocation: (851, 8582584742, '[1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259, 1260, 1261, 1262, 1263, 1264, 1265, 1266, 1267, 1268, 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292, 1293, 1294, 1295, 1296, 1297, 1298, 1299, 1300, 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312, 1313, 1314, 1315, 1316, 1317, 1318, 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330, 1331, 1332, 1333, 1334, 1335, 1336, 1337, 1338, 1339, 1340, 1341, 1342, 1343, 1344, 1345, 1346, 1347, 1348, 1349, 1350]', 'lab1-08', 'inprogress'))
+2024-08-29 18:36:00,005 - __main__ - DEBUG - [envy.py:265] - executing: await NV.PLUGIN_eHoudini(self, '{"Allocation_Id": 851, "Purpose": "simulation", "Tasks": {"1281": 1031, "1282": 1032, "1283": 1033, "1284": 1034, "1285": 1035, "1286": 1036, "1287": 1037, "1288": 1038, "1289": 1039, "1290": 1040, "1291": 1041, "1292": 1042, "1293": 1043, "1294": 1044, "1295": 1045, "1296": 1046, "1297": 1047, "1298": 1048, "1299": 1049, "1300": 1050, "1301": 1051, "1302": 1052, "1303": 1053, "1304": 1054, "1305": 1055, "1306": 1056, "1307": 1057, "1308": 1058, "1309": 1059, "1310": 1060, "1311": 1061, "1312": 1062, "1313": 1063, "1314": 1064, "1315": 1065, "1316": 1066, "1317": 1067, "1318": 1068, "1319": 1069, "1320": 1070, "1321": 1071, "1322": 1072, "1323": 1073, "1324": 1074, "1325": 1075, "1326": 1076, "1327": 1077, "1328": 1078, "1329": 1079, "1330": 1080, "1331": 1081, "1332": 1082, "1333": 1083, "1334": 1084, "1335": 1085, "1336": 1086, "1337": 1087, "1338": 1088, "1339": 1089, "1340": 1090, "1341": 1091, "1342": 1092, "1343": 1093, "1344": 1094, "1345": 1095, "1346": 1096, "1347": 1097, "1348": 1098, "1349": 1099, "1350": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/NVCache2/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/NVCache2/f2": 1100}, "Substeps": {"/obj/billowy_smoke/NVCache2/substeps": 1.0}, "Version": {"/obj/billowy_smoke/NVCache2/NVversion": 1.0}, "Target_Button": "/obj/billowy_smoke/NVCache2/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation", "Job_Id": 8582584742}, "Parameters": {}}', )
+2024-08-29 18:36:00,028 - __main__ - INFO - [Envy_Functions.py:175] - eHoudini: Started
+2024-08-29 18:36:00,028 - __main__ - DEBUG - [plugin.py:37] - Allocation Data String: {"Allocation_Id": 851, "Purpose": "simulation", "Tasks": {"1281": 1031, "1282": 1032, "1283": 1033, "1284": 1034, "1285": 1035, "1286": 1036, "1287": 1037, "1288": 1038, "1289": 1039, "1290": 1040, "1291": 1041, "1292": 1042, "1293": 1043, "1294": 1044, "1295": 1045, "1296": 1046, "1297": 1047, "1298": 1048, "1299": 1049, "1300": 1050, "1301": 1051, "1302": 1052, "1303": 1053, "1304": 1054, "1305": 1055, "1306": 1056, "1307": 1057, "1308": 1058, "1309": 1059, "1310": 1060, "1311": 1061, "1312": 1062, "1313": 1063, "1314": 1064, "1315": 1065, "1316": 1066, "1317": 1067, "1318": 1068, "1319": 1069, "1320": 1070, "1321": 1071, "1322": 1072, "1323": 1073, "1324": 1074, "1325": 1075, "1326": 1076, "1327": 1077, "1328": 1078, "1329": 1079, "1330": 1080, "1331": 1081, "1332": 1082, "1333": 1083, "1334": 1084, "1335": 1085, "1336": 1086, "1337": 1087, "1338": 1088, "1339": 1089, "1340": 1090, "1341": 1091, "1342": 1092, "1343": 1093, "1344": 1094, "1345": 1095, "1346": 1096, "1347": 1097, "1348": 1098, "1349": 1099, "1350": 1100}, "Environment": {"Start_Frame": {"/obj/billowy_smoke/NVCache2/f1": 1001}, "End_Frame": {"/obj/billowy_smoke/NVCache2/f2": 1100}, "Substeps": {"/obj/billowy_smoke/NVCache2/substeps": 1.0}, "Version": {"/obj/billowy_smoke/NVCache2/NVversion": 1.0}, "Target_Button": "/obj/billowy_smoke/NVCache2/execute", "HIP": "Z:/school/Ehoudini/jobProcessor.hipnc", "JOB": "C:/Users/Nathan.v0602", "Job_Type": "resumable_simulation", "Dopnet_Initial_State_Parm": "/obj/billowysmoke_simulation/initialstate", "Dopnet_Start_Frame_Parm": "/obj/billowysmoke_simulation/startframe", "Checkpoint_File_Path": ["/obj/billowysmoke_simulation/explicitcachename", "Z:/school/Ehoudini/checkpoint/billowysmoke_simulation/$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim"], "Checkpoint_Trail_Length": ["/obj/billowysmoke_simulation/explicitcachensteps", 1], "Checkpoint_Interval": ["/obj/billowysmoke_simulation/explicitcachecheckpointspacing", 5], "$OS": "billowysmoke_simulation", "Job_Id": 8582584742}, "Parameters": {}}
+2024-08-29 18:36:00,029 - __main__ - DEBUG - [plugin.py:113] - eHoudini: starting resumable simulation process
+2024-08-29 18:36:00,041 - __main__ - INFO - [plugin.py:81] - eHoudini: Started hython_process
+2024-08-29 18:36:00,041 - __main__ - INFO - [plugin.py:154] - eHoudini: Monitoring output
+2024-08-29 18:36:00,041 - __main__ - INFO - [plugin.py:161] - eHoudini: Monitoring error
+2024-08-29 18:36:00,101 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:36:00,149 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1281)
+2024-08-29 18:36:01,195 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | log started Thu Aug 29 18:36:01 2024
+2024-08-29 18:36:01,196 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | Arnold 7.3.1.1 [25d993ed] windows x86_64 clang-15.0.7 oiio-2.4.1 osl-1.13.0 vdb-7.1.1 adlsdk-8.0.7.50 clmhub-3.1.1.43 rlm-14.2.5 optix-8.0.0 2024/04/22 19:04:10
+2024-08-29 18:36:01,196 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         | running on lab1-08, pid=13360
+2024-08-29 18:36:01,196 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  1 x AMD Ryzen Threadripper PRO 3945WX 12-Cores  (12 cores, 24 logical) with 130925MB
+2024-08-29 18:36:01,197 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  NVIDIA driver version 555.85
+2024-08-29 18:36:01,197 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  GPU 0: NVIDIA GeForce RTX 3080 @ 1710MHz (compute 8.6) with 10239MB (9015MB available) (NVLink:0)
+2024-08-29 18:36:01,197 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  Windows 10 (version 10.0, build 19045)
+2024-08-29 18:36:01,198 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |  soft limit for open files changed from 8192 to 2048
+2024-08-29 18:36:01,198 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   247MB         |
+2024-08-29 18:36:01,214 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         | loading plugins from C:\solidangle\htoa\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\htoa-6.3.1.1_r6f505f8_houdini-20.0.653\scripts\bin\..\plugins ...
+2024-08-29 18:36:01,218 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  alembic_proc.dll: alembic uses Arnold 7.3.1.1
+2024-08-29 18:36:01,221 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte uses Arnold 7.3.1.1
+2024-08-29 18:36:01,221 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_filter uses Arnold 7.3.1.1
+2024-08-29 18:36:01,221 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  cryptomatte.dll: cryptomatte_manifest_driver uses Arnold 7.3.1.1
+2024-08-29 18:36:01,223 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   262MB         |  htoa_mandelbulb_proc.dll: mandelbulb uses Arnold 7.3.1.1
+2024-08-29 18:36:01,314 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   279MB         |  usd_proc.dll: usd uses Arnold 7.3.1.1
+2024-08-29 18:36:01,320 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   280MB         | loaded 6 plugins from 4 lib(s) in 0:00.10
+2024-08-29 18:36:01,323 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   288MB         | [htoa_op] Begin registration ...
+2024-08-29 18:36:01,327 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   285MB         | [obj_procedurals] Registering procedurals ...
+2024-08-29 18:36:01,328 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   280MB         | [obj_procedurals] procedural registration done.
+2024-08-29 18:36:01,529 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   313MB         | [rop_operators] Registering operators ...
+2024-08-29 18:36:01,530 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:00   313MB         | [rop_operators] operator registration done.
+2024-08-29 18:36:02,387 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   359MB         | [vop_shaders] Registering shaders ...
+2024-08-29 18:36:02,400 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   363MB         | [vop_shaders] shader registration done.
+2024-08-29 18:36:02,401 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   363MB         | [vop_imagers] Registering imagers ...
+2024-08-29 18:36:02,402 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | [vop_imagers] imager registration done.
+2024-08-29 18:36:02,402 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | [htoa_op] USD shader translation registration
+2024-08-29 18:36:02,776 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   379MB         | [htoa_op] End registration.
+2024-08-29 18:36:02,776 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   379MB         |
+2024-08-29 18:36:02,777 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   379MB         | releasing resources
+2024-08-29 18:36:02,779 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 00:00:01   364MB         | Arnold shutdown
+2024-08-29 18:36:10,573 - __main__ - DEBUG - [plugin.py:185] - eHoudini: $ENVY:NEWSTARTFRAME=0
+2024-08-29 18:36:10,573 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1031
+2024-08-29 18:36:10,574 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f1 -> 1031
+2024-08-29 18:36:10,574 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1100
+2024-08-29 18:36:10,575 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f2 -> 1100
+2024-08-29 18:36:10,575 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1100
+2024-08-29 18:36:10,575 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/f2 -> 1100
+2024-08-29 18:36:10,575 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1.0
+2024-08-29 18:36:10,638 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/NVversion -> 1.0
+2024-08-29 18:36:10,638 - __main__ - DEBUG - [plugin.py:185] - eHoudini: 1.0
+2024-08-29 18:36:10,639 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Set parameter: /obj/billowy_smoke/NVCache2/substeps -> 1.0
+2024-08-29 18:36:11,142 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 0%
+2024-08-29 18:36:11,142 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 0%
+2024-08-29 18:36:11,143 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,158 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 1%
+2024-08-29 18:36:11,158 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 1%
+2024-08-29 18:36:11,159 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,160 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1281)
+2024-08-29 18:36:11,161 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 3%
+2024-08-29 18:36:11,161 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 3%
+2024-08-29 18:36:11,162 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,162 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 4%
+2024-08-29 18:36:11,163 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 4%
+2024-08-29 18:36:11,163 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,220 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1282)
+2024-08-29 18:36:11,267 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1282)
+2024-08-29 18:36:11,314 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1283)
+2024-08-29 18:36:11,360 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1283)
+2024-08-29 18:36:11,406 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1284)
+2024-08-29 18:36:11,452 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1284)
+2024-08-29 18:36:11,466 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 6%
+2024-08-29 18:36:11,466 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 6%
+2024-08-29 18:36:11,466 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,469 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 7%
+2024-08-29 18:36:11,469 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 7%
+2024-08-29 18:36:11,469 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,471 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 9%
+2024-08-29 18:36:11,471 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 9%
+2024-08-29 18:36:11,472 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,474 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 10%
+2024-08-29 18:36:11,474 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 10%
+2024-08-29 18:36:11,475 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,477 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 12%
+2024-08-29 18:36:11,477 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 12%
+2024-08-29 18:36:11,478 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,489 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1285)
+2024-08-29 18:36:11,489 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 13%
+2024-08-29 18:36:11,490 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 13%
+2024-08-29 18:36:11,490 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,493 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 14%
+2024-08-29 18:36:11,493 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 14%
+2024-08-29 18:36:11,493 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,496 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 16%
+2024-08-29 18:36:11,496 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 16%
+2024-08-29 18:36:11,496 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,498 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 17%
+2024-08-29 18:36:11,498 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 17%
+2024-08-29 18:36:11,499 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,501 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 19%
+2024-08-29 18:36:11,501 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 19%
+2024-08-29 18:36:11,502 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,514 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 20%
+2024-08-29 18:36:11,514 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 20%
+2024-08-29 18:36:11,514 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,517 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 22%
+2024-08-29 18:36:11,517 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 22%
+2024-08-29 18:36:11,517 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,520 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 23%
+2024-08-29 18:36:11,520 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 23%
+2024-08-29 18:36:11,520 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,522 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 25%
+2024-08-29 18:36:11,522 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 25%
+2024-08-29 18:36:11,523 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,524 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 26%
+2024-08-29 18:36:11,525 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 26%
+2024-08-29 18:36:11,525 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,536 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1285)
+2024-08-29 18:36:11,536 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 28%
+2024-08-29 18:36:11,537 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 28%
+2024-08-29 18:36:11,537 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,539 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 29%
+2024-08-29 18:36:11,539 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 29%
+2024-08-29 18:36:11,539 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,542 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 30%
+2024-08-29 18:36:11,542 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 30%
+2024-08-29 18:36:11,543 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,545 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 32%
+2024-08-29 18:36:11,545 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 32%
+2024-08-29 18:36:11,546 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,549 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 33%
+2024-08-29 18:36:11,549 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 33%
+2024-08-29 18:36:11,549 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,562 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 35%
+2024-08-29 18:36:11,562 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 35%
+2024-08-29 18:36:11,562 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,564 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 36%
+2024-08-29 18:36:11,564 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 36%
+2024-08-29 18:36:11,565 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,567 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 38%
+2024-08-29 18:36:11,567 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 38%
+2024-08-29 18:36:11,567 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,570 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 39%
+2024-08-29 18:36:11,570 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 39%
+2024-08-29 18:36:11,570 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,573 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 41%
+2024-08-29 18:36:11,573 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 41%
+2024-08-29 18:36:11,573 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,584 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1286)
+2024-08-29 18:36:11,585 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 42%
+2024-08-29 18:36:11,585 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 42%
+2024-08-29 18:36:11,586 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,588 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 43%
+2024-08-29 18:36:11,588 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 43%
+2024-08-29 18:36:11,588 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,590 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 45%
+2024-08-29 18:36:11,590 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 45%
+2024-08-29 18:36:11,591 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,593 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 46%
+2024-08-29 18:36:11,594 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 46%
+2024-08-29 18:36:11,594 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,596 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 48%
+2024-08-29 18:36:11,596 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 48%
+2024-08-29 18:36:11,596 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,608 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 49%
+2024-08-29 18:36:11,608 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 49%
+2024-08-29 18:36:11,609 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,611 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 51%
+2024-08-29 18:36:11,611 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 51%
+2024-08-29 18:36:11,611 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,613 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 52%
+2024-08-29 18:36:11,613 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 52%
+2024-08-29 18:36:11,614 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,616 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 54%
+2024-08-29 18:36:11,616 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 54%
+2024-08-29 18:36:11,617 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,619 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 55%
+2024-08-29 18:36:11,619 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 55%
+2024-08-29 18:36:11,620 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,632 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1286)
+2024-08-29 18:36:11,632 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 57%
+2024-08-29 18:36:11,633 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 57%
+2024-08-29 18:36:11,633 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,635 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 58%
+2024-08-29 18:36:11,635 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 58%
+2024-08-29 18:36:11,636 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,638 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 59%
+2024-08-29 18:36:11,638 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 59%
+2024-08-29 18:36:11,638 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,640 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 61%
+2024-08-29 18:36:11,640 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 61%
+2024-08-29 18:36:11,641 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,643 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 62%
+2024-08-29 18:36:11,643 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 62%
+2024-08-29 18:36:11,644 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,655 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 64%
+2024-08-29 18:36:11,655 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 64%
+2024-08-29 18:36:11,656 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,658 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 65%
+2024-08-29 18:36:11,658 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 65%
+2024-08-29 18:36:11,659 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,662 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 67%
+2024-08-29 18:36:11,662 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 67%
+2024-08-29 18:36:11,662 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,665 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 68%
+2024-08-29 18:36:11,665 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 68%
+2024-08-29 18:36:11,665 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,667 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 70%
+2024-08-29 18:36:11,667 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 70%
+2024-08-29 18:36:11,667 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,680 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1287)
+2024-08-29 18:36:11,680 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 71%
+2024-08-29 18:36:11,680 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 71%
+2024-08-29 18:36:11,681 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,682 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 72%
+2024-08-29 18:36:11,682 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 72%
+2024-08-29 18:36:11,683 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,685 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 74%
+2024-08-29 18:36:11,685 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 74%
+2024-08-29 18:36:11,686 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,688 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 75%
+2024-08-29 18:36:11,688 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 75%
+2024-08-29 18:36:11,689 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,691 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 77%
+2024-08-29 18:36:11,691 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 77%
+2024-08-29 18:36:11,692 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,703 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 78%
+2024-08-29 18:36:11,703 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 78%
+2024-08-29 18:36:11,704 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,706 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 80%
+2024-08-29 18:36:11,706 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 80%
+2024-08-29 18:36:11,706 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,708 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 81%
+2024-08-29 18:36:11,708 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 81%
+2024-08-29 18:36:11,709 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,711 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 83%
+2024-08-29 18:36:11,711 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 83%
+2024-08-29 18:36:11,712 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,713 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 84%
+2024-08-29 18:36:11,714 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 84%
+2024-08-29 18:36:11,714 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,726 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1287)
+2024-08-29 18:36:11,726 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 86%
+2024-08-29 18:36:11,726 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 86%
+2024-08-29 18:36:11,727 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,729 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 87%
+2024-08-29 18:36:11,729 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 87%
+2024-08-29 18:36:11,729 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,731 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 88%
+2024-08-29 18:36:11,731 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 88%
+2024-08-29 18:36:11,732 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,734 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 90%
+2024-08-29 18:36:11,734 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 90%
+2024-08-29 18:36:11,735 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,736 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 91%
+2024-08-29 18:36:11,737 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 91%
+2024-08-29 18:36:11,737 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:11,783 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1288)
+2024-08-29 18:36:11,830 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1288)
+2024-08-29 18:36:11,877 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1289)
+2024-08-29 18:36:11,924 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1289)
+2024-08-29 18:36:11,971 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1290)
+2024-08-29 18:36:12,018 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1290)
+2024-08-29 18:36:12,048 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 93%
+2024-08-29 18:36:12,048 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 93%
+2024-08-29 18:36:12,048 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,051 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1291)
+2024-08-29 18:36:12,051 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 94%
+2024-08-29 18:36:12,052 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 94%
+2024-08-29 18:36:12,052 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,053 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 96%
+2024-08-29 18:36:12,054 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 96%
+2024-08-29 18:36:12,054 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,055 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 97%
+2024-08-29 18:36:12,056 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 97%
+2024-08-29 18:36:12,056 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,059 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 99%
+2024-08-29 18:36:12,059 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 99%
+2024-08-29 18:36:12,059 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,070 - __main__ - DEBUG - [plugin.py:185] - eHoudini: ALF_PROGRESS 100%
+2024-08-29 18:36:12,070 - __main__ - DEBUG - [plugin.py:196] - ALF_PROGRESS 100%
+2024-08-29 18:36:12,071 - __main__ - DEBUG - [plugin.py:185] - eHoudini: FINISHED
+2024-08-29 18:36:12,097 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1291)
+2024-08-29 18:36:12,144 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1292)
+2024-08-29 18:36:12,191 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1292)
+2024-08-29 18:36:12,238 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1293)
+2024-08-29 18:36:12,286 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1293)
+2024-08-29 18:36:12,333 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1294)
+2024-08-29 18:36:12,380 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1294)
+2024-08-29 18:36:12,427 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1295)
+2024-08-29 18:36:12,473 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1295)
+2024-08-29 18:36:12,521 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1296)
+2024-08-29 18:36:12,568 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1296)
+2024-08-29 18:36:12,616 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1297)
+2024-08-29 18:36:12,663 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1297)
+2024-08-29 18:36:12,709 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1298)
+2024-08-29 18:36:12,757 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1298)
+2024-08-29 18:36:12,804 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1299)
+2024-08-29 18:36:12,852 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1299)
+2024-08-29 18:36:12,900 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1300)
+2024-08-29 18:36:12,947 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1300)
+2024-08-29 18:36:12,994 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1301)
+2024-08-29 18:36:13,042 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1301)
+2024-08-29 18:36:13,090 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1302)
+2024-08-29 18:36:13,137 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1302)
+2024-08-29 18:36:13,184 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1303)
+2024-08-29 18:36:13,232 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1303)
+2024-08-29 18:36:13,280 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1304)
+2024-08-29 18:36:13,328 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1304)
+2024-08-29 18:36:13,375 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1305)
+2024-08-29 18:36:13,421 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1305)
+2024-08-29 18:36:13,468 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1306)
+2024-08-29 18:36:13,516 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1306)
+2024-08-29 18:36:13,564 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1307)
+2024-08-29 18:36:13,574 - __main__ - DEBUG - [plugin.py:185] - eHoudini: Pressed target button /obj/billowy_smoke/NVCache2/execute
+2024-08-29 18:36:13,612 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1307)
+2024-08-29 18:36:13,658 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1308)
+2024-08-29 18:36:13,706 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1308)
+2024-08-29 18:36:13,738 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1309)
+2024-08-29 18:36:13,800 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1309)
+2024-08-29 18:36:13,832 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1310)
+2024-08-29 18:36:13,869 - __main__ - DEBUG - [plugin.py:173] - eHoudini: task monitor_output()
+2024-08-29 18:36:13,869 - __main__ - DEBUG - [plugin.py:178] - eHoudini: Ending coroutines
+2024-08-29 18:36:13,870 - __main__ - DEBUG - [plugin.py:173] - eHoudini: task monitor_error()
+2024-08-29 18:36:13,870 - __main__ - DEBUG - [plugin.py:178] - eHoudini: Ending coroutines
+2024-08-29 18:36:13,892 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1310)
+2024-08-29 18:36:13,954 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1311)
+2024-08-29 18:36:13,986 - __main__ - INFO - [Envy_Functions.py:179] - eHoudini: Exited
+2024-08-29 18:36:14,018 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1311)
+2024-08-29 18:36:14,082 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1312)
+2024-08-29 18:36:14,146 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1312)
+2024-08-29 18:36:14,194 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1313)
+2024-08-29 18:36:14,256 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1313)
+2024-08-29 18:36:14,303 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1314)
+2024-08-29 18:36:14,366 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1314)
+2024-08-29 18:36:14,414 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1315)
+2024-08-29 18:36:14,476 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1315)
+2024-08-29 18:36:14,524 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1316)
+2024-08-29 18:36:14,587 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1316)
+2024-08-29 18:36:14,634 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1317)
+2024-08-29 18:36:14,698 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1317)
+2024-08-29 18:36:14,745 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1318)
+2024-08-29 18:36:14,807 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1318)
+2024-08-29 18:36:14,855 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1319)
+2024-08-29 18:36:14,917 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1319)
+2024-08-29 18:36:14,965 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1320)
+2024-08-29 18:36:15,029 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1320)
+2024-08-29 18:36:15,075 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1321)
+2024-08-29 18:36:15,139 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1321)
+2024-08-29 18:36:15,185 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1322)
+2024-08-29 18:36:15,246 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1322)
+2024-08-29 18:36:15,294 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1323)
+2024-08-29 18:36:15,357 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1323)
+2024-08-29 18:36:15,404 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1324)
+2024-08-29 18:36:15,466 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1324)
+2024-08-29 18:36:15,512 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1325)
+2024-08-29 18:36:15,575 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1325)
+2024-08-29 18:36:15,622 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1326)
+2024-08-29 18:36:15,685 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1326)
+2024-08-29 18:36:15,731 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1327)
+2024-08-29 18:36:15,795 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1327)
+2024-08-29 18:36:15,842 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1328)
+2024-08-29 18:36:15,906 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1328)
+2024-08-29 18:36:15,953 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1329)
+2024-08-29 18:36:16,014 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1329)
+2024-08-29 18:36:16,062 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1330)
+2024-08-29 18:36:16,127 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1330)
+2024-08-29 18:36:16,174 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1331)
+2024-08-29 18:36:16,238 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1331)
+2024-08-29 18:36:16,299 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1332)
+2024-08-29 18:36:16,363 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1332)
+2024-08-29 18:36:16,425 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1333)
+2024-08-29 18:36:16,489 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1333)
+2024-08-29 18:36:16,553 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1334)
+2024-08-29 18:36:16,601 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1334)
+2024-08-29 18:36:16,663 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1335)
+2024-08-29 18:36:16,711 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1335)
+2024-08-29 18:36:16,775 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1336)
+2024-08-29 18:36:16,823 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1336)
+2024-08-29 18:36:16,885 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1337)
+2024-08-29 18:36:16,933 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1337)
+2024-08-29 18:36:16,995 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1338)
+2024-08-29 18:36:17,042 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1338)
+2024-08-29 18:36:17,106 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1339)
+2024-08-29 18:36:17,152 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1339)
+2024-08-29 18:36:17,214 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1340)
+2024-08-29 18:36:17,260 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1340)
+2024-08-29 18:36:17,324 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1341)
+2024-08-29 18:36:17,372 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1341)
+2024-08-29 18:36:17,436 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1342)
+2024-08-29 18:36:17,481 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1342)
+2024-08-29 18:36:17,544 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1343)
+2024-08-29 18:36:17,592 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1343)
+2024-08-29 18:36:17,656 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1344)
+2024-08-29 18:36:17,704 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1344)
+2024-08-29 18:36:17,766 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1345)
+2024-08-29 18:36:17,813 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1345)
+2024-08-29 18:36:17,873 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1346)
+2024-08-29 18:36:17,920 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1346)
+2024-08-29 18:36:17,984 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1347)
+2024-08-29 18:36:18,032 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1347)
+2024-08-29 18:36:18,094 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1348)
+2024-08-29 18:36:18,142 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1348)
+2024-08-29 18:36:18,204 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1349)
+2024-08-29 18:36:18,250 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1349)
+2024-08-29 18:36:18,313 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 1350)
+2024-08-29 18:36:18,359 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 1350)
+2024-08-29 18:36:18,423 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task_allocation(): 851)
+2024-08-29 18:36:18,469 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-29 18:36:40,849 - __main__ - DEBUG - [envy.py:277] - envy: exiting
+2024-08-29 18:36:40,857 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 8100
+2024-08-29 18:36:40,857 - __main__ - DEBUG - [envy.py:282] - envy: Terminating process - 11408
+2024-08-29 18:36:40,857 - __main__ - INFO - [plugin.py:221] - eHoudini: exit function called
+2024-08-29 18:36:40,858 - __main__ - INFO - [plugin.py:222] - eHoudini: Terminating child process
+2024-08-29 18:36:40,860 - __main__ - DEBUG - [client.py:179] - consumer_handler: no close frame received or sent

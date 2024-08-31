@@ -1,0 +1,182 @@
+
+
+2024-08-28 14:30:31.794673
+14:30:312024-08-28 14:30:31,878 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:30:31,893 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:30:41,901 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:30:41,903 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:30:41,903 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:30:41,904 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:30:41,904 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:30:42,933 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:30:42,933 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:30:42,955 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.125
+2024-08-28 14:30:42,955 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.125:37020/client
+2024-08-28 14:30:52,969 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-28 14:30:52,969 - __main__ - INFO - [envy.py:164] - Failed to connect because of timeout
+2024-08-28 14:30:52,969 - __main__ - DEBUG - [envy.py:165] - Info: , exception type: <class 'TimeoutError'>
+2024-08-28 14:30:52,969 - __main__ - INFO - [envy.py:218] - electing new server
+2024-08-28 14:30:52,970 - __main__ - DEBUG - [envy_utils.py:147] - opening clients file at Z:/school/envy/__envytest__/Connections/clients.json
+2024-08-28 14:30:53,089 - __main__ - DEBUG - [envy_utils.py:152] - returning clients: {'lab8-08': {'IP': '10.1.16.125', 'Status': 'idle', 'Job': None, 'Allocation': None}}
+2024-08-28 14:30:53,089 - __main__ - DEBUG - [envy.py:232] - New server: lab8-08
+2024-08-28 14:30:58,091 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:30:58,091 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:30:58,091 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:30:58,114 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:30:58,224 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:30:58,225 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:30:58,249 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-28 14:30:58,249 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-28 14:30:58,249 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.180
+2024-08-28 14:30:58,311 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:30:58,343 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'VR1P620-03', ))
+2024-08-28 14:30:58,375 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:30:58,439 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'VR1P620-03', )
+2024-08-28 14:31:00,347 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (11, 3591794551, '[146, 147, 148, 149, 150]', 'VR1P620-03', 'inprogress'))
+2024-08-28 14:31:00,444 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 11, "Purpose": "cache", "Tasks": {"148": 48, "149": 49, "150": 50}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-28 14:31:00,554 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:31:00,616 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 148)
+2024-08-28 14:31:13,709 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 148)
+2024-08-28 14:31:13,773 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 149)
+2024-08-28 14:31:26,709 - __main__ - DEBUG - [client.py:123] - sending message to server: (finish_task(): 149)
+2024-08-28 14:31:26,805 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 150)
+2024-08-28 14:31:29,791 - __main__ - INFO - [client.py:170] - received message from: server -> (restart_envy())
+2024-08-28 14:31:29,899 - __main__ - DEBUG - [envy.py:261] - executing: await NV.restart_envy(self, )
+2024-08-28 14:31:29,899 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:31:29,908 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 20008
+2024-08-28 14:31:29,908 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 8632
+2024-08-28 14:31:29,908 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 18472
+
+
+2024-08-28 14:31:35.152411
+14:31:352024-08-28 14:31:35,245 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:31:35,281 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:31:37,319 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:31:37,404 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:31:37,404 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:31:37,404 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:31:37,404 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:31:38,602 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:31:38,602 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:31:38,619 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:31:38,619 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:31:40,653 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-28 14:31:40,653 - __main__ - INFO - [envy.py:192] - Failed to connect for a general reason
+2024-08-28 14:31:40,653 - __main__ - DEBUG - [envy.py:193] - Info: [WinError 1225] The remote computer refused the network connection, exception type: <class 'ConnectionRefusedError'>
+2024-08-28 14:31:40,653 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:31:40,662 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 12408
+2024-08-28 14:31:40,662 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 16892
+
+
+2024-08-28 14:32:29.984650
+14:32:292024-08-28 14:32:30,062 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:32:30,070 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:32:32,164 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:32:32,166 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:32:32,167 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:32:32,167 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:32:32,167 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:32:33,219 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:32:33,219 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:32:33,681 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:32:33,682 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:32:35,729 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-28 14:32:35,729 - __main__ - INFO - [envy.py:192] - Failed to connect for a general reason
+2024-08-28 14:32:35,729 - __main__ - DEBUG - [envy.py:193] - Info: [WinError 1225] The remote computer refused the network connection, exception type: <class 'ConnectionRefusedError'>
+2024-08-28 14:32:35,730 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:32:35,738 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 13952
+2024-08-28 14:32:35,738 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 13876
+
+
+2024-08-28 14:33:15.503901
+14:33:152024-08-28 14:33:15,645 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:33:15,649 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:33:17,687 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:33:17,707 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:33:17,707 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:33:17,708 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:33:17,708 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:33:19,156 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:33:19,156 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:33:19,172 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:33:19,172 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:33:21,211 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-28 14:33:21,211 - __main__ - INFO - [envy.py:192] - Failed to connect for a general reason
+2024-08-28 14:33:21,211 - __main__ - DEBUG - [envy.py:193] - Info: [WinError 1225] The remote computer refused the network connection, exception type: <class 'ConnectionRefusedError'>
+2024-08-28 14:33:21,211 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:33:21,219 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 9492
+2024-08-28 14:33:21,220 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 11688
+
+
+2024-08-28 14:33:46.368207
+14:33:462024-08-28 14:33:46,464 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:33:46,492 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:33:48,538 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:33:48,558 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:33:48,558 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:33:48,558 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:33:48,558 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:33:50,020 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:33:50,020 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:33:50,047 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:33:50,047 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:33:52,082 - __main__ - INFO - [envy.py:160] - Failed to connect to server
+2024-08-28 14:33:52,082 - __main__ - INFO - [envy.py:192] - Failed to connect for a general reason
+2024-08-28 14:33:52,082 - __main__ - DEBUG - [envy.py:193] - Info: [WinError 1225] The remote computer refused the network connection, exception type: <class 'ConnectionRefusedError'>
+2024-08-28 14:33:52,082 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:33:52,090 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 12884
+2024-08-28 14:33:52,090 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 19288
+
+
+2024-08-28 14:34:27.814569
+14:34:272024-08-28 14:34:27,881 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:34:27,893 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:34:29,939 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:34:29,941 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:34:29,941 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:34:29,941 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:34:29,941 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:34:30,965 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:34:30,965 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:34:30,975 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:34:30,975 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:34:31,487 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-28 14:34:31,487 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-28 14:34:31,487 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.180
+2024-08-28 14:34:31,544 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:34:31,545 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'VR1P620-03', ))
+2024-08-28 14:34:31,627 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'VR1P620-03', )
+2024-08-28 14:34:33,226 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (11, 3591794551, '[146, 147, 148, 149, 150]', 'VR1P620-03', 'inprogress'))
+2024-08-28 14:34:33,268 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 11, "Purpose": "cache", "Tasks": {"150": 50}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-28 14:34:33,307 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:34:33,363 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 150)
+2024-08-28 14:34:41,266 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:34:41,278 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 15964
+2024-08-28 14:34:41,278 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 12836
+
+
+2024-08-28 14:35:09.711505
+14:35:092024-08-28 14:35:09,773 - __main__ - DEBUG - [envy.py:62] - choosing role
+2024-08-28 14:35:09,791 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-08-28 14:35:11,823 - __main__ - DEBUG - [envy.py:70] - server health check status: False
+2024-08-28 14:35:11,825 - __main__ - DEBUG - [envy.py:79] - I am the server
+2024-08-28 14:35:11,826 - __main__ - INFO - [envy.py:132] - Started Envy
+2024-08-28 14:35:11,826 - __main__ - DEBUG - [envy.py:153] - envy.connect: Purpose is server
+2024-08-28 14:35:11,826 - __main__ - DEBUG - [envy.py:109] - writing server file
+2024-08-28 14:35:12,846 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-08-28 14:35:12,846 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-08-28 14:35:12,856 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.180
+2024-08-28 14:35:12,856 - __main__ - DEBUG - [client.py:54] - attempting to connect with server at ws://10.1.16.180:37020/client
+2024-08-28 14:35:13,369 - __main__ - DEBUG - [client.py:141] - networkUtils.client started
+2024-08-28 14:35:13,369 - __main__ - INFO - [client.py:153] - Client: Connected
+2024-08-28 14:35:13,369 - __main__ - DEBUG - [client.py:165] - connected to: 10.1.16.180
+2024-08-28 14:35:13,422 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:35:13,423 - __main__ - INFO - [client.py:170] - received message from: server -> (fill_buffer(self, 'server_name', 'VR1P620-03', ))
+2024-08-28 14:35:13,477 - __main__ - DEBUG - [envy.py:261] - executing: await NV.fill_buffer(self, 'server_name', 'VR1P620-03', )
+2024-08-28 14:35:15,043 - __main__ - INFO - [client.py:170] - received message from: server -> (Job: something_else Allocation: (11, 3591794551, '[146, 147, 148, 149, 150]', 'VR1P620-03', 'inprogress'))
+2024-08-28 14:35:15,137 - __main__ - DEBUG - [envy.py:261] - executing: await NV.PLUGIN_EXAMPLE(self, '{"Allocation_Id": 11, "Purpose": "cache", "Tasks": {"150": 50}, "Environment": {}, "Parameters": {"A": 5}}', )
+2024-08-28 14:35:15,248 - __main__ - DEBUG - [client.py:123] - sending message to server: (send_status_to_server())
+2024-08-28 14:35:15,296 - __main__ - DEBUG - [client.py:123] - sending message to server: (start_task(): 150)
+2024-08-28 14:35:18,841 - __main__ - DEBUG - [envy.py:273] - envy: exiting
+2024-08-28 14:35:18,852 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 13224
+2024-08-28 14:35:18,852 - __main__ - DEBUG - [envy.py:278] - envy: Terminating process - 13228

@@ -1,0 +1,78 @@
+
+
+2024-08-21 21:58:50.351226
+21:58:502024-08-21 21:58:50,422 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 21:58:50,426 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 21:58:50,468 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-08', ))
+2024-08-21 21:59:58,230 - __main__ - WARNING - [client.py:150] - connection closed with server
+2024-08-21 21:59:58,230 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:00:09,281 - __main__ - INFO - [envy.py:156] - Failed to connect to server
+2024-08-21 22:00:09,281 - __main__ - INFO - [envy.py:160] - Failed to connect because of timeout
+2024-08-21 22:00:09,281 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:00:14,304 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:00:14,309 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-07', ))
+2024-08-21 22:00:45,372 - __main__ - INFO - [client.py:163] - received message from: server -> (restart_envy())
+
+
+2024-08-21 22:00:46.867239
+22:00:462024-08-21 22:00:46,922 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:00:46,926 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:00:46,967 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-07', ))
+2024-08-21 22:00:49,949 - __main__ - WARNING - [client.py:150] - connection closed with server
+2024-08-21 22:00:49,949 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:00:50,991 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:00:51,043 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-08', ))
+2024-08-21 22:04:09,716 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: something_else Allocation: (55, 27, '[1185, 1186, 1187, 1188, 1189]', 'lab6-07', 'inprogress'))
+2024-08-21 22:05:16,152 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: something_else Allocation: (58, 27, '[1200, 1201, 1202, 1203, 1204]', 'lab6-07', 'inprogress'))
+2024-08-21 22:06:22,515 - __main__ - INFO - [client.py:163] - received message from: server -> (Job: something_else Allocation: (61, 27, '[1215, 1216, 1217, 1218, 1219]', 'lab6-07', 'inprogress'))
+2024-08-21 22:07:46,791 - __main__ - WARNING - [client.py:150] - connection closed with server
+2024-08-21 22:07:46,791 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:07:57,860 - __main__ - INFO - [envy.py:156] - Failed to connect to server
+2024-08-21 22:07:57,860 - __main__ - INFO - [envy.py:160] - Failed to connect because of timeout
+2024-08-21 22:07:57,861 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:08:02,882 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:08:02,889 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-07', ))
+2024-08-21 22:13:17,301 - __main__ - INFO - [client.py:163] - received message from: server -> (restart_envy())
+
+
+2024-08-21 22:13:18.845930
+22:13:182024-08-21 22:13:18,903 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:13:18,907 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:13:18,951 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-07', ))
+2024-08-21 22:13:20,400 - __main__ - WARNING - [client.py:150] - connection closed with server
+2024-08-21 22:13:20,400 - __main__ - INFO - [envy.py:214] - electing new server
+2024-08-21 22:13:21,449 - __main__ - INFO - [envy.py:156] - Failed to connect to server
+2024-08-21 22:13:21,450 - __main__ - INFO - [envy.py:188] - Failed to connect for a general reason
+
+
+2024-08-21 22:13:40.929964
+22:13:402024-08-21 22:13:40,993 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:13:40,997 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:13:41,051 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-11', ))
+2024-08-21 22:13:55,558 - __main__ - INFO - [client.py:163] - received message from: server -> (do_something())
+2024-08-21 22:13:55,632 - __main__ - ERROR - [envy.py:85] - Failed while executing do_something(self, '10', ), module 'Envy_Functions' has no attribute 'do_something'
+2024-08-21 22:14:19,861 - __main__ - INFO - [client.py:163] - received message from: server -> (restart_envy())
+
+
+2024-08-21 22:14:21.411186
+22:14:212024-08-21 22:14:21,482 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:14:21,486 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:14:21,534 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-11', ))
+2024-08-21 22:14:40,312 - __main__ - INFO - [client.py:163] - received message from: server -> (do_something())
+2024-08-21 22:14:40,616 - __main__ - ERROR - [envy.py:85] - Failed while executing do_something(self, '10', ), 'str' object cannot be interpreted as an integer
+2024-08-21 22:15:29,975 - __main__ - INFO - [client.py:163] - received message from: server -> (restart_envy())
+
+
+2024-08-21 22:15:31.245408
+22:15:312024-08-21 22:15:31,306 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:15:31,310 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:15:31,350 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-11', ))
+2024-08-21 22:15:39,111 - __main__ - INFO - [client.py:163] - received message from: server -> (do_something())
+2024-08-21 22:27:47,694 - __main__ - INFO - [client.py:163] - received message from: server -> (restart_envy())
+
+
+2024-08-21 22:27:50.629367
+22:27:502024-08-21 22:27:50,708 - __main__ - INFO - [envy.py:128] - Started Envy
+2024-08-21 22:27:50,712 - __main__ - INFO - [client.py:146] - Client: Connected
+2024-08-21 22:27:50,763 - __main__ - INFO - [client.py:163] - received message from: server -> (fill_buffer(self, 'server_name', 'lab6-11', ))
+2024-08-21 22:27:57,247 - __main__ - INFO - [client.py:163] - received message from: server -> (sign_out())
