@@ -1,11 +1,11 @@
 import config_bridge
 # noinspection PyUnresolvedReferences
-import prep_env  # this is important to prepare the virtual environment
+import envyRepo.prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
 import os
-from envyLib import envy_utils as eutils
-from envyCore.envy import Envy
+from envyRepo.envyLib import envy_utils as eutils
+from envyRepo.envyCore.envyObject import Envy
 from datetime import datetime
 import socket
 

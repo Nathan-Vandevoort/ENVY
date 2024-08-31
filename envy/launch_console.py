@@ -1,8 +1,8 @@
 import config_bridge
-import prep_env  # this is important to prepare the virtual environment
+import envyRepo.prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
-from envyCore.console import Console
+from envyRepo.envyCore.consoleObject import Console
 import os
 
 os.system('color')

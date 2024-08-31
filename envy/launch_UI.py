@@ -1,12 +1,11 @@
 import config_bridge as config
-import prep_env
+import envyRepo.prep_env
 import os
 import sys
 REPOPATH = config.Config.REPOPATH
 sys.path.append(os.path.join(REPOPATH, os.path.pardir))
-
-#import qdarkstyle
-from envy_repo.envyUI.mainWindow import MainWindow
+import qdarkstyle
+from envyRepo.envyUI.mainWindow import MainWindow
 from qasync import QApplication, QEventLoop
 import faulthandler
 faulthandler.enable()

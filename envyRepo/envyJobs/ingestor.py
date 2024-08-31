@@ -1,7 +1,7 @@
 import os, json, asyncio
-import envyJobs.job as job
+import envyRepo.envyJobs.job as job
 import logging
-from envyLib.envy_utils import DummyLogger
+from envyRepo.envyLib.envy_utils import DummyLogger
 ENVYPATH = os.environ['ENVYPATH']
 
 

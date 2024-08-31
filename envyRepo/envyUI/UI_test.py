@@ -1,5 +1,5 @@
-import prep_env
-import config_bridge as config
+import envyRepo.prep_env
+import envy.config_bridge as config
 import sys
 import os
 #import qdarkstyle

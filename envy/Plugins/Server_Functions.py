@@ -1,5 +1,5 @@
-from networkUtils import message as m
-from networkUtils.message_purpose import Message_Purpose
+from envyRepo.networkUtils import message as m
+from envyRepo.networkUtils.message_purpose import Message_Purpose
 import sys
 import json
 __config__ = sys.modules.get('__config__')

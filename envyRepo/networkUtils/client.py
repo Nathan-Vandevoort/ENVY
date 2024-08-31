@@ -1,10 +1,10 @@
 import socket,logging, websockets, asyncio, json
-import config_bridge as config
+import envy.config_bridge as config
 from queue import Queue
-from networkUtils.message_purpose import Message_Purpose
-from envyLib import envy_utils as eutils
-from networkUtils import exceptions as network_exceptions
-import networkUtils.message as m
+from envyRepo.networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyLib import envy_utils as eutils
+from envyRepo.networkUtils import exceptions as network_exceptions
+import envyRepo.networkUtils.message as m
 
 
 class Client:

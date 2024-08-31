@@ -1,16 +1,16 @@
 import asyncio
 import websockets.exceptions
-from networkUtils import client
-from networkUtils.message_purpose import Message_Purpose
+from envyRepo.networkUtils import client
+from envyRepo.networkUtils.message_purpose import Message_Purpose
 import logging, socket, os, sys
 from queue import Queue
-from envyLib import envy_utils as eutils
+from envyRepo.envyLib import envy_utils as eutils
 import time
-from envyLib.envy_utils import DummyLogger
-from networkUtils import message as m
-from envyJobs.enums import Status
+from envyRepo.envyLib.envy_utils import DummyLogger
+from envyRepo.networkUtils import message as m
+from envyRepo.envyJobs.enums import Status
 import subprocess
-import config_bridge as config
+import envyRepo.config_bridge as config
 import safe_exit
 import psutil
 
@@ -116,7 +116,7 @@ class Envy:
             return False
 
     async def start_server(self):
-        plugin_path = os.path.join(REPOPATH, 'envyCore', 'server.py')
+        plugin_path = os.path.join(REPOPATH, 'envyCore', 'serverObject.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
         self.logger.debug(f'{cmd}')

@@ -1,14 +1,14 @@
 import asyncio
 import sys
 from qasync import QApplication, QEventLoop
-import prep_env
-import config_bridge as config
+import envyRepo.prep_env
+import envy.config_bridge as config
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QSplitter, QSizePolicy
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtGui import QFont
-from envyCore import console
+from envyRepo.envyCore import consoleObject
 import io
-from envyLib import envy_logger
+from envyRepo.envyLib import envy_logger
 from queue import Queue
 
 class ConsoleWidget(QWidget):
@@ -37,7 +37,7 @@ class ConsoleWidget(QWidget):
         self.output_stream_seeker = 0
         self.logger = envy_logger.get_logger(self.output_stream, html=True)
 
-        self.envy_console = console.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger, console_widget=self)
+        self.envy_console = consoleObject.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger, console_widget=self)
 
         self.text_input_widget = QLineEdit(self)
         self.text_input_widget.returnPressed.connect(self.send_input)

@@ -1,11 +1,11 @@
 import logging
-from envyLib.envy_utils import DummyLogger
-from envyJobs.enums import Status
+from envyRepo.envyLib.envy_utils import DummyLogger
+from envyRepo.envyJobs.enums import Status
 import asyncio
-import envyJobs.ingestor as ingestor
-from envyJobs.jobTreeAbstractItemModel import JobTreeItemModel as JobTree
+import envyRepo.envyJobs.ingestor as ingestor
+from envyRepo.envyJobs.jobTreeAbstractItemModel import JobTreeItemModel as JobTree
 import sys
-from envyDB import db
+from envyRepo.envyDB import db
 import anytree
 SRV = sys.modules.get('Server_Functions')
 

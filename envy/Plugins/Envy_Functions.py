@@ -14,8 +14,8 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-from networkUtils import message as m
-from networkUtils.message_purpose import Message_Purpose
+from envyRepo.networkUtils import message as m
+from envyRepo.networkUtils.message_purpose import Message_Purpose
 import json, sys
 import asyncio
 config = sys.modules.get('config_bridge')

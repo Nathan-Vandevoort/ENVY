@@ -1,12 +1,12 @@
 import asyncio, sys, logging
-from networkUtils.client import Client
+from envyRepo.networkUtils.client import Client
 from queue import Queue
-from networkUtils.message_purpose import Message_Purpose
-from envyLib import envy_utils as eutils
-from envyLib.colors import Colors as c
-import config_bridge as config
-from networkUtils import message as m
-from envyLib.envy_utils import DummyLogger
+from envyRepo.networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyLib import envy_utils as eutils
+from envyRepo.envyLib.colors import Colors as c
+import envy.config_bridge as config
+from envyRepo.networkUtils import message as m
+from envyRepo.envyLib.envy_utils import DummyLogger
 import websockets
 
 CONSOLE = sys.modules.get('Console_Functions')  # import custom IO functions

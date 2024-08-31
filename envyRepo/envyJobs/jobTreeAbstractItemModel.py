@@ -1,12 +1,12 @@
 import anytree.resolver
 from anytree import Resolver
-import networkUtils.message
+import envyRepo.networkUtils.message
 import logging
-from envyLib.envy_utils import DummyLogger
-from envyJobs.enums import Status as Job_Status
+from envyRepo.envyLib.envy_utils import DummyLogger
+from envyRepo.envyJobs.enums import Status as Job_Status
 import json
-from networkUtils.message_purpose import Message_Purpose
-from envyJobs import jobItem
+from envyRepo.networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyJobs import jobItem
 from PySide6.QtCore import Qt, QAbstractItemModel, QModelIndex
 
 

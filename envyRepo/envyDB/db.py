@@ -1,11 +1,11 @@
 import sqlite3, os, logging
-from envyLib.envy_utils import DummyLogger
-from envyJobs import job as j
-from envyJobs.enums import Status
-from networkUtils import message as m
+from envyRepo.envyLib.envy_utils import DummyLogger
+from envyRepo.envyJobs import job as j
+from envyRepo.envyJobs.enums import Status
+from envyRepo.networkUtils import message as m
 import json
-from networkUtils.message_purpose import Message_Purpose as p
-from envyLib import envy_utils as eutils
+from envyRepo.networkUtils.message_purpose import Message_Purpose as p
+from envyRepo.envyLib import envy_utils as eutils
 
 ENVYPATH = os.environ['ENVYPATH']
 

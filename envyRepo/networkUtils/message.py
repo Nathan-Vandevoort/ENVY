@@ -1,7 +1,7 @@
-import prep_env
+import envyRepo.prep_env
 from typing import Type
-from envyLib.envy_utils import DummyLogger
-from networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyLib.envy_utils import DummyLogger
+from envyRepo.networkUtils.message_purpose import Message_Purpose
 import json
 import logging
 

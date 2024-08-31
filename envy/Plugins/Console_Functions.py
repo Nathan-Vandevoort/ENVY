@@ -13,10 +13,10 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-from networkUtils import message as m
-from networkUtils.message_purpose import Message_Purpose
-from envyLib import envy_utils as eutils
-from envyLib.colors import Colors as c
+from envyRepo.networkUtils import message as m
+from envyRepo.networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyLib import envy_utils as eutils
+from envyRepo.envyLib.colors import Colors as c
 import shutil
 import sys
 import os
@@ -78,7 +78,7 @@ async def install_maya_plugin(console) -> None:
     :param console: reference to the console calling the function
     """
     maya_user_folder = 'Z:/maya'
-    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envy.py'
+    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envyObject.py'
 
     if not os.path.exists(maya_user_folder):
         console.display_error('Maya plugin installation failed: Maya user folder not found.')

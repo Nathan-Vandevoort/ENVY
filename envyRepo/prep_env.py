@@ -8,8 +8,6 @@ import venv
 abs_file = os.path.abspath(__file__)
 file_dir = os.path.dirname(abs_file)
 
-exec(open(os.path.join(file_dir, 'venv', 'Scripts', 'activate_this.py')).read(), {'__file__': os.path.join(file_dir, 'venv', 'Scripts', 'activate_this.py')})
-
 config = configparser.ConfigParser()
 config.read(os.path.join(file_dir, 'config.ini'))
 

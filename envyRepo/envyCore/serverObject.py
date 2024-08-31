@@ -1,14 +1,14 @@
 import os, sys
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir))
-import prep_env
+import envyRepo.prep_env
 import socket, logging, websockets, asyncio, json
 from queue import Queue
-from networkUtils.message_purpose import Message_Purpose
-from envyLib import envy_utils as eutils
-import networkUtils.message as m
-from envyJobs import scheduler
-from envyJobs.enums import Status
+from envyRepo.networkUtils.message_purpose import Message_Purpose
+from envyRepo.envyLib import envy_utils as eutils
+import envyRepo.networkUtils.message as m
+from envyRepo.envyJobs import scheduler
+from envyRepo.envyJobs.enums import Status
 import psutil
 
 ENVYPATH = os.environ['ENVYPATH']

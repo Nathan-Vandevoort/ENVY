@@ -1,7 +1,7 @@
-import prep_env
-from envyJobs.enums import Purpose, Condition
+import envyRepo.prep_env
+from envyRepo.envyJobs.enums import Purpose, Condition
 import json
-from envyLib.envy_utils import DummyLogger
+from envyRepo.envyLib.envy_utils import DummyLogger
 import logging
 from datetime import datetime
 import os
