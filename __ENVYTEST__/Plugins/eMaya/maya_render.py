@@ -111,7 +111,7 @@ class MayaRender(object):
             self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path does not exists.')
             return False
         elif not project_path.startswith('Z:/'):
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path must be saved on the Z:/ drive.')
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path must be set on the Z:/ drive.')
             return False
         else:
             return True
