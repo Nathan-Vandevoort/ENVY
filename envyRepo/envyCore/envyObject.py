@@ -10,7 +10,7 @@ from envyRepo.envyLib.envy_utils import DummyLogger
 from envyRepo.networkUtils import message as m
 from envyRepo.envyJobs.enums import Status
 import subprocess
-import envyRepo.config_bridge as config
+import envy.config_bridge as config
 import safe_exit
 import psutil
 
@@ -28,7 +28,7 @@ class Envy:
 
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
-        self.server_directory = ENVYPATH + 'Connections/'
+        self.server_directory = os.path.join(ENVYPATH, 'Connections')
 
         self.hostname = socket.gethostname()
         self.my_ip = socket.gethostbyname(self.hostname)
@@ -109,14 +109,14 @@ class Envy:
     def check_server_file(self):
         self.logger.debug('writing server file')
         try:
-            os.rename(f'{self.server_directory}server.txt',
-                      f'{self.server_directory}server.txt')  # rename file to same name to check if its being used by another server
+            os.rename(os.path.join(self.server_directory, 'server.txt'),
+                      os.path.join(self.server_directory, 'server.txt'))  # rename file to same name to check if its being used by another server
             return True
         except OSError:
             return False
 
     async def start_server(self):
-        plugin_path = os.path.join(REPOPATH, 'envyCore', 'serverObject.py')
+        plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverObject.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
         self.logger.debug(f'{cmd}')

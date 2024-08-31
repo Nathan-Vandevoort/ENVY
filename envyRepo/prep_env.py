@@ -65,7 +65,7 @@ if 'console' in calling_script_name or 'UI' in calling_script_name:
         sys.modules[module] = module_object
         spec.loader.exec_module(module_object)
 
-bin_dir = file_dir + '/venv/Scripts/'
+bin_dir = os.path.join(file_dir, os.pardir) + '/venv/Scripts/'
 base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file__, plus the path separator
 
 # prepend bin to PATH (this file is inside the bin directory)

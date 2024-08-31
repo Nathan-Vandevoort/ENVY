@@ -1,6 +1,6 @@
 import os, sys
 abs_file = os.path.abspath(__file__)
-sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir))
+sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
 import envyRepo.prep_env
 import socket, logging, websockets, asyncio, json
 from queue import Queue
@@ -10,10 +10,9 @@ import envyRepo.networkUtils.message as m
 from envyRepo.envyJobs import scheduler
 from envyRepo.envyJobs.enums import Status
 import psutil
-
 ENVYPATH = os.environ['ENVYPATH']
 sys.path.append(ENVYPATH)
-import config_bridge as config
+import envy.config_bridge as config
 
 SRV = sys.modules.get('Server_Functions')
 SERVER_FUNCTIONS = eutils.list_functions_in_file(
@@ -21,7 +20,7 @@ SERVER_FUNCTIONS = eutils.list_functions_in_file(
 
 
 def update_clients_file(dir, clients: dict):
-    clients_file = f'{dir}clients.json'
+    clients_file = os.path.join(dir, 'clients.json')
     clients = {k: {k2: v2 for k2, v2 in v.items() if k2 != 'Socket'} for k, v in clients.items()}
     with open(clients_file, 'w') as cf:
         json.dump(clients, cf)
@@ -49,7 +48,7 @@ class Server:
         self.tasks = []
 
         # -------------------- directories ------------------------------------
-        self.server_directory = configs.ENVYPATH + 'Connections/'
+        self.server_directory = os.path.join(configs.ENVYPATH, 'Connections')
 
         # -------------------- Job --------------------------------------
         self.job_scheduler = scheduler.Scheduler(self, self.event_loop, logger=self.logger)
@@ -253,10 +252,10 @@ class Server:
     def write_server_file(self):
         self.logger.debug('writing server file')
         try:
-            os.rename(f'{self.server_directory}server.txt', f'{self.server_directory}server.txt')  # rename file to same name to check if its being used by another server
+            os.rename(os.path.join(self.server_directory, 'server.txt'), os.path.join(self.server_directory, 'server.txt'))  # rename file to same name to check if its being used by another server
         except OSError:
             raise PermissionError('File is being used by another server')
-        self.server_file = open(f'{self.server_directory}server.txt', 'w')
+        self.server_file = open(os.path.join(self.server_directory, 'server.txt'), 'w')
         self.server_file.write(self.my_ip)
         self.server_file.flush()
 

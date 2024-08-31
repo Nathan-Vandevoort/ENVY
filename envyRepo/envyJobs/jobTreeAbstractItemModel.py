@@ -364,7 +364,7 @@ class JobTreeItemModel(QAbstractItemModel):
 
         return task_node
 
-    def allocation_as_message(self, allocation: jobItem.JobItem | int) -> networkUtils.message.FunctionMessage:
+    def allocation_as_message(self, allocation: jobItem.JobItem | int) -> envyRepo.networkUtils.message.FunctionMessage:
         if isinstance(allocation, jobItem.JobItem):
             allocation = allocation.name
         allocation_id = allocation
@@ -401,7 +401,7 @@ class JobTreeItemModel(QAbstractItemModel):
             'Parameters': parameters,
         }
 
-        new_message = networkUtils.message.FunctionMessage(f'Job: {name} Allocation: {allocation}')
+        new_message = envyRepo.networkUtils.message.FunctionMessage(f'Job: {name} Allocation: {allocation}')
         new_message.set_function(job_type)
         new_message.format_arguments(json.dumps(data))
         new_message.set_target(Message_Purpose.CLIENT)
