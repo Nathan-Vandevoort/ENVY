@@ -16,9 +16,6 @@ envy_path = 'Z:/Envy/'
 if envy_path not in sys.path:
     sys.path.append(envy_path)
 
-import envyJobs.job as job
-from envyJobs.enums import Purpose as p
-
 
 class MayaToEnvy(object):
     ARNOLD = 'arnold'
@@ -37,6 +34,7 @@ class MayaToEnvy(object):
         self.render_layers = []
         self.start_frame = 0
         self.end_frame = 0
+        self.allocation = 1
 
     def check_file_nodes_paths(self) -> list:
         """Checks the file nodes paths."""
@@ -89,8 +87,9 @@ class MayaToEnvy(object):
         # if not self.check_paths():
         #     om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
         #     return
-        if not self.get_maya_file():
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
+        if not self.is_maya_file_valid(self.get_maya_file()):
+            return
+        elif not self.is_project_path_valid(self.get_project_path()):
             return
         elif not cmds.objExists(camera):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Camera does not exists.')
@@ -128,28 +127,41 @@ class MayaToEnvy(object):
             if not self.save_file():
                 return
         else:
-            om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine not supported.')
+            om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine {self.render_engine} not supported.')
             return
+
+        from envyJobs.enums import Purpose
+        import envyJobs.job as job
 
         maya_file_name = Path(self.get_maya_file()).stem
         camera_short_name = cmds.ls(camera, shortNames=True)[0]
         render_layer_short_name = render_layer.replace(':', '')
 
         render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer_short_name}')
-        render_job.add_range(self.get_start_frame(), self.get_end_frame(), 1)
+        render_job.add_range(self.start_frame, self.end_frame, 1)
         render_job.set_meta()
-        render_job.set_allocation(3)
-        render_job.set_purpose(p.RENDER)
+        render_job.set_allocation(self.allocation)
+        render_job.set_purpose(Purpose.RENDER)
         render_job.set_type('PLUGIN_eMaya')
         render_job.set_environment({
             'maya_file': self.get_maya_file(),
             'project_path': self.get_project_path(),
             'maya_version': self.get_maya_version(),
             'render_engine': self.get_render_engine(),
+            'render_layer': render_layer,
             'camera': camera,
-            'render_layer': render_layer
         })
         render_job.write()
+
+        om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Exporting to Envy...\n'
+                               f'\tmaya_file: {self.get_maya_file()}\n'
+                               f'\tproject_path: {self.get_project_path()}\n'
+                               f'\trender_engine: {self.get_render_engine()}\n'
+                               f'\trender_layer: {render_layer}\n'
+                               f'\tcamera: {camera}\n'
+                               f'\tstart_frame: {self.start_frame}\n'
+                               f'\tend_frame: {self.end_frame}\n'
+                               f'\tallocation: {self.allocation}\n')
 
         om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Export to Envy was successfully.')
 
@@ -164,12 +176,28 @@ class MayaToEnvy(object):
 
         return False
 
-    @staticmethod
-    def get_end_frame() -> int:
-        """Gets the render end frame."""
-        end_frame = cmds.getAttr('defaultRenderGlobals.endFrame')
+    def is_maya_file_valid(self, maya_file: str) -> bool:
+        """Checks if the maya file exists."""
+        if not maya_file:
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
+            return False
+        elif not maya_file.startswith('Z:/'):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file must be saved on the Z:/ drive.')
+            return False
+        else:
+            return True
 
-        return int(end_frame)
+    def is_project_path_valid(self, project_path: str) -> bool:
+        """Checks if the project exists."""
+        if not project_path.startswith('Z:/'):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project path must be set on the Z:/ drive.')
+            return False
+        else:
+            return True
+
+    def get_end_frame(self) -> int:
+        """Gets the render end frame."""
+        return self.end_frame
 
     @staticmethod
     def get_maya_file() -> str:
@@ -236,12 +264,9 @@ class MayaToEnvy(object):
 
         return list(cameras)
 
-    @staticmethod
-    def get_start_frame() -> int:
+    def get_start_frame(self) -> int:
         """Gets the render start frame."""
-        start_frame = cmds.getAttr('defaultRenderGlobals.startFrame')
-
-        return int(start_frame)
+        return int(self.start_frame)
 
     def save_file(self) -> bool:
         """Saves the file."""
@@ -259,8 +284,20 @@ class MayaToEnvy(object):
             cmds.file(save=True)
             return True
         else:
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Failed exporting to Envy.')
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy aborted by the user.')
             return False
+
+    def set_allocation(self, allocation: int) -> None:
+        """Sets the allocation."""
+        self.allocation = allocation
+
+    def set_end_frame(self, frame: int) -> None:
+        """Sets the end frame."""
+        self.end_frame = frame
+
+    def set_start_frame(self, frame: int) -> None:
+        """Sets the start frame."""
+        self.start_frame = frame
 
 
 if __name__ == '__main__':

@@ -14,10 +14,12 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 
 import sys
+import os
 
-new_path = 'Z:/Envy/__ENVYTEST__/Plugins/eMaya'
-if new_path not in sys.path:
-    sys.path.append(new_path)
+e_maya_path = os.path.dirname(os.path.dirname(__file__))
+
+if e_maya_path not in sys.path:
+    sys.path.append(e_maya_path)
 
 
 envy_menu = None
