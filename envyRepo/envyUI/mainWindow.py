@@ -9,14 +9,14 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-import prep_env
+import envyRepo.prep_env
 import asyncio, sys
 from PySide6.QtCore import Qt, QRect, QEvent, QPoint, QThread
 from PySide6.QtGui import QCursor, QVector2D, QTransform
 from PySide6.QtWidgets import QMainWindow, QWidget, QSizeGrip, QVBoxLayout, QHBoxLayout, QTextEdit, QTreeView, QSplitter, QApplication
-from envyUI import console_widget
-from envyUI.jobTree import jobTreeWidget
-from envyUI.viewport import viewportWidget
+from envyRepo.envyUI import console_widget
+from envyRepo.envyUI.jobTree import jobTreeWidget
+from envyRepo.envyUI.viewport import viewportWidget
 
 class MainWindow(QMainWindow):
 

@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QGraphicsView, QApplication, QMainWindow
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPainter
-from envyUI.viewport.nodeScene import NodeScene
-from envyUI.viewport.viewportController import ViewportController
+from envyRepo.envyUI.viewport.nodeScene import NodeScene
+from envyRepo.envyUI.viewport.viewportController import ViewportController
 import sys
 
 

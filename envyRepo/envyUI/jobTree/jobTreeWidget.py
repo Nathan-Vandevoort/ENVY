@@ -1,14 +1,14 @@
 import sys
-import prep_env
-import config_bridge
+import envyRepo.prep_env
+import envy.config_bridge
 from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
 from PySide6.QtGui import QAction, QFont
 from PySide6.QtCore import QTimer, QPoint, Qt, Signal, Slot
-from envyUI.jobTree import jobTreeController
-from envyJobs import jobTreeAbstractItemModel
-from networkUtils.message_purpose import Message_Purpose as MP
-from networkUtils import message as m
-from envyDB import db
+from envyRepo.envyUI.jobTree import jobTreeController
+from envyRepo.envyJobs import jobTreeAbstractItemModel
+from envyRepo.networkUtils.message_purpose import Message_Purpose as MP
+from envyRepo.networkUtils import message as m
+from envyRepo.envyDB import db
 
 
 class JobTreeWidget(QTreeView):

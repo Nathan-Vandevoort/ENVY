@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QGraphicsScene
 from PySide6.QtGui import QColor
-from envyUI.viewport.nodeItem import NodeItem
+from envyRepo.envyUI.viewport.nodeItem import NodeItem
 import random
 import numpy as np
 

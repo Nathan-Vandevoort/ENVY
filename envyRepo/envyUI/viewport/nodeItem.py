@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsSceneHoverEvent
 from PySide6.QtGui import QBrush, QPen, QColor, QHoverEvent
 from PySide6.QtCore import Qt
-from envyJobs import enums
+from envyRepo.envyJobs import enums
 import numpy as np
 import random
 
