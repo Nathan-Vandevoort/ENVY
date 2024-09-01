@@ -1,32 +1,38 @@
-import os
 import sys
-import datetime
+import os
 
-directory = 'Z:/school/ENVY/__ENVYTEST__/'
+directory = 'Z:/envy/'
+plugin_directory = os.path.join(directory, 'Plugins')
 if directory not in sys.path:
     sys.path.append(directory)
+
+if plugin_directory not in sys.path:
+    sys.path.append(plugin_directory)
+
 import config_bridge as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
-
-from envyJobs import job as ej
-from envyJobs.enums import Purpose
+from envyRepo.envyJobs import job as ej
+from envyRepo.envyJobs.enums import Purpose
 
 
 def createSimulationEnvyJob(node):
-    saveFile = hou.ui.displayConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)')
-    if saveFile:
+    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
+                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+                                                 suppress=hou.confirmType.BackgroundSave,
+                                                 default_choice=0,
+                                                 close_choice=2)
+    if selection == 0:
         hou.hipFile.save()
-    else:
+
+    elif selection == 1:
+        pass
+
+    elif selection == 2:
         return
 
     is_simulation = node.parm('isSimulation').eval()
-
-    if is_simulation == 1:
-        is_simulation = True
-    else:
-        is_simulation = False
 
     job_name = node.parm('jobName').eval()
     parameter_edits_multiparm = node.parm('simulation_parameterEdits')
@@ -80,79 +86,81 @@ def createSimulationEnvyJob(node):
     parameters.update(parameter_edits)
     environment['HIP'] = hou.hipFile.path()
     environment['JOB'] = hou.getenv('JOB')
-    environment['Job_Type'] = 'simulation'
+    environment['Job_Type'] = 'cache'
 
-    if is_resumable.eval() == 1:
+    if is_simulation is 1:
+        environment['Job_Type'] = 'simulation'
+        if is_resumable.eval() == 1:
 
-        dopnet_parm = node.parm('advanced_simulation_dopNetwork')
-        try:
-            dopnet_node = dopnet_parm.evalAsNode()
-        except TypeError:
-            hou.ui.displayMessage(f'Dopnet parameter must be the path to a dopnet. {dopnet_parm.rawValue()}')
-            return
+            dopnet_parm = node.parm('advanced_simulation_dopNetwork')
+            try:
+                dopnet_node = dopnet_parm.evalAsNode()
+            except TypeError:
+                hou.ui.displayMessage(f'Dopnet parameter must be the path to a dopnet. {dopnet_parm.rawValue()}')
+                return
 
-        initial_state_parm = node.parm('advanced_simulation_initialState')
-        initial_state = initial_state_parm.getReferencedParm()
-        if initial_state_parm == initial_state:
-            hou.ui.displayMessage(f'Initial State parameter invalid: {initial_state_parm.eval()}')
-            return
+            initial_state_parm = node.parm('advanced_simulation_initialState')
+            initial_state = initial_state_parm.getReferencedParm()
+            if initial_state_parm == initial_state:
+                hou.ui.displayMessage(f'Initial State parameter invalid: {initial_state_parm.eval()}')
+                return
 
-        dopnet_start_frame_parm = node.parm('advanced_simulation_startFrame')
-        dopnet_start_frame = dopnet_start_frame_parm.getReferencedParm()
-        if dopnet_start_frame == dopnet_start_frame_parm:
-            hou.ui.displayMessage(f'Dopnet start frame parameter invalid: {dopnet_start_frame_parm.eval()}')
-            return
+            dopnet_start_frame_parm = node.parm('advanced_simulation_startFrame')
+            dopnet_start_frame = dopnet_start_frame_parm.getReferencedParm()
+            if dopnet_start_frame == dopnet_start_frame_parm:
+                hou.ui.displayMessage(f'Dopnet start frame parameter invalid: {dopnet_start_frame_parm.eval()}')
+                return
 
-        checkpoint_file_path_parm = node.parm('advanced_simulation_checkpointFilePath')
-        checkpoint_file_path = checkpoint_file_path_parm.getReferencedParm()
-        if checkpoint_file_path == checkpoint_file_path_parm:
-            hou.ui.displayMessage(f'Checkpoint File Path invalid: {checkpoint_file_path_parm.eval()}')
-            return
+            checkpoint_file_path_parm = node.parm('advanced_simulation_checkpointFilePath')
+            checkpoint_file_path = checkpoint_file_path_parm.getReferencedParm()
+            if checkpoint_file_path == checkpoint_file_path_parm:
+                hou.ui.displayMessage(f'Checkpoint File Path invalid: {checkpoint_file_path_parm.eval()}')
+                return
 
-        checkpoint_trail_length_parm = node.parm('advanced_simulation_checkpointTrailLength')
-        checkpoint_trail_length = checkpoint_trail_length_parm.getReferencedParm()
-        if checkpoint_trail_length == checkpoint_trail_length_parm:
-            hou.ui.displayMessage(f'Checkpoint Trail Length Path invalid: {checkpoint_trail_length_parm.eval()}')
-            return
+            checkpoint_trail_length_parm = node.parm('advanced_simulation_checkpointTrailLength')
+            checkpoint_trail_length = checkpoint_trail_length_parm.getReferencedParm()
+            if checkpoint_trail_length == checkpoint_trail_length_parm:
+                hou.ui.displayMessage(f'Checkpoint Trail Length Path invalid: {checkpoint_trail_length_parm.eval()}')
+                return
 
-        checkpoint_interval_parm = node.parm('advanced_simulation_checkpointInterval')
-        checkpoint_interval = checkpoint_interval_parm.getReferencedParm()
-        if checkpoint_interval == checkpoint_interval_parm:
-            hou.ui.displayMessage(f'Checkpoint Interval Path invalid: {checkpoint_interval_parm.eval()}')
-            return
+            checkpoint_interval_parm = node.parm('advanced_simulation_checkpointInterval')
+            checkpoint_interval = checkpoint_interval_parm.getReferencedParm()
+            if checkpoint_interval == checkpoint_interval_parm:
+                hou.ui.displayMessage(f'Checkpoint Interval Path invalid: {checkpoint_interval_parm.eval()}')
+                return
 
-        checkpoint_file_path_value_parm = node.parm('advanced_simulation_checkpointFilePath_value')
-        checkpoint_file_path_value = checkpoint_file_path_value_parm.rawValue()
-        checkpoint_file_path_value = checkpoint_file_path_value.replace('$OS', dopnet_node.name())
-        checkpoint_file_path_value_parm.set(checkpoint_file_path_value)
-        checkpoint_file_path_value = checkpoint_file_path_value_parm.eval()
-        checkpoint_file_path_value = f'{checkpoint_file_path_value}$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim'
-        checkpoint_file_path = (
-            checkpoint_file_path.path(),
-            checkpoint_file_path_value
-        )
+            checkpoint_file_path_value_parm = node.parm('advanced_simulation_checkpointFilePath_value')
+            checkpoint_file_path_value = checkpoint_file_path_value_parm.rawValue()
+            checkpoint_file_path_value = checkpoint_file_path_value.replace('$OS', dopnet_node.name())
+            checkpoint_file_path_value_parm.set(checkpoint_file_path_value)
+            checkpoint_file_path_value = checkpoint_file_path_value_parm.eval()
+            checkpoint_file_path_value = f'{checkpoint_file_path_value}$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim'
+            checkpoint_file_path = (
+                checkpoint_file_path.path(),
+                checkpoint_file_path_value
+            )
 
-        checkpoint_trail_length_value_parm = node.parm('advanced_simulation_checkpointTrailLength_value')
-        checkpoint_trail_length_value = checkpoint_trail_length_value_parm.eval()
-        checkpoint_trail_length = (
-            checkpoint_trail_length.path(),
-            checkpoint_trail_length_value
-        )
+            checkpoint_trail_length_value_parm = node.parm('advanced_simulation_checkpointTrailLength_value')
+            checkpoint_trail_length_value = checkpoint_trail_length_value_parm.eval()
+            checkpoint_trail_length = (
+                checkpoint_trail_length.path(),
+                checkpoint_trail_length_value
+            )
 
-        checkpoint_interval_value_parm = node.parm('advanced_simulation_checkpointInterval_value')
-        checkpoint_interval_value = checkpoint_interval_value_parm.eval()
-        checkpoint_interval = (
-            checkpoint_interval.path(),
-            checkpoint_interval_value
-        )
+            checkpoint_interval_value_parm = node.parm('advanced_simulation_checkpointInterval_value')
+            checkpoint_interval_value = checkpoint_interval_value_parm.eval()
+            checkpoint_interval = (
+                checkpoint_interval.path(),
+                checkpoint_interval_value
+            )
 
-        environment['Job_Type'] = 'resumable_simulation'
-        environment['Dopnet_Initial_State_Parm'] = initial_state.path()
-        environment['Dopnet_Start_Frame_Parm'] = dopnet_start_frame.path()
-        environment['Checkpoint_File_Path'] = checkpoint_file_path
-        environment['Checkpoint_Trail_Length'] = checkpoint_trail_length
-        environment['Checkpoint_Interval'] = checkpoint_interval
-        environment['$OS'] = dopnet_node.name()
+            environment['Job_Type'] = 'resumable_simulation'
+            environment['Dopnet_Initial_State_Parm'] = initial_state.path()
+            environment['Dopnet_Start_Frame_Parm'] = dopnet_start_frame.path()
+            environment['Checkpoint_File_Path'] = checkpoint_file_path
+            environment['Checkpoint_Trail_Length'] = checkpoint_trail_length
+            environment['Checkpoint_Interval'] = checkpoint_interval
+            environment['$OS'] = dopnet_node.name()
 
     new_job = ej.Job(f'{job_name}_{str(1).zfill(3)}')
     new_job.set_meta()
@@ -214,57 +222,68 @@ def setSimulationParametersFromNode(node):
     cache_node = node
     if cache_node is None:
         hou.ui.displayMessage(f'Cannot find node at given Cache Node path')
+        return
 
-    fail_reasons = []
-    parameter_names = ['f1', 'f2', 'substeps', 'version', 'NVversion']
-    simulation_param_names = {
-        'f1': ('simulation_startParamName', 'simulation_startValue'),
-        'f2': ('simulation_endParamName', 'simulation_endValue'),
-        'substeps': ('simulation_substepsParamName', 'simulation_substepsValue'),
-        'version': ('simulation_versionParamName', 'simulation_versionValue'),
-    }
-    found_parameters = {
-        'f1': {},
-        'f2': {},
-        'substeps': {},
-        'version': {},
-    }
+    target_button_parm = node.parm('simulation_targetButton')
 
-    for parameter_name in parameter_names:
-        parameter = cache_node.parm(parameter_name)
-        if parameter is None:
-            fail_reasons.append(f'Could not find parameter "{parameter_name}" on {cache_node}')
-            continue
+    start_frame_parm = node.parm('simulation_startParamName')
+    start_frame_value_parm = node.parm('simulation_startValue')
 
-        if parameter_name == 'NVversion':
-            parameter_name = 'version'
+    end_frame_parm = node.parm('simulation_endParamName')
+    end_frame_value_parm = node.parm('simulation_endValue')
 
-        value = parameter.eval()
-        found_parameters[parameter_name][parameter.name()] = value
+    substeps_parm = node.parm('simulation_substepsParamName')
+    substeps_value_parm = node.parm('simulation_substepsValue')
 
-    for simulation_param_name in simulation_param_names:
-        for param in simulation_param_names[simulation_param_name]:
-            node.parm(param).revertToDefaults()
+    version_parm = node.parm('simulation_versionParamName')
+    version_value_parm = node.parm('simulation_versionValue')
 
-    target_button = cache_node.parm('execute')
-    if target_button is None:
-        fail_reasons.append(f'Could not find parameter "execute" on {cache_node}')
+    #  Target Button
+    target_button_parm.revertToDefaults()
+    target_button_parm.deleteAllKeyframes()
+    file_cache_target_button = cache_node.parm('execute')
+    target_button_parm.set(f"`ch('{file_cache_target_button.path()}')`", language=hou.exprLanguage.Hscript,
+                           follow_parm_reference=False)
 
-    node.parm('simulation_targetButton').set(target_button)
+    #  Start Frame
+    start_frame_parm.revertToDefaults()
+    start_frame_value_parm.revertToDefaults()
+    start_frame_parm.deleteAllKeyframes()
+    start_frame_value_parm.deleteAllKeyframes()
+    file_cache_start_frame_parm = cache_node.parm('f1')
+    start_frame_parm.set(f"`ch('{file_cache_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                         follow_parm_reference=False)
+    start_frame_value_parm.set(file_cache_start_frame_parm.evalAsString())
 
-    for found_parameter in found_parameters:
-        for param in found_parameters[found_parameter]:
-            try:
-                sanitized_param = param
-                if param == 'NVversion':
-                    sanitized_param = 'version'
-                node.parm(simulation_param_names[sanitized_param][0]).set(cache_node.parm(param))
-                node.parm(simulation_param_names[sanitized_param][1]).set(str(found_parameters[found_parameter][param]))
-            except Exception as e:
-                fail_reasons.append(f'Failed while attempting to set "{found_parameter}"')
+    #  End Frame
+    end_frame_parm.revertToDefaults()
+    end_frame_value_parm.revertToDefaults()
+    end_frame_parm.deleteAllKeyframes()
+    end_frame_value_parm.deleteAllKeyframes()
+    file_cache_end_frame_parm = cache_node.parm('f2')
+    end_frame_parm.set(f"`ch('{file_cache_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                       follow_parm_reference=False)
+    end_frame_value_parm.set(file_cache_end_frame_parm.evalAsString())
 
-    if len(fail_reasons) > 1:
-        hou.ui.displayMessage('\n'.join(fail_reasons))
+    #  Substeps
+    substeps_parm.revertToDefaults()
+    substeps_value_parm.revertToDefaults()
+    substeps_parm.deleteAllKeyframes()
+    substeps_value_parm.deleteAllKeyframes()
+    file_cache_substeps_parm = cache_node.parm('substeps')
+    substeps_parm.set(f"`ch('{file_cache_substeps_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                      follow_parm_reference=False)
+    substeps_value_parm.set(file_cache_substeps_parm.evalAsString())
+
+    #  Version
+    version_parm.revertToDefaults()
+    version_value_parm.revertToDefaults()
+    version_parm.deleteAllKeyframes()
+    version_value_parm.deleteAllKeyframes()
+    file_cache_version_parm = cache_node.parm('substeps')
+    version_parm.set(f"`ch('{file_cache_version_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                     follow_parm_reference=False)
+    version_value_parm.set(file_cache_version_parm.evalAsString())
 
 
 def createGenericEnvyJobs(myNode):
@@ -371,6 +390,7 @@ def duplicateJob(myNode, parm, multiParmIndex):
     # Make a new job
     newJobIndex = jobParm.eval()
     jobParm.insertMultiParmInstance(newJobIndex)
+    newJobIndex += 1
 
     # isolate parms in new multiparm
     newTargetButton = myNode.parm(f'targetButton{newJobIndex}')
@@ -467,27 +487,32 @@ def setAdvancedSimulationResumableSettings(node):
     # get dopnet initial state param
     dopnet_initial_state = dopnet_node.parm('initialstate')
     dopnet_initial_state.deleteAllKeyframes()
-    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", follow_parm_reference=False)
+    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", language=hou.exprLanguage.Hscript,
+                           follow_parm_reference=False)
 
     # get dopnet start frame parm
     dopnet_start_frame = dopnet_node.parm('startframe')
     dopnet_start_frame.deleteAllKeyframes()
-    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", follow_parm_reference=False)
+    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", language=hou.exprLanguage.Hscript,
+                                follow_parm_reference=False)
 
     # get checkpoint file param
     dopnet_checkpoint_file = dopnet_node.parm('explicitcachename')
     dopnet_checkpoint_file.deleteAllKeyframes()
-    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", follow_parm_reference=False)
+    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", language=hou.exprLanguage.Hscript,
+                                  follow_parm_reference=False)
 
     # get checkpoint trail length parm
     dopnet_trail_length = dopnet_node.parm('explicitcachensteps')
     dopnet_trail_length.deleteAllKeyframes()
-    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', follow_parm_reference=False)
+    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', language=hou.exprLanguage.Hscript,
+                                     follow_parm_reference=False)
 
     # get checkpoint interval
     dopnet_checkpoint_interval = dopnet_node.parm('explicitcachecheckpointspacing')
     dopnet_checkpoint_interval.deleteAllKeyframes()
-    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", follow_parm_reference=False)
+    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", language=hou.exprLanguage.Hscript,
+                                 follow_parm_reference=False)
 
 
 def modifyVersion(node, amount):
@@ -608,6 +633,7 @@ def enableLoadFromDisk(node):
 
 
 def saveToDisk(kwargs, filecache_node):
+    # print(type(filecache_node.node('render').parm('execute')))
     filecache_node.node('render').parm('execute').pressButton()
 
     # kwargs['node'] is the top-level node, e.g. if this is wrapped in an HDA

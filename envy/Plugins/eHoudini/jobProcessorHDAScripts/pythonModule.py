@@ -1,30 +1,38 @@
 import sys
+import os
 
-directory = 'Z:/ENVY/'
+directory = 'Z:/envy/'
+plugin_directory = os.path.join(directory, 'Plugins')
 if directory not in sys.path:
     sys.path.append(directory)
+
+if plugin_directory not in sys.path:
+    sys.path.append(plugin_directory)
+
 import config_bridge as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
-
 from envyRepo.envyJobs import job as ej
 from envyRepo.envyJobs.enums import Purpose
 
 
 def createSimulationEnvyJob(node):
-    saveFile = hou.ui.displayConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)')
-    if saveFile:
+    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
+                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+                                                 suppress=hou.confirmType.BackgroundSave,
+                                                 default_choice=0,
+                                                 close_choice=2)
+    if selection == 0:
         hou.hipFile.save()
-    else:
+
+    elif selection == 1:
+        pass
+
+    elif selection == 2:
         return
 
     is_simulation = node.parm('isSimulation').eval()
-
-    if is_simulation == 1:
-        is_simulation = True
-    else:
-        is_simulation = False
 
     job_name = node.parm('jobName').eval()
     parameter_edits_multiparm = node.parm('simulation_parameterEdits')
@@ -80,7 +88,7 @@ def createSimulationEnvyJob(node):
     environment['JOB'] = hou.getenv('JOB')
     environment['Job_Type'] = 'cache'
 
-    if is_simulation is True:
+    if is_simulation is 1:
         environment['Job_Type'] = 'simulation'
         if is_resumable.eval() == 1:
 
@@ -177,7 +185,9 @@ def createSimulationEnvyJob(node):
         new_job.set_allocation(node.parm('allocationSize').eval())
         new_job.write()
 
-def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str, job_index: int) -> dict | None:
+
+def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str,
+                           job_index: int) -> dict | None:
     NVC = node.parm('nvcToken').eval()
     parameters = {}
     for j in range(parameter_edits_multiparm.eval()):
@@ -208,93 +218,225 @@ def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_names
     return parameters
 
 
+def setRenderParametersFromNode(node):
+    render_node_parm = node.parm('render_node')
+    render_node = render_node_parm.eval()
+    render_node = hou.node(render_node)
+    if render_node is None:
+        hou.ui.displayMessage(f'Cannot rop at given path')
+        return
+
+    target_button_parm = node.parm('render_targetButton')
+
+    start_frame_parm = node.parm('render_startParamName')
+    start_frame_value_parm = node.parm('render_startValue')
+
+    end_frame_parm = node.parm('render_endParamName')
+    end_frame_value_parm = node.parm('render_endValue')
+
+    #  Target Button
+    target_button_parm.revertToDefaults()
+    target_button_parm.deleteAllKeyframes()
+    rop_target_button = render_node.parm('execute')
+    target_button_parm.set(f"`ch('{rop_target_button.path()}')`", language=hou.exprLanguage.Hscript,
+                           follow_parm_reference=False)
+
+    #  Start Frame
+    start_frame_parm.revertToDefaults()
+    start_frame_value_parm.revertToDefaults()
+    start_frame_parm.deleteAllKeyframes()
+    start_frame_value_parm.deleteAllKeyframes()
+    rop_start_frame_parm = render_node.parm('f1')
+    start_frame_parm.set(f"`ch('{rop_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                         follow_parm_reference=False)
+    start_frame_value_parm.set(rop_start_frame_parm.evalAsString())
+
+    #  End Frame
+    end_frame_parm.revertToDefaults()
+    end_frame_value_parm.revertToDefaults()
+    end_frame_parm.deleteAllKeyframes()
+    end_frame_value_parm.deleteAllKeyframes()
+    rop_end_frame_parm = render_node.parm('f2')
+    end_frame_parm.set(f"`ch('{rop_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                       follow_parm_reference=False)
+    end_frame_value_parm.set(rop_end_frame_parm.evalAsString())
+
+
+def writeRenderJob(node):
+    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
+                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+                                                 suppress=hou.confirmType.BackgroundSave,
+                                                 default_choice=0,
+                                                 close_choice=2)
+    if selection == 0:
+        hou.hipFile.save()
+
+    elif selection == 1:
+        pass
+
+    elif selection == 2:
+        return
+
+    job_name = node.parm('jobName').eval()
+
+    target_button_parm = node.parm('render_targetButton')
+    start_frame_parm = node.parm('render_startParamName')
+    start_frame_value_parm = node.parm('render_startValue')
+    end_frame_parm = node.parm('render_endParamName')
+    end_frame_value_parm = node.parm('render_endValue')
+    allocation_size_parm = node.parm('render_allocationSize')
+    allocation_size = allocation_size_parm.eval()
+
+    # check start frame
+    rop_start_frame_parm = start_frame_parm.getReferencedParm()
+    if start_frame_parm == rop_start_frame_parm:
+        hou.ui.displayMessage('Start Frame Parameter does not exist')
+        return
+
+    # check end frame
+    rop_end_frame_parm = end_frame_parm.getReferencedParm()
+    if end_frame_parm == rop_end_frame_parm:
+        hou.ui.displayMessage('End Frame Parameter does not exist')
+        return
+
+    # check start value
+    try:
+        start_frame = int(float(start_frame_value_parm.eval()))
+    except Exception as e:
+        hou.ui.displayMessage(f'Start frame value must be a number - {e}')
+        return
+
+    # check end value
+    try:
+        end_frame = int(float(end_frame_value_parm.eval()))
+    except Exception as e:
+        hou.ui.displayMessage(f'End frame value must be a number - {e}')
+        return
+
+    #  build job
+    environment = {}
+    environment['HIP'] = hou.hipFile.path()
+    environment['JOB'] = hou.getenv('JOB')
+    environment['Job_Type'] = 'cache'
+    environment['Start_Frame'] = {rop_start_frame_parm.path(): start_frame}
+    environment['End_Frame'] = {rop_end_frame_parm.path(): end_frame}
+    environment['Substeps'] = {allocation_size_parm.path(): 1}
+    environment['Version'] = {allocation_size_parm.path(): 1}
+
+    new_job = ej.Job(f'{job_name}_{str(1).zfill(3)}')
+    new_job.set_environment(environment)
+    new_job.set_type('PLUGIN_eHoudini')
+    new_job.set_purpose(Purpose.CACHE)
+    new_job.add_range(start_frame, end_frame, 1)
+    new_job.set_allocation(allocation_size)
+    new_job.write()
+
+
 def setSimulationParametersFromNode(node):
     cache_node_parm = node.parm('simulation_cacheNode')
     cache_node = cache_node_parm.eval()
     cache_node = hou.node(cache_node)
     if cache_node is None:
         hou.ui.displayMessage(f'Cannot find node at given Cache Node path')
+        return
 
-    fail_reasons = []
-    parameter_names = ['f1', 'f2', 'substeps', 'version', 'NVversion']
-    simulation_param_names = {
-        'f1': ('simulation_startParamName', 'simulation_startValue'),
-        'f2': ('simulation_endParamName', 'simulation_endValue'),
-        'substeps': ('simulation_substepsParamName', 'simulation_substepsValue'),
-        'version': ('simulation_versionParamName', 'simulation_versionValue'),
-    }
-    found_parameters = {
-        'f1': {},
-        'f2': {},
-        'substeps': {},
-        'version': {},
-    }
+    target_button_parm = node.parm('simulation_targetButton')
 
-    for parameter_name in parameter_names:
-        parameter = cache_node.parm(parameter_name)
-        if parameter is None:
-            fail_reasons.append(f'Could not find parameter "{parameter_name}" on {cache_node}')
-            continue
+    start_frame_parm = node.parm('simulation_startParamName')
+    start_frame_value_parm = node.parm('simulation_startValue')
 
-        if parameter_name == 'NVversion':
-            parameter_name = 'version'
+    end_frame_parm = node.parm('simulation_endParamName')
+    end_frame_value_parm = node.parm('simulation_endValue')
 
-        value = parameter.eval()
-        found_parameters[parameter_name][parameter.name()] = value
+    substeps_parm = node.parm('simulation_substepsParamName')
+    substeps_value_parm = node.parm('simulation_substepsValue')
 
-    for simulation_param_name in simulation_param_names:
-        for param in simulation_param_names[simulation_param_name]:
-            node.parm(param).revertToDefaults()
+    version_parm = node.parm('simulation_versionParamName')
+    version_value_parm = node.parm('simulation_versionValue')
 
-    target_button = cache_node.parm('execute')
-    if target_button is None:
-        fail_reasons.append(f'Could not find parameter "execute" on {cache_node}')
+    #  Target Button
+    target_button_parm.revertToDefaults()
+    target_button_parm.deleteAllKeyframes()
+    file_cache_target_button = cache_node.parm('execute')
+    target_button_parm.set(f"`ch('{file_cache_target_button.path()}')`", language=hou.exprLanguage.Hscript,
+                           follow_parm_reference=False)
 
-    node.parm('simulation_targetButton').set(target_button)
+    #  Start Frame
+    start_frame_parm.revertToDefaults()
+    start_frame_value_parm.revertToDefaults()
+    start_frame_parm.deleteAllKeyframes()
+    start_frame_value_parm.deleteAllKeyframes()
+    file_cache_start_frame_parm = cache_node.parm('f1')
+    start_frame_parm.set(f"`ch('{file_cache_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                         follow_parm_reference=False)
+    start_frame_value_parm.set(file_cache_start_frame_parm.evalAsString())
 
-    for found_parameter in found_parameters:
-        for param in found_parameters[found_parameter]:
-            try:
-                sanitized_param = param
-                if param == 'NVversion':
-                    sanitized_param = 'version'
-                node.parm(simulation_param_names[sanitized_param][0]).set(cache_node.parm(param))
-                node.parm(simulation_param_names[sanitized_param][1]).set(str(found_parameters[found_parameter][param]))
-            except Exception as e:
-                fail_reasons.append(f'Failed while attempting to set "{found_parameter}"')
+    #  End Frame
+    end_frame_parm.revertToDefaults()
+    end_frame_value_parm.revertToDefaults()
+    end_frame_parm.deleteAllKeyframes()
+    end_frame_value_parm.deleteAllKeyframes()
+    file_cache_end_frame_parm = cache_node.parm('f2')
+    end_frame_parm.set(f"`ch('{file_cache_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                       follow_parm_reference=False)
+    end_frame_value_parm.set(file_cache_end_frame_parm.evalAsString())
 
-    if len(fail_reasons) > 1:
-        hou.ui.displayMessage('\n'.join(fail_reasons))
+    #  Substeps
+    substeps_parm.revertToDefaults()
+    substeps_value_parm.revertToDefaults()
+    substeps_parm.deleteAllKeyframes()
+    substeps_value_parm.deleteAllKeyframes()
+    file_cache_substeps_parm = cache_node.parm('substeps')
+    substeps_parm.set(f"`ch('{file_cache_substeps_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                      follow_parm_reference=False)
+    substeps_value_parm.set(file_cache_substeps_parm.evalAsString())
+
+    #  Version
+    version_parm.revertToDefaults()
+    version_value_parm.revertToDefaults()
+    version_parm.deleteAllKeyframes()
+    version_value_parm.deleteAllKeyframes()
+    file_cache_version_parm = cache_node.parm('substeps')
+    version_parm.set(f"`ch('{file_cache_version_parm.path()}')`", language=hou.exprLanguage.Hscript,
+                     follow_parm_reference=False)
+    version_value_parm.set(file_cache_version_parm.evalAsString())
 
 
-def createGenericEnvyJobs(myNode):
-    node = myNode
-    saveFile = hou.ui.displayConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)')
-    if saveFile:
+def createGenericEnvyJobs(node):
+    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
+                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+                                                 suppress=hou.confirmType.BackgroundSave,
+                                                 default_choice=0,
+                                                 close_choice=2)
+    if selection == 0:
         hou.hipFile.save()
-    else:
+
+    elif selection == 1:
+        pass
+
+    elif selection == 2:
         return
 
     # get NVC
-    NVC = myNode.parm('nvcToken').eval()
-    job_name = myNode.parm('jobName').eval()
+    NVC = node.parm('nvcToken').eval()
+    job_name = node.parm('jobName').eval()
 
     generateDescriptiveFile = False
     nvNode = None
 
-    if (myNode.parm('descriptiveFileBool').eval() == 1):
+    if (node.parm('descriptiveFileBool').eval() == 1):
         generateDescriptiveFile = True
 
     # iterate over each job
-    envyJobsMultiParm = myNode.parm('envyJobs')
+    envyJobsMultiParm = node.parm('envyJobs')
     for i in range(envyJobsMultiParm.eval()):
         new_job = ej.Job(f'{job_name}_{str(i + 1).zfill(3)}')
         new_job.set_meta()
         environment = {}
 
         job_index = i + 1
-        parameter_edits_multiparm = myNode.parm(f'parameterEdits{job_index}')
-        button_to_press_parm = myNode.parm(f'targetButton{job_index}')
+        parameter_edits_multiparm = node.parm(f'parameterEdits{job_index}')
+        button_to_press_parm = node.parm(f'targetButton{job_index}')
 
         # validated button to press is good
         button_to_press = button_to_press_parm.getReferencedParm()
@@ -325,7 +467,7 @@ def createGenericEnvyJobs(myNode):
 
             # iterate over parameter edits
 
-        parameters = dictFromParameterEdits(myNode, parameter_edits_multiparm, '', job_index)
+        parameters = dictFromParameterEdits(node, parameter_edits_multiparm, '', job_index)
         if parameters is None:
             return
 
@@ -371,6 +513,7 @@ def duplicateJob(myNode, parm, multiParmIndex):
     # Make a new job
     newJobIndex = jobParm.eval()
     jobParm.insertMultiParmInstance(newJobIndex)
+    newJobIndex += 1
 
     # isolate parms in new multiparm
     newTargetButton = myNode.parm(f'targetButton{newJobIndex}')
@@ -434,6 +577,7 @@ def configureDopnet(node):
     # enable checkpoint on dopnet
     dopnet_node.parm('cacheenabled').set(1)
 
+
 def setAdvancedSimulationResumableSettings(node):
     dopnet_parm = node.parm('advanced_simulation_dopNetwork')
     dopnet_parm.deleteAllKeyframes()
@@ -466,24 +610,29 @@ def setAdvancedSimulationResumableSettings(node):
     # get dopnet initial state param
     dopnet_initial_state = dopnet_node.parm('initialstate')
     dopnet_initial_state.deleteAllKeyframes()
-    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", follow_parm_reference=False)
+    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", language=hou.exprLanguage.Hscript,
+                           follow_parm_reference=False)
 
     # get dopnet start frame parm
     dopnet_start_frame = dopnet_node.parm('startframe')
     dopnet_start_frame.deleteAllKeyframes()
-    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", follow_parm_reference=False)
+    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", language=hou.exprLanguage.Hscript,
+                                follow_parm_reference=False)
 
     # get checkpoint file param
     dopnet_checkpoint_file = dopnet_node.parm('explicitcachename')
     dopnet_checkpoint_file.deleteAllKeyframes()
-    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", follow_parm_reference=False)
+    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", language=hou.exprLanguage.Hscript,
+                                  follow_parm_reference=False)
 
     # get checkpoint trail length parm
     dopnet_trail_length = dopnet_node.parm('explicitcachensteps')
     dopnet_trail_length.deleteAllKeyframes()
-    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', follow_parm_reference=False)
+    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', language=hou.exprLanguage.Hscript,
+                                     follow_parm_reference=False)
 
     # get checkpoint interval
     dopnet_checkpoint_interval = dopnet_node.parm('explicitcachecheckpointspacing')
     dopnet_checkpoint_interval.deleteAllKeyframes()
-    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", follow_parm_reference=False)
+    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", language=hou.exprLanguage.Hscript,
+                                 follow_parm_reference=False)
