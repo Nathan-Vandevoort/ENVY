@@ -8,8 +8,8 @@ import subprocess
 import time
 import sys
 import json
-from envyJobs.enums import Status as Job_Status
-from envyLib import envy_utils as eutils
+from envyRepo.envyJobs.enums import Status as Job_Status
+from envyRepo.envyLib import envy_utils as eutils
 
 c = sys.modules.get('config_bridge').Config
 NV = sys.modules.get('Envy_Functions')

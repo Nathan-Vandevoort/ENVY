@@ -1,3 +1,7 @@
+__author__ = "Nathan Vandevoort"
+__copyright__ = "Copyright 2024, Nathan Vandevoort"
+__version__ = "1.0.1"
+
 from envyRepo.networkUtils import message as m
 from envyRepo.networkUtils.message_purpose import Message_Purpose
 import sys
@@ -127,10 +131,6 @@ async def send_to_clients(server, clients: list, message: m.Message | m.Function
     """
     for client in clients:
         await send_to_client(server, client, message)
-
-
-async def version(server) -> str:
-    return '0.0.1'
 
 
 async def stop_client(server, client: str, hold_until: bool = False) -> None:

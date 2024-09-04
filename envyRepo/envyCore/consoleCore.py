@@ -40,7 +40,42 @@ class Console:
     def send(self, message: m.Message | m.FunctionMessage) -> None:
         self.send_queue.put(message)
 
-    async def checkFunctionVersions(self):
+    async def check_plugin_versions(self):
+        plugin_path = os.path.join(config.Config.REPOPATH, 'envy', 'Plugins')
+        files = os.listdir(plugin_path)
+        mismatched_plugins = False
+        for file in files:
+            if os.path.isdir(os.path.join(plugin_path, file)) is False:
+                continue
+
+            if file.upper() == '__PYCACHE__':
+                continue
+            version_file_path = os.path.join(plugin_path, file, 'version.txt')
+            with open(version_file_path, 'r') as version_file:
+                source_version = version_file.read().strip()
+            print(os.path.join(config.Config.ENVYPATH, 'Plugins', file, 'version.txt'))
+            try:
+                with open(os.path.join(config.Config.ENVYPATH, 'Plugins', file, 'version.txt'), 'r') as version_file:
+                    user_version = version_file.read().strip()
+
+            except FileNotFoundError:
+                self.display_error(f'Plugin {file} does not appear to exist')
+                reply = await CONSOLE.version_mismatch(self, file, os.path.join(plugin_path, file), os.path.join(config.Config.ENVYPATH, 'Plugins', file))
+                if reply is True:
+                    self.display_info(f'Pulled {file} from Repo')
+                    mismatched_plugins = True
+
+            if source_version != user_version:
+                reply = await CONSOLE.version_mismatch(self, file, os.path.join(plugin_path, file), os.path.join(config.Config.ENVYPATH, 'Plugins', file))
+                if reply is True:
+                    self.display_info(f'Pulled {file} from Repo')
+                    mismatched_plugins = True
+
+        if mismatched_plugins is True:
+            await CONSOLE.restart_envy(self, force=True)
+
+
+    async def check_function_versions(self):
         import importlib.util
 
         # check envy_functions.py version
@@ -48,8 +83,8 @@ class Console:
         source_envy_functions = importlib.util.module_from_spec(spec)
         # sys.modules['source_envy_functions'] = source_envy_functions
         spec.loader.exec_module(source_envy_functions)
-        version = await NV.version(None)
-        target_version = await source_envy_functions.version(None)
+        version = NV.__version__
+        target_version = source_envy_functions.__version__
         if version != target_version:
             reply = await CONSOLE.version_mismatch(self, 'Envy_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Envy_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Envy_Functions.py'))
             if reply is True:
@@ -60,8 +95,8 @@ class Console:
         source_server_functions = importlib.util.module_from_spec(spec)
         # sys.modules['source_envy_functions'] = source_envy_functions
         spec.loader.exec_module(source_server_functions)
-        version = await SRV.version(None)
-        target_version = await source_server_functions.version(None)
+        version = SRV.__version__
+        target_version = source_server_functions.__version__
         if version != target_version:
             reply = await CONSOLE.version_mismatch(self, 'Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Server_Functions.py'))
             if reply is True:
@@ -72,8 +107,8 @@ class Console:
         source_console_functions = importlib.util.module_from_spec(spec)
         # sys.modules['source_envy_functions'] = source_envy_functions
         spec.loader.exec_module(source_console_functions)
-        version = await CONSOLE.version(None)
-        target_version = await source_console_functions.version(None)
+        version = CONSOLE.__version__
+        target_version = source_console_functions.__version__
         if version != target_version:
             reply = await CONSOLE.version_mismatch(self, 'Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Console_Functions.py'))
             if reply is True:
@@ -143,7 +178,8 @@ class Console:
             self.display_error(f'Failed to execute {function_string} -> {e}')
 
     async def start(self):
-        await self.checkFunctionVersions()
+        await self.check_function_versions()
+        await self.check_plugin_versions()
 
         if self.stand_alone is True:
             user_input_task = self.event_loop.create_task(self.user_input())

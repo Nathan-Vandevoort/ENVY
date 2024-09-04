@@ -1925,3 +1925,45 @@
 2024-08-28 21:45:22,160 - __main__ - DEBUG - [envy.py:186] - Another connection from this host to that server already exists
 2024-08-28 21:45:22,160 - __main__ - WARNING - [envy.py:187] - Envy already has another connection from lab6-05
 2024-08-28 21:45:26,795 - __main__ - DEBUG - [envy.py:277] - envy: exiting
+
+
+2024-09-04 12:38:26.986608
+12:38:262024-09-04 12:38:27,040 - __main__ - DEBUG - [envyCore.py:63] - choosing role
+2024-09-04 12:38:27,049 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-09-04 12:38:27,050 - __main__ - DEBUG - [client.py:52] - attempting to connect with server at ws://10.1.16.52:37020/health_check
+2024-09-04 12:38:33,737 - __main__ - DEBUG - [envyCore.py:280] - envy: exiting
+
+
+2024-09-04 12:53:08.534879
+12:53:082024-09-04 12:53:08,600 - __main__ - DEBUG - [envyCore.py:63] - choosing role
+2024-09-04 12:53:08,605 - __main__ - DEBUG - [client.py:40] - health checking server
+2024-09-04 12:53:08,607 - __main__ - DEBUG - [client.py:52] - attempting to connect with server at ws://10.1.16.52:37020/health_check
+2024-09-04 12:53:18,622 - __main__ - DEBUG - [envyCore.py:71] - server health check status: False
+2024-09-04 12:53:18,624 - __main__ - DEBUG - [envyCore.py:80] - I am the server
+2024-09-04 12:53:18,624 - __main__ - INFO - [envyCore.py:135] - Started Envy
+2024-09-04 12:53:18,624 - __main__ - DEBUG - [envyCore.py:156] - envy.connect: Purpose is server
+2024-09-04 12:53:18,624 - __main__ - DEBUG - [envyCore.py:120] - server file path: Z:/school/envy_repo/envyRepo\envyCore\serverCore.py
+2024-09-04 12:53:18,624 - __main__ - DEBUG - [envyCore.py:122] - ['python', 'Z:/school/envy_repo/envyRepo\\envyCore\\serverCore.py']
+2024-09-04 12:53:18,625 - __main__ - DEBUG - [envyCore.py:110] - writing server file
+2024-09-04 12:53:19,659 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-09-04 12:53:19,659 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-09-04 12:53:19,663 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.52
+2024-09-04 12:53:19,664 - __main__ - DEBUG - [client.py:52] - attempting to connect with server at ws://10.1.16.52:37020/client
+2024-09-04 12:53:29,675 - __main__ - INFO - [envyCore.py:163] - Failed to connect to server
+2024-09-04 12:53:29,675 - __main__ - INFO - [envyCore.py:167] - Failed to connect because of timeout
+2024-09-04 12:53:29,675 - __main__ - DEBUG - [envyCore.py:168] - Info: , exception type: <class 'TimeoutError'>
+2024-09-04 12:53:29,675 - __main__ - INFO - [envyCore.py:221] - electing new server
+2024-09-04 12:53:29,675 - __main__ - DEBUG - [envy_utils.py:146] - opening clients file at Z:/envy/Connections\clients.json
+2024-09-04 12:53:29,682 - __main__ - DEBUG - [envy_utils.py:151] - returning clients: {'lab2-03': {'IP': '10.1.16.52', 'Status': 'idle', 'Job': None, 'Allocation': None}}
+2024-09-04 12:53:29,682 - __main__ - DEBUG - [envyCore.py:235] - New server: lab2-03
+2024-09-04 12:53:34,682 - __main__ - DEBUG - [envyCore.py:156] - envy.connect: Purpose is server
+2024-09-04 12:53:34,682 - __main__ - DEBUG - [envyCore.py:120] - server file path: Z:/school/envy_repo/envyRepo\envyCore\serverCore.py
+2024-09-04 12:53:34,682 - __main__ - DEBUG - [envyCore.py:122] - ['python', 'Z:/school/envy_repo/envyRepo\\envyCore\\serverCore.py']
+2024-09-04 12:53:34,682 - __main__ - DEBUG - [envyCore.py:110] - writing server file
+2024-09-04 12:53:35,691 - __main__ - DEBUG - [envy_utils.py:93] - getting server IP
+2024-09-04 12:53:35,691 - __main__ - DEBUG - [envy_utils.py:105] - server file found
+2024-09-04 12:53:35,695 - __main__ - DEBUG - [envy_utils.py:109] - server ip address is: 10.1.16.52
+2024-09-04 12:53:35,696 - __main__ - DEBUG - [client.py:52] - attempting to connect with server at ws://10.1.16.52:37020/client
+2024-09-04 12:53:37,897 - __main__ - DEBUG - [envyCore.py:280] - envy: exiting
+2024-09-04 12:53:37,907 - __main__ - DEBUG - [envyCore.py:285] - envy: Terminating process - 29632
+2024-09-04 12:53:37,907 - __main__ - DEBUG - [envyCore.py:285] - envy: Terminating process - 27820

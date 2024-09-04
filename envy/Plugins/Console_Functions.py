@@ -11,7 +11,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 
 from envyRepo.networkUtils import message as m
 from envyRepo.networkUtils.message_purpose import Message_Purpose
@@ -193,10 +193,6 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     console.send(message)
 
 
-async def version(console) -> str:
-    return '0.0.3'
-
-
 async def register_client(console, client: str, data: dict) -> None:
     console.clients_buffer[client] = data
     if console.console_widget is None:
@@ -258,17 +254,26 @@ async def version_mismatch(console, item_name: str, path_to_source: str, path_to
 
     if console.console_widget is None:
         console.display_error(f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)')
-        result = input('Confirm (y/n)').rstrip().upper()
+        result = input('Confirm (y/n)')
+        result = result.rstrip().upper()
         if result == 'Y':
             if target_file_type == 'file':
                 if os.path.exists(path_to_target):
                     os.remove(path_to_target)
-                shutil.copy2(path_to_source, os.path.join(path_to_target, os.path.pardir))
+                try:
+                    shutil.copy2(path_to_source, os.path.join(path_to_target, os.path.pardir))
+                except Exception as e:
+                    console.logger.error(f'Failed to pull {item_name} from source -> {e}')
+                    return False
 
             if target_file_type == 'dir':
                 if os.path.exists(path_to_target):
                     shutil.rmtree(path_to_target)
-                shutil.copytree(path_to_source, os.path.join(path_to_target, os.path.pardir))
+                try:
+                    shutil.copytree(path_to_source, path_to_target)
+                except Exception as e:
+                    console.logger.error(f'Failed to pull {item_name} from source -> {e}')
+                    return False
             return True
         else:
             console.display_info(f'Bypassing Update for {item_name}')
@@ -285,7 +290,7 @@ async def version_mismatch(console, item_name: str, path_to_source: str, path_to
             if target_file_type == 'dir':
                 if os.path.exists(path_to_target):
                     shutil.rmtree(path_to_target)
-                shutil.copytree(path_to_source, os.path.join(path_to_target, os.path.pardir))
+                shutil.copytree(path_to_source, path_to_target)
             return True
         else:
             console.display_info(f'Bypassing Update for {item_name}')

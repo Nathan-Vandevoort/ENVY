@@ -3,11 +3,15 @@ import os
 
 directory = 'Z:/envy/'
 plugin_directory = os.path.join(directory, 'Plugins')
+utils_directory = os.path.join(directory, 'utils')
 if directory not in sys.path:
     sys.path.append(directory)
 
 if plugin_directory not in sys.path:
     sys.path.append(plugin_directory)
+
+if utils_directory not in sys.path:
+    sys.path.append(utils_directory)
 
 import config_bridge as config
 
@@ -516,7 +520,7 @@ def setAdvancedSimulationResumableSettings(node):
 
 
 def modifyVersion(node, amount):
-    versionParm = node.parm('NVversion')
+    versionParm = node.parm('version')
     versionParm.set(versionParm.eval() + amount)
     versionParm.pressButton()
 

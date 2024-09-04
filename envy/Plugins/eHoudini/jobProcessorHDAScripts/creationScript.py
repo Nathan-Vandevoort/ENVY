@@ -7,9 +7,9 @@ if( not os.path.isdir('Z:/envy/') ):
     hou.ui.displayMessage(f"Envy does not appear to be installed at the root of the Z drive\nThis Node WILL NOT work")
     exit()
 
-directory = 'Z:/envy/'
+directory = 'Z:/envy/utils'
 if directory not in sys.path:
-    sys.path.append('Z:/envy/')
+    sys.path.append('Z:/envy/utils')
 import config_bridge as config
 
 
