@@ -11,13 +11,10 @@ from envyRepo.envyJobs import scheduler
 from envyRepo.envyJobs.enums import Status
 import psutil
 ENVYPATH = os.environ['ENVYPATH']
-sys.path.append(ENVYPATH)
-import envy.config_bridge as config
+sys.path.insert(0, ENVYPATH)
+import envy.utils.config_bridge as config
 
 SRV = sys.modules.get('Server_Functions')
-SERVER_FUNCTIONS = eutils.list_functions_in_file(
-    os.path.join(ENVYPATH, 'Plugins', 'Server_Functions' + '.py'))
-
 
 def update_clients_file(dir, clients: dict):
     clients_file = os.path.join(dir, 'clients.json')
@@ -64,7 +61,9 @@ class Server:
                 return 500, [("Content-Type", "text/plain")], b"connection from client already exists"
 
         if path == '/console':
-            pass
+            if name in self.consoles:
+                self.logger.debug(f'rejecting console connection,Reason: console already exists {name}')
+                return 500, [("Content-Type", "text/plain")], b"connection from client already exists"
 
         if passkey != self.hash:
             self.logger.debug("Invalid Passkey, rejecting connection")

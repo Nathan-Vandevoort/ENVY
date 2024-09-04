@@ -9,7 +9,6 @@ def set_parameters(parameter_dict: dict) -> None:
         # set the value of the parm
         targetParm = hou.parm(parm)
         value = parameter_dict[parm]
-        print(value)
         targetParm.setExpression(str(value), language=hou.exprLanguage.Hscript)
         targetParm.pressButton()
         print(f'Set parameter: {parm} -> {value}', flush=True)

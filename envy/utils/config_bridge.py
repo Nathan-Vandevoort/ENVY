@@ -14,7 +14,7 @@ import os
 import configparser
 
 abs_file = os.path.abspath(__file__)
-file_dir = os.path.dirname(abs_file)
+file_dir = os.path.join(os.path.dirname(abs_file), os.path.pardir)
 
 config = configparser.ConfigParser()
 config.read(os.path.join(file_dir, 'config.ini'))

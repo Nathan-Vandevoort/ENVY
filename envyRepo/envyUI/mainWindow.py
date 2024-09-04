@@ -50,7 +50,7 @@ class MainWindow(QMainWindow):
         right_splitter = QSplitter(Qt.Vertical)
         right_splitter.addWidget(self.job_tree_widget)
         right_splitter.addWidget(self.console_widget)
-        right_splitter.setSizes([1, 0])
+        right_splitter.setSizes([450, 150])
 
         right_container = QWidget()
         right_layout = QVBoxLayout()

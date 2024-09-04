@@ -4,7 +4,7 @@ from queue import Queue
 from envyRepo.networkUtils.message_purpose import Message_Purpose
 from envyRepo.envyLib import envy_utils as eutils
 from envyRepo.envyLib.colors import Colors as c
-import envy.config_bridge as config
+import envy.utils.config_bridge as config
 from envyRepo.networkUtils import message as m
 from envyRepo.envyLib.envy_utils import DummyLogger
 import websockets
@@ -51,8 +51,9 @@ class Console:
         version = await NV.version(None)
         target_version = await source_envy_functions.version(None)
         if version != target_version:
-            await CONSOLE.version_mismatch(self, 'Envy_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Envy_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Envy_Functions.py'))
-            await CONSOLE.restart_envy(self, force=True)
+            reply = await CONSOLE.version_mismatch(self, 'Envy_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Envy_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Envy_Functions.py'))
+            if reply is True:
+                await CONSOLE.restart_envy(self, force=True)
 
         # check server_functions.py version
         spec = importlib.util.spec_from_file_location('Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'))
@@ -62,8 +63,9 @@ class Console:
         version = await SRV.version(None)
         target_version = await source_server_functions.version(None)
         if version != target_version:
-            await CONSOLE.version_mismatch(self, 'Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Server_Functions.py'))
-            await CONSOLE.restart_envy(self, force=True)
+            reply = await CONSOLE.version_mismatch(self, 'Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Server_Functions.py'))
+            if reply is True:
+                await CONSOLE.restart_envy(self, force=True)
 
         # check console_functions.py version
         spec = importlib.util.spec_from_file_location('Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'))
@@ -73,10 +75,12 @@ class Console:
         version = await CONSOLE.version(None)
         target_version = await source_console_functions.version(None)
         if version != target_version:
-            await CONSOLE.version_mismatch(self, 'Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Console_Functions.py'))
-            await CONSOLE.restart_envy(self, force=True)
-            self.display_warning('Console Functions were updated please reopen console')
-            quit()
+            reply = await CONSOLE.version_mismatch(self, 'Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Console_Functions.py'))
+            if reply is True:
+                await CONSOLE.restart_envy(self, force=True)
+                self.display_warning('Console Functions were updated please reopen console')
+                await asyncio.sleep(2)
+                quit()
 
     async def user_input(self):
         while True:
@@ -132,7 +136,7 @@ class Console:
         self.display_info(f'{message}: {message.as_dict()}')
 
     async def execute(self, function_string: str) -> any:
-        self.display_info(f'Executing: {function_string}')
+        self.logger.debug(f'Executing: {function_string}')
         try:
             await self.async_exec(f'await CONSOLE.{function_string}')
         except Exception as e:

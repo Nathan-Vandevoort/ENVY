@@ -1,15 +1,13 @@
-import asyncio
 import sys
 from qasync import QApplication, QEventLoop
-import envyRepo.prep_env
-import envy.config_bridge as config
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QSplitter, QSizePolicy
-from PySide6.QtCore import QTimer, Signal, Slot
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QMessageBox
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QFont
 from envyRepo.envyCore import consoleCore
 import io
 from envyRepo.envyLib import envy_logger
 from queue import Queue
+import logging
 
 class ConsoleWidget(QWidget):
 
@@ -35,9 +33,9 @@ class ConsoleWidget(QWidget):
         self.output_stream = io.StringIO()
         self.input_stream = io.StringIO()
         self.output_stream_seeker = 0
-        self.logger = envy_logger.get_logger(self.output_stream, html=True)
+        self.logger = envy_logger.get_logger(self.output_stream, html=True, level=logging.INFO)
 
-        self.envy_console = consoleObject.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger, console_widget=self)
+        self.envy_console = consoleCore.Console(self.event_loop, input_queue=self.input_queue, stand_alone=False, logger=self.logger, console_widget=self)
 
         self.text_input_widget = QLineEdit(self)
         self.text_input_widget.returnPressed.connect(self.send_input)
@@ -75,6 +73,13 @@ class ConsoleWidget(QWidget):
         if new_text:
             self.text_output_widget.append(new_text)
             self.output_stream_seeker = self.output_stream.tell()
+
+    def show_confirmation(self, message: str):
+        reply = QMessageBox.question(self, 'Confirmation', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == 65536:
+            return False
+        else:
+            return True
 
     def closeEvent(self, event):
         self.read_output_timer.stop()

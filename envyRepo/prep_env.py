@@ -36,7 +36,6 @@ if 'launch_envy.py' in calling_script_name:
         spec.loader.exec_module(module_object)
 
 if 'server' in calling_script_name:
-    print('prepping server')
 
     modules = [
         'Envy_Functions',
@@ -51,12 +50,11 @@ if 'server' in calling_script_name:
         spec.loader.exec_module(module_object)
 
 if 'console' in calling_script_name or 'UI' in calling_script_name:
-    print('prepping console')
 
     modules = [
         'Console_Functions',
+        'Envy_Functions',
         'Server_Functions'
-        'Envy_Functions'
     ]
 
     for module in modules:

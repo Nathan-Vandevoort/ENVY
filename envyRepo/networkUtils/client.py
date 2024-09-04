@@ -1,5 +1,5 @@
 import socket,logging, websockets, asyncio, json
-import envy.config_bridge as config
+import envy.utils.config_bridge as config
 from queue import Queue
 from envyRepo.networkUtils.message_purpose import Message_Purpose
 from envyRepo.envyLib import envy_utils as eutils

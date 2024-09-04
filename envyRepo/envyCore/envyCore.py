@@ -10,7 +10,7 @@ from envyRepo.envyLib.envy_utils import DummyLogger
 from envyRepo.networkUtils import message as m
 from envyRepo.envyJobs.enums import Status
 import subprocess
-import envy.config_bridge as config
+import envy.utils.config_bridge as config
 import safe_exit
 import psutil
 
@@ -120,7 +120,7 @@ class Envy:
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
         self.logger.debug(f'{cmd}')
-        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
         if self.check_server_file():
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
             await asyncio.sleep(1)

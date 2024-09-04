@@ -1,4 +1,5 @@
-import config_bridge
+# noinspection PyUnresolvedReferences
+from utils import config_bridge
 # noinspection PyUnresolvedReferences
 import envyRepo.prep_env  # this is important to prepare the virtual environment
 import asyncio

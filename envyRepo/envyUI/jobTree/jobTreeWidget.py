@@ -1,9 +1,7 @@
 import sys
-import envyRepo.prep_env
-import envy.config_bridge
 from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
 from PySide6.QtGui import QAction, QFont
-from PySide6.QtCore import QTimer, QPoint, Qt, Signal, Slot
+from PySide6.QtCore import QPoint, Qt, Signal
 from envyRepo.envyUI.jobTree import jobTreeController
 from envyRepo.envyJobs import jobTreeAbstractItemModel
 from envyRepo.networkUtils.message_purpose import Message_Purpose as MP

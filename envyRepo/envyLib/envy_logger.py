@@ -50,7 +50,7 @@ class CustomFormatterHTML(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-def get_logger(stream=None, html=False):
+def get_logger(stream=None, html=False, level=logging.DEBUG):
     handler = logging.StreamHandler(stream=stream)
     if html is True:
         handler.setFormatter(CustomFormatterHTML())
@@ -58,5 +58,5 @@ def get_logger(stream=None, html=False):
         handler.setFormatter(CustomFormatterANSI())
     logger = logging.getLogger(__name__)
     logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(level)
     return logger

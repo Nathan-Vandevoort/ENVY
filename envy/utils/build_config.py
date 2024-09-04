@@ -11,7 +11,7 @@ if __name__ == '__main__':
         'COMPUTERPREFIXES': ['LAB1-', 'LAB2-', 'LAB3-', 'LAB4-', 'LAB5-', 'LAB6-', 'LAB7-', 'LAB8-', 'LAB9-', 'LEC1', 'LEC2', 'LEC3', 'VR1']
     }
 
-    with open('config.ini', 'w') as config_file:
+    with open('../config.ini', 'w') as config_file:
         config = configparser.ConfigParser()
         config['DEFAULT'] = default_data
         config.write(config_file)

@@ -194,7 +194,7 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
 
 
 async def version(console) -> str:
-    return '0.0.1'
+    return '0.0.3'
 
 
 async def register_client(console, client: str, data: dict) -> None:
@@ -216,6 +216,80 @@ async def set_clients(console, data: dict) -> None:
     if console.console_widget is None:
         return
     console.console_widget.set_clients.emit(data)
+
+
+async def version_mismatch(console, item_name: str, path_to_source: str, path_to_target: str) -> bool:
+    import os
+    import shutil
+
+    # sanitize path to target
+    sanitized = False
+    target_file_type = None
+    if os.path.isfile(path_to_target):
+        sanitized = True
+        target_file_type = 'file'
+
+    if os.path.isdir(path_to_target):
+        sanitized = True
+        target_file_type = 'dir'
+
+    if sanitized is False:
+        console.display_error(f'{path_to_target} does not appear to be a valid file or directory')
+        return False
+
+    # sanitize path to source
+    sanitized = False
+    source_file_type = None
+    if os.path.isfile(path_to_source):
+        sanitized = True
+        source_file_type = 'file'
+
+    if os.path.isdir(path_to_source):
+        sanitized = True
+        source_file_type = 'dir'
+
+    if sanitized is False:
+        console.display_error(f'{path_to_source} does not appear to be a valid file or directory')
+        return False
+
+    if target_file_type != source_file_type:
+        console.display_error(f'path_to_target and path_to_source must both be either a file or a directory not one of each')
+        return False
+
+    if console.console_widget is None:
+        console.display_error(f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)')
+        result = input('Confirm (y/n)').rstrip().upper()
+        if result == 'Y':
+            if target_file_type == 'file':
+                if os.path.exists(path_to_target):
+                    os.remove(path_to_target)
+                shutil.copy2(path_to_source, os.path.join(path_to_target, os.path.pardir))
+
+            if target_file_type == 'dir':
+                if os.path.exists(path_to_target):
+                    shutil.rmtree(path_to_target)
+                shutil.copytree(path_to_source, os.path.join(path_to_target, os.path.pardir))
+            return True
+        else:
+            console.display_info(f'Bypassing Update for {item_name}')
+            return False
+
+    else:
+        reply = console.console_widget.show_confirmation(f'{item_name} version is mismatched from source.\nWould you like to update?\n(If you have customized {item_name} You will need to reimplement your customizations.)\nYou may need to reopen the console')
+        if reply is True:
+            if target_file_type == 'file':
+                if os.path.exists(path_to_target):
+                    os.remove(path_to_target)
+                shutil.copy2(path_to_source, os.path.join(path_to_target, os.path.pardir))
+
+            if target_file_type == 'dir':
+                if os.path.exists(path_to_target):
+                    shutil.rmtree(path_to_target)
+                shutil.copytree(path_to_source, os.path.join(path_to_target, os.path.pardir))
+            return True
+        else:
+            console.display_info(f'Bypassing Update for {item_name}')
+            return False
 
 
 # ------------------------------ UI ---------------------------------------------- #
@@ -253,60 +327,3 @@ async def sync_job(console, job_id: int) -> None:
     if console.console_widget is None:
         return
     console.console_widget.jobs_sync_job.emit(float(job_id))
-
-
-async def version_mismatch(console, item_name: str, path_to_target: str, path_to_source: str) -> None:
-    import os
-    import shutil
-
-    # sanitize path to target
-    sanitized = False
-    target_file_type = None
-    if os.path.isfile(path_to_target):
-        sanitized = True
-        target_file_type = 'file'
-
-    if os.path.isdir(path_to_target):
-        sanitized = True
-        target_file_type = 'dir'
-
-    if sanitized is False:
-        console.display_error(f'{path_to_target} does not appear to be a valid file or directory')
-        return
-
-    # sanitize path to source
-    sanitized = False
-    source_file_type = None
-    if os.path.isfile(path_to_source):
-        sanitized = True
-        source_file_type = 'file'
-
-    if os.path.isdir(path_to_source):
-        sanitized = True
-        source_file_type = 'dir'
-
-    if sanitized is False:
-        console.display_error(f'{path_to_source} does not appear to be a valid file or directory')
-        return
-
-    if target_file_type != source_file_type:
-        console.display_error(f'path_to_target and path_to_source must both be either a file or a directory not one of each')
-        return
-
-    if console.console_widget is None:
-        console.display_error(f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)')
-        result = input('Confirm (y/n)').rstrip().upper()
-        if result == 'Y':
-            if target_file_type == 'file':
-                if os.path.exists(path_to_target):
-                    os.remove(path_to_target)
-                shutil.copy2(path_to_source, path_to_target)
-
-            if target_file_type == 'dir':
-                if os.path.exists(path_to_target):
-                    shutil.rmtree(path_to_target)
-                shutil.copytree(path_to_source, path_to_target)
-
-        else:
-            console.display_info('Bypassing Update')
-            return
