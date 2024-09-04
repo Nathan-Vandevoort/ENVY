@@ -6,7 +6,7 @@ import envy.config_bridge as config
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QMainWindow, QSplitter, QSizePolicy
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtGui import QFont
-from envyRepo.envyCore import consoleObject
+from envyRepo.envyCore import consoleCore
 import io
 from envyRepo.envyLib import envy_logger
 from queue import Queue

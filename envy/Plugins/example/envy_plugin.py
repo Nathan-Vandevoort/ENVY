@@ -18,7 +18,7 @@ __version__ = "1.0.0"
 
 import os, subprocess
 import asyncio
-from envyJobs.enums import Status  # this module is in the ENVYREPO and provides useful information such as job status
+from envyRepo.envyJobs.enums import Status  # this module is in the ENVYREPO and provides useful information such as job status
 import sys
 import json
 NV = sys.modules.get('Envy_Functions')  # This gets the Envy_Functions module and assigns it to the variable NV. This allows you to call the envy_functions functions easily

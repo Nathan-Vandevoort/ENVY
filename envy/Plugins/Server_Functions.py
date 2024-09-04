@@ -129,6 +129,10 @@ async def send_to_clients(server, clients: list, message: m.Message | m.Function
         await send_to_client(server, client, message)
 
 
+async def version(server) -> str:
+    return '0.0.1'
+
+
 async def stop_client(server, client: str, hold_until: bool = False) -> None:
     new_message = m.FunctionMessage(f'Stop_Working -> {client}')
     new_message.set_target(Message_Purpose.CLIENT)

@@ -116,7 +116,7 @@ class Envy:
             return False
 
     async def start_server(self):
-        plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverObject.py')
+        plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverCore.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
         self.logger.debug(f'{cmd}')

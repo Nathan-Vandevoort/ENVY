@@ -56,6 +56,7 @@ if 'console' in calling_script_name or 'UI' in calling_script_name:
     modules = [
         'Console_Functions',
         'Server_Functions'
+        'Envy_Functions'
     ]
 
     for module in modules:

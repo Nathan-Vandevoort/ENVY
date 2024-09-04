@@ -147,6 +147,9 @@ async def stop_working(envy, hold_until: bool) -> None:
     await asyncio.sleep(5)
     await envy.set_status_idle()
 
+async def version(envy) -> str:
+    return '0.0.1'
+
 async def dirty_task(envy, task_id: int) -> None:
     # todo implement
     pass

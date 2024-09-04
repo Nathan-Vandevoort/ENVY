@@ -8,7 +8,10 @@ import envy.config_bridge as config
 from envyRepo.networkUtils import message as m
 from envyRepo.envyLib.envy_utils import DummyLogger
 import websockets
+import os
 
+NV = sys.modules.get('Envy_Functions')
+SRV = sys.modules.get('Server_Functions')
 CONSOLE = sys.modules.get('Console_Functions')  # import custom IO functions
 
 class Console:
@@ -36,6 +39,44 @@ class Console:
 
     def send(self, message: m.Message | m.FunctionMessage) -> None:
         self.send_queue.put(message)
+
+    async def checkFunctionVersions(self):
+        import importlib.util
+
+        # check envy_functions.py version
+        spec = importlib.util.spec_from_file_location('Envy_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Envy_Functions.py'))
+        source_envy_functions = importlib.util.module_from_spec(spec)
+        # sys.modules['source_envy_functions'] = source_envy_functions
+        spec.loader.exec_module(source_envy_functions)
+        version = await NV.version(None)
+        target_version = await source_envy_functions.version(None)
+        if version != target_version:
+            await CONSOLE.version_mismatch(self, 'Envy_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Envy_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Envy_Functions.py'))
+            await CONSOLE.restart_envy(self, force=True)
+
+        # check server_functions.py version
+        spec = importlib.util.spec_from_file_location('Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'))
+        source_server_functions = importlib.util.module_from_spec(spec)
+        # sys.modules['source_envy_functions'] = source_envy_functions
+        spec.loader.exec_module(source_server_functions)
+        version = await SRV.version(None)
+        target_version = await source_server_functions.version(None)
+        if version != target_version:
+            await CONSOLE.version_mismatch(self, 'Server_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Server_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Server_Functions.py'))
+            await CONSOLE.restart_envy(self, force=True)
+
+        # check console_functions.py version
+        spec = importlib.util.spec_from_file_location('Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'))
+        source_console_functions = importlib.util.module_from_spec(spec)
+        # sys.modules['source_envy_functions'] = source_envy_functions
+        spec.loader.exec_module(source_console_functions)
+        version = await CONSOLE.version(None)
+        target_version = await source_console_functions.version(None)
+        if version != target_version:
+            await CONSOLE.version_mismatch(self, 'Console_Functions', os.path.join(config.Config.REPOPATH, 'envy', 'Plugins', 'Console_Functions.py'), os.path.join(config.Config.ENVYPATH, 'Plugins', 'Console_Functions.py'))
+            await CONSOLE.restart_envy(self, force=True)
+            self.display_warning('Console Functions were updated please reopen console')
+            quit()
 
     async def user_input(self):
         while True:
@@ -98,6 +139,8 @@ class Console:
             self.display_error(f'Failed to execute {function_string} -> {e}')
 
     async def start(self):
+        await self.checkFunctionVersions()
+
         if self.stand_alone is True:
             user_input_task = self.event_loop.create_task(self.user_input())
             user_input_task.set_name('User_Input_Task')

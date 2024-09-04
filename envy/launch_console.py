@@ -2,7 +2,7 @@ import config_bridge
 import envyRepo.prep_env  # this is important to prepare the virtual environment
 import asyncio
 import logging
-from envyRepo.envyCore.consoleObject import Console
+from envyRepo.envyCore.consoleCore import Console
 import os
 
 os.system('color')

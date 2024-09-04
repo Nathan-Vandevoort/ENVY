@@ -5,7 +5,7 @@ import asyncio
 import logging
 import os
 from envyRepo.envyLib import envy_utils as eutils
-from envyRepo.envyCore.envyObject import Envy
+from envyRepo.envyCore.envyCore import Envy
 from datetime import datetime
 import socket
 

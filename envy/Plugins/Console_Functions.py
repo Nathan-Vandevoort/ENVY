@@ -78,7 +78,7 @@ async def install_maya_plugin(console) -> None:
     :param console: reference to the console calling the function
     """
     maya_user_folder = 'Z:/maya'
-    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envyObject.py'
+    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envyCore.py'
 
     if not os.path.exists(maya_user_folder):
         console.display_error('Maya plugin installation failed: Maya user folder not found.')
@@ -133,17 +133,21 @@ async def request_clients(console) -> None:
     console.send(function_message)
 
 
-async def restart_envy(console) -> None:
+async def restart_envy(console, force=False) -> None:
     """
     restart envy instances
     :param console: reference to the console making the call
+    :param force: Bypasses the console prompting the user for a classifier
     :return: Void
     """
-    classifier = await get_classifier(console)
-    valid = eutils.validate_classifier(classifier)
-    if not valid:
-        console.display_error(f'Invalid classifier: {classifier}')
-        return
+    if force == False:
+        classifier = await get_classifier(console)
+        valid = eutils.validate_classifier(classifier)
+        if not valid:
+            console.display_error(f'Invalid classifier: {classifier}')
+            return
+    else:
+        classifier = '*'
     function_message = m.FunctionMessage('restart_envy()')
     function_message.set_target(Message_Purpose.CLIENT)
     function_message.set_function('restart_envy')
@@ -187,6 +191,10 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)
+
+
+async def version(console) -> str:
+    return '0.0.1'
 
 
 async def register_client(console, client: str, data: dict) -> None:
@@ -245,3 +253,60 @@ async def sync_job(console, job_id: int) -> None:
     if console.console_widget is None:
         return
     console.console_widget.jobs_sync_job.emit(float(job_id))
+
+
+async def version_mismatch(console, item_name: str, path_to_target: str, path_to_source: str) -> None:
+    import os
+    import shutil
+
+    # sanitize path to target
+    sanitized = False
+    target_file_type = None
+    if os.path.isfile(path_to_target):
+        sanitized = True
+        target_file_type = 'file'
+
+    if os.path.isdir(path_to_target):
+        sanitized = True
+        target_file_type = 'dir'
+
+    if sanitized is False:
+        console.display_error(f'{path_to_target} does not appear to be a valid file or directory')
+        return
+
+    # sanitize path to source
+    sanitized = False
+    source_file_type = None
+    if os.path.isfile(path_to_source):
+        sanitized = True
+        source_file_type = 'file'
+
+    if os.path.isdir(path_to_source):
+        sanitized = True
+        source_file_type = 'dir'
+
+    if sanitized is False:
+        console.display_error(f'{path_to_source} does not appear to be a valid file or directory')
+        return
+
+    if target_file_type != source_file_type:
+        console.display_error(f'path_to_target and path_to_source must both be either a file or a directory not one of each')
+        return
+
+    if console.console_widget is None:
+        console.display_error(f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)')
+        result = input('Confirm (y/n)').rstrip().upper()
+        if result == 'Y':
+            if target_file_type == 'file':
+                if os.path.exists(path_to_target):
+                    os.remove(path_to_target)
+                shutil.copy2(path_to_source, path_to_target)
+
+            if target_file_type == 'dir':
+                if os.path.exists(path_to_target):
+                    shutil.rmtree(path_to_target)
+                shutil.copytree(path_to_source, path_to_target)
+
+        else:
+            console.display_info('Bypassing Update')
+            return
