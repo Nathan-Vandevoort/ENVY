@@ -238,7 +238,6 @@ class Console:
         # Client connection
         success, exception, info = await self.client.connect(purpose=Message_Purpose.CONSOLE)
         if not success:  # if client failed to connect
-            self.connected = False
             self.logger.info('Failed to connect to server')
 
             if isinstance(exception,
@@ -280,7 +279,14 @@ class Console:
 
         else:  # client was able to connect
             self.connected = True
+            if self.console_widget:
+                self.console_widget.connected_with_server.emit()
+
             await self.client.start()  # program will hold here until client disconnects
+
+            self.connected = False
+            if self.console_widget:
+                self.console_widget.disconnected_with_server.emit()
 
             self.logger.debug('cleaning up envy.client_dependant_tasks')
             for i, task in enumerate(self.client_dependant_coroutines):  # cancel tasks

@@ -188,6 +188,7 @@ class MayaToEnvy(object):
         import re
         if re.match("^[a-yA-Y]]*", project_path):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv...)')
+            return False
         else:
             return True
 

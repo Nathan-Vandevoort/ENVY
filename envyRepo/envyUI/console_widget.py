@@ -24,6 +24,9 @@ class ConsoleWidget(QWidget):
     unregister_client = Signal(str)
     set_clients = Signal(dict)
 
+    disconnected_with_server = Signal()
+    connected_with_server = Signal()
+
     def __init__(self, parent=None, event_loop=None):
         super().__init__(parent)
 
@@ -91,6 +94,7 @@ class ConsoleWidget(QWidget):
 
     def send_message(self, message):
         self.envy_console.send(message)
+
 
 if __name__ == '__main__':
     class MainWindow(QMainWindow):

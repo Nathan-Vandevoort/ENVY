@@ -35,3 +35,11 @@ class JobTreeController(QObject):
         allocation_id = data_tuple[0]
         computer = data_tuple[1]
         self.model.start_allocation(computer, int(allocation_id))
+
+    @Slot(int)
+    def disconnected_with_server(self):
+        pass
+
+    @Slot(int)
+    def connected_with_server(self):
+        pass

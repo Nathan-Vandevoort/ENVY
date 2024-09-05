@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import QTreeView, QMainWindow, QApplication, QMenu
 from PySide6.QtGui import QAction, QFont
-from PySide6.QtCore import QPoint, Qt, Signal
+from PySide6.QtCore import QPoint, Qt, Signal, Slot
 from envyRepo.envyUI.jobTree import jobTreeController
 from envyRepo.envyJobs import jobTreeAbstractItemModel
 from envyRepo.networkUtils.message_purpose import Message_Purpose as MP

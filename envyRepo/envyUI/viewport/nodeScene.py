@@ -231,6 +231,18 @@ class NodeScene(QGraphicsScene):
         del self.nodes[computer_name]
         self.removeItem(node)
 
+    def pause(self):
+        if self.execution_timer.isActive():
+            self.execution_timer.stop()
+
+    def play(self):
+        if self.execution_timer.isActive() is False:
+            self.execution_timer.start(20)
+
+    def clear_computers(self):
+        for node in self.nodes:
+            self.remove_computer(node)
+
     @staticmethod
     def fit_range(value, old_min, old_max, new_min, new_max):
         return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min

@@ -8,7 +8,9 @@ import qdarkstyle
 from envyRepo.envyUI.mainWindow import MainWindow
 from qasync import QApplication, QEventLoop
 from PySide6.QtWidgets import QSplashScreen
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QColor
+from PySide6.QtCore import Slot
+from asyncslot import asyncSlot
 
 #import faulthandler
 #faulthandler.enable()
@@ -17,6 +19,7 @@ from PySide6.QtGui import QPixmap
 app = QApplication(sys.argv)
 
 loop = QEventLoop(app)
+
 app.setStyleSheet(qdarkstyle.load_stylesheet_pyside6())
 window = MainWindow(loop, app)
 window.show()

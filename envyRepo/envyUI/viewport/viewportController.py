@@ -28,3 +28,12 @@ class ViewportController(QObject):
 
         for client in clients:
             self.register_client((client, clients[client]))
+
+    @Slot(int)
+    def disconnected_with_server(self):
+        self.scene.pause()
+        self.scene.clear_computers()
+
+    @Slot(int)
+    def connected_with_server(self):
+        self.scene.play()

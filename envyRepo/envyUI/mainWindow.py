@@ -82,6 +82,11 @@ class MainWindow(QMainWindow):
         self.console_widget.unregister_client.connect(self.viewport_widget.controller.unregister_client)  # console -> viewport telling the viewport hey I just lost connection to a client
         self.console_widget.set_clients.connect(self.viewport_widget.controller.set_clients)  # console -> viewport telling the viewport to sync to new clients
 
+        self.console_widget.disconnected_with_server.connect(self.viewport_widget.controller.disconnected_with_server)  # console -> viewport, saying hey I'm disconnected from the server
+        self.console_widget.disconnected_with_server.connect(self.job_tree_widget.controller.disconnected_with_server)  # console -> jobTree, saying hey I'm disconnected from the server
+        self.console_widget.connected_with_server.connect(self.viewport_widget.controller.connected_with_server)  # console -> viewport, saying hey I'm connected with the server
+        self.console_widget.connected_with_server.connect(self.job_tree_widget.controller.connected_with_server)  # console -> jobTree, saying hey I'm connected with the server
+
     def mousePressEvent(self, event):
 
         # check if right click is pressed
