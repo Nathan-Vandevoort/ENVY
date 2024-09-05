@@ -158,7 +158,7 @@ class MayaToEnvy(object):
                                f'\tend_frame: {self.end_frame}\n'
                                f'\tallocation: {self.allocation}\n')
 
-        om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Export to Envy was successfully.')
+        om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Exported job to envy.')
 
     @staticmethod
     def is_a_valid_file(file: str) -> bool:
@@ -173,17 +173,19 @@ class MayaToEnvy(object):
 
     def is_maya_file_valid(self, maya_file: str) -> bool:
         """Checks if the maya file exists."""
+        import re
         if not maya_file:
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return False
-        elif not maya_file.startswith('Z:/'):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file must be saved on the Z:/ drive.')
+        elif re.match("^[a-yA-Y]]*", project_path):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya File must be on a server (//titansrv, Z:/, //veloxsrv...)')
             return False
         else:
             return True
 
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
+        import re
         if re.match("^[a-yA-Y]]*", project_path):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv...)')
         else:
