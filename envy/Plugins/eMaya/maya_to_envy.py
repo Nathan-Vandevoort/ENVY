@@ -12,10 +12,14 @@ import os
 
 
 envy_path = 'Z:/Envy/'
-
+utils_path = os.path.join(envy_path, 'utils')
 if envy_path not in sys.path:
-    sys.path.append(envy_path)
+    sys.path.insert(0, envy_path)
 
+if utils_path not in sys.path:
+    sys.path.insert(0, utils_path)
+
+import config_bridge as config
 
 class MayaToEnvy(object):
     ARNOLD = 'arnold'
@@ -119,8 +123,8 @@ class MayaToEnvy(object):
             om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine {self.render_engine} not supported.')
             return
 
-        from envyJobs.enums import Purpose
-        import envyJobs.job as job
+        from envyRepo.envyJobs.enums import Purpose
+        import envyRepo.envyJobs.job as job
 
         maya_file_name = Path(self.get_maya_file()).stem
         camera_short_name = cmds.ls(camera, shortNames=True)[0].replace(':', '')
@@ -244,7 +248,7 @@ class MayaToEnvy(object):
         if render_layer_members:
             for obj in render_layer_members:
                 children_shapes = cmds.listRelatives(obj, children=True, shapes=True, fullPath=True)
-
+                print(children_shapes)
                 if children_shapes:
                     for shape in children_shapes:
                         if cmds.objectType(shape, isType='camera'):

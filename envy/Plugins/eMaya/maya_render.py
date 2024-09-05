@@ -8,7 +8,7 @@ import sys
 import re
 import os
 
-from envyJobs.enums import Status
+from envyRepo.envyJobs.enums import Status
 
 config = sys.modules.get('config_bridge').Config
 NV = sys.modules.get('Envy_Functions')

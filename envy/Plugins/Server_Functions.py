@@ -1,6 +1,6 @@
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 import sys, os
 abs_file = os.path.abspath(__file__)
@@ -11,7 +11,7 @@ from envyRepo.networkUtils.message_purpose import Message_Purpose
 import json
 __config__ = sys.modules.get('config_bridge')
 
-async def send_to_console(server, console: str, message: m.Message | m.FunctionMessage) -> None:
+async def send_to_console(server, console: str, message: (m.Message, m.FunctionMessage)) -> None:
     """
     send a networkUtils.message object to a console
     :param server: reference to server calling the function
@@ -25,7 +25,7 @@ async def send_to_console(server, console: str, message: m.Message | m.FunctionM
     await ws.send(encoded_message)
 
 
-async def send_to_client(server, client: str, message: m.Message | m.FunctionMessage) -> None:
+async def send_to_client(server, client: str, message: (m.Message, m.FunctionMessage)) -> None:
     """
     Send a networkUtils.message object to a client
     :param server: reference to server calling the function
@@ -58,7 +58,7 @@ async def send_attribute_to_client(server, client: str, attribute: str, buffer_n
     await send_to_client(server, client, message)
 
 
-async def send_clients_to_console(server, target_consoles: str | list = None) -> None:
+async def send_clients_to_console(server, target_consoles: (str, list) = None) -> None:
     """
     Send all currently connected clients to a particular console or a list of consoles
     :param server: reference to server calling the function
@@ -83,7 +83,7 @@ async def send_clients_to_console(server, target_consoles: str | list = None) ->
         await send_to_console(server, console, message)
 
 
-async def send_attribute_to_console(server, attribute: str, buffer_name: str, target_consoles: str | list = None) -> None:
+async def send_attribute_to_console(server, attribute: str, buffer_name: str, target_consoles: (str, list) = None) -> None:
     """
         Sends the value of any attribute on the server object to any client
         :param server: reference to server calling the function
@@ -110,7 +110,7 @@ async def send_attribute_to_console(server, attribute: str, buffer_name: str, ta
         await send_to_console(server, console, message)
 
 
-async def send_to_consoles(server, message: m.Message | m.FunctionMessage) -> None:
+async def send_to_consoles(server, message: (m.Message, m.FunctionMessage)) -> None:
     """
     sends a message to every console connected to the server
     :param server: a reference to the server object calling
@@ -124,7 +124,7 @@ async def send_to_consoles(server, message: m.Message | m.FunctionMessage) -> No
             continue
 
 
-async def send_to_clients(server, clients: list, message: m.Message | m.FunctionMessage) -> None:
+async def send_to_clients(server, clients: list, message: (m.Message, m.FunctionMessage)) -> None:
     """
     sends a message to every client connected to the server
     :param server: reference to the server making the function call

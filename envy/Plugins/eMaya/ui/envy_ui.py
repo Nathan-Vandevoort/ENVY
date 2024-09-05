@@ -275,7 +275,6 @@ class EnvyUI(QtWidgets.QDialog):
     def update_window(self) -> None:
         """Updates the window."""
         self.create_render_layers_widgets()
-
         self.start_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.startFrame'))
         self.end_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.endFrame'))
 

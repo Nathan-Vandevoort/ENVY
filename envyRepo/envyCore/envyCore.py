@@ -10,7 +10,6 @@ from envyRepo.envyLib.envy_utils import DummyLogger
 from envyRepo.networkUtils import message as m
 from envyRepo.envyJobs.enums import Status
 import subprocess
-import envyRepo.prep_env
 import envy.utils.config_bridge as config
 import safe_exit
 import psutil
@@ -111,7 +110,7 @@ class Envy:
         self.client_send_queue.put(message)
 
     def check_server_file(self):
-        self.logger.debug('writing server file')
+        self.logger.debug('Checking server file')
         try:
             os.rename(os.path.join(self.server_directory, 'server.txt'),
                       os.path.join(self.server_directory, 'server.txt'))  # rename file to same name to check if its being used by another server
@@ -123,11 +122,12 @@ class Envy:
         plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverCore.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
-        self.logger.debug(f'{cmd}')
-        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
-        if self.check_server_file():
+        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
+        result = self.check_server_file()
+        self.logger.debug(f'Checking server file: {result}')
+        if result:
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
     async def start(self, role_override=None):
         self.running = True

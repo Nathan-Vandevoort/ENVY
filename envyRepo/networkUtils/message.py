@@ -244,7 +244,7 @@ class FunctionMessage(Message):
         return formatted_string
 
 
-def build_from_message_dict(input_dict: dict, logger: logging.Logger = None) -> Message | FunctionMessage:
+def build_from_message_dict(input_dict: dict, logger: logging.Logger = None) -> (Message, FunctionMessage):
     """
     Given a dictionary which was created from a message object, build a new message object with payload set to message from the dict
     :param input_dict: (dict) a dictionary created by a message object

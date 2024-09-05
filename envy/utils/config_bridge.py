@@ -35,6 +35,4 @@ if plugin_path not in sys.path:
     sys.path.append(os.path.join(Config.ENVYPATH, 'Plugins'))
 
 if Config.REPOPATH not in sys.path:
-    sys.path.append(Config.REPOPATH)
-
-import envyRepo.prep_env
+    sys.path.insert(0, Config.REPOPATH)
