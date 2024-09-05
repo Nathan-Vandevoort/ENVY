@@ -10,7 +10,7 @@ import os
 
 from envyRepo.envyJobs.enums import Status
 
-config = sys.modules.get('config_bridge').Config
+config = sys.modules.get('utils.config_bridge').Config
 NV = sys.modules.get('Envy_Functions')
 
 
@@ -48,6 +48,8 @@ class MayaRender(object):
 
         self.render_subprocess = None
         self.vray_is_rendering = False
+        self.user_terminated = False
+        self.coroutines = []
 
     @staticmethod
     def check_settings_keys(settings: dict) -> bool:
@@ -242,6 +244,9 @@ class MayaRender(object):
         while self.envy.status == Status.WORKING:
             await asyncio.sleep(.5)
 
+        await self.end_coroutines()
+        await self.terminate_render_subprocess()
+
         return -1
 
     async def monitor_process(self):
@@ -252,15 +257,11 @@ class MayaRender(object):
             if self.render_subprocess.returncode is not None:
                 break
 
-    async def monitor_tasks(self):
-        running = True
-        while running:
-            await asyncio.sleep(.01)
-            for task in self.coroutines:
-                if task.done():
-                    self.logger.debug(f'eMaya: task {task.get_name()}')
-                    await self.end_coroutines()
-                    running = False
+    async def end_coroutines(self):
+        """ends all coroutines"""
+        self.logger.debug(f'eHoudini: Ending coroutines')
+        for task in self.coroutines:
+            task.cancel()
 
     async def render(self) -> None:
         """Renders the Maya file."""
@@ -285,19 +286,20 @@ class MayaRender(object):
 
         monitor_subprocess_task = self.envy.event_loop.create_task(self.monitor_process())
         monitor_subprocess_task.set_name('maya_render_task')
+        self.coroutines.append(monitor_subprocess_task)
         monitor_envy_task = self.envy.event_loop.create_task(self.monitor_envy())
         monitor_envy_task.set_name('maya_render_envy_task')
-
-        # await self.monitor_tasks()
+        self.coroutines.append(monitor_envy_task)
 
         exit_code = await self.render_subprocess.wait()
 
-        if exit_code == 0:
-            await NV.finish_task_allocation(self.envy, self.allocation_id)
-            self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
-        else:
-            await NV.dirty_task_allocation(self.envy, self.allocation_id)
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
+        if self.user_terminated == False:
+            if exit_code == 0:
+                await NV.finish_task_allocation(self.envy, self.allocation_id)
+                self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
+            else:
+                await NV.dirty_task_allocation(self.envy, self.allocation_id)
+                self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Closing {MayaRender.PLUGIN_NAME}.')
 
@@ -351,6 +353,20 @@ class MayaRender(object):
             self.end_frame = self.start_frame
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Set start frame to {start_frame}.')
+
+    async def terminate_render_subprocess(self, timeout: float = 10) -> bool:
+        """Sends a termination signal to the render process"""
+        self.user_terminated = True
+        if self.render_subprocess is None:
+            return True
+
+        start_time = time.time()
+        while self.render_subprocess.returncode is None:
+            time.sleep(.1)
+            if time.time() - start_time > timeout:
+                return False
+            self.render_subprocess.terminate()
+        return True
 
     async def start_render_subprocess(self) -> None:
         """Stats the render subprocess."""

@@ -32,6 +32,7 @@ class Plugin:
         self.coroutines = []
         self.ignore_counter = 0
         self.return_code = None
+        self.user_terminated = False
         safe_exit.register(self.exit_function)
 
         self.logger.debug(f'Allocation Data String: {allocation_data_string}')
@@ -133,12 +134,14 @@ class Plugin:
         while self.hython_process.returncode is None:
             await asyncio.sleep(.1)
 
-        if self.hython_process.returncode is 0:
-            await NV.finish_task_allocation(self.envy, self.allocation_id)
-        else:
-            await NV.dirty_task_allocation(self.envy, self.allocation_id, reason=str(self.hython_process.returncode))
+        if self.user_terminated == False:
+            if self.hython_process.returncode == 0:
+                await NV.finish_task_allocation(self.envy, self.allocation_id)
+            else:
+                await NV.dirty_task_allocation(self.envy, self.allocation_id, reason=str(self.hython_process.returncode))
 
     def terminate_process(self, timeout: float = 10) -> bool:
+        self.user_terminated = True
         if self.hython_process is None:
             return True
 
@@ -172,6 +175,7 @@ class Plugin:
                 if task.done():
                     self.logger.debug(f'eHoudini: task {task.get_name()}')
                     await self.end_coroutines()
+                    self.terminate_process()
                     running = False
 
     async def end_coroutines(self):

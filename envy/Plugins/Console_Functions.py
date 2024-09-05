@@ -11,7 +11,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 import sys, os
 
 abs_file = os.path.abspath(__file__)
@@ -298,6 +298,11 @@ async def version_mismatch(console, item_name: str, path_to_source: str, path_to
         else:
             console.display_info(f'Bypassing Update for {item_name}')
             return False
+
+
+async def check_for_updates(console) -> None:
+    console.check_plugin_versions()
+    console.check_function_versions()
 
 
 # ------------------------------ UI ---------------------------------------------- #
