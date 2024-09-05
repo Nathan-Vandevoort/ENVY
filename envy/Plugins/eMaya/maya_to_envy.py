@@ -3,6 +3,8 @@
 Name: maya_to_envy.py
 ========================================================================================================================
 """
+import string
+
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
@@ -182,9 +184,8 @@ class MayaToEnvy(object):
 
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
-        if not project_path.startswith('Z:/'):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project path must be set on the Z:/ drive.')
-            return False
+        if re.match("^[a-yA-Y]]*", project_path):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv...)')
         else:
             return True
 
