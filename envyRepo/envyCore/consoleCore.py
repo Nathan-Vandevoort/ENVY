@@ -7,6 +7,7 @@ from envyRepo.envyLib.colors import Colors as c
 import envy.utils.config_bridge as config
 from envyRepo.networkUtils import message as m
 from envyRepo.envyLib.envy_utils import DummyLogger
+import envyRepo.prep_env
 import websockets
 import os
 
@@ -50,10 +51,10 @@ class Console:
 
             if file.upper() == '__PYCACHE__':
                 continue
+
             version_file_path = os.path.join(plugin_path, file, 'version.txt')
             with open(version_file_path, 'r') as version_file:
                 source_version = version_file.read().strip()
-            print(os.path.join(config.Config.ENVYPATH, 'Plugins', file, 'version.txt'))
             try:
                 with open(os.path.join(config.Config.ENVYPATH, 'Plugins', file, 'version.txt'), 'r') as version_file:
                     user_version = version_file.read().strip()
@@ -64,6 +65,8 @@ class Console:
                 if reply is True:
                     self.display_info(f'Pulled {file} from Repo')
                     mismatched_plugins = True
+
+            self.logger.info(f'{file} {user_version}->{source_version}')
 
             if source_version != user_version:
                 reply = await CONSOLE.version_mismatch(self, file, os.path.join(plugin_path, file), os.path.join(config.Config.ENVYPATH, 'Plugins', file))

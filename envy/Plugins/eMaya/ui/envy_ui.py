@@ -19,6 +19,7 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
+from functools import partial
 import sys
 import os
 
@@ -69,6 +70,8 @@ class EnvyUI(QtWidgets.QDialog):
         self.render_settings_group_box = None
         self.render_settings_form_layout = None
 
+        self.script_jobs = []
+
         # QDialog settings.
         palette = self.palette()
         palette.setColor(QtGui.QPalette.Window, QtGui.QColor(50, 50, 50))
@@ -81,28 +84,45 @@ class EnvyUI(QtWidgets.QDialog):
         self.create_widgets()
         self.create_layouts()
         self.create_connections()
-        self.create_render_layers_widgets()
+
+        self.create_call_backs()
+        self.update_window()
 
     def create_widgets(self) -> None:
         """Creates the widgets."""
         self.start_frame_spin_box = QtWidgets.QSpinBox()
         self.start_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.start_frame_spin_box.setFixedWidth(75)
-        self.start_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.startFrame'))
+        self.start_frame_spin_box.setFixedSize(75, 20)
+        self.start_frame_spin_box.setStyleSheet('''
+                    QSpinBox {
+                        background-color: rgb(40, 40, 40); 
+                        border-radius: 5px;
+                    }''')
 
         self.end_frame_spin_box = QtWidgets.QSpinBox()
         self.end_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.end_frame_spin_box.setFixedWidth(75)
+        self.end_frame_spin_box.setFixedSize(75, 20)
         self.end_frame_spin_box.setMaximum(10000)
-        self.end_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.endFrame'))
+        self.end_frame_spin_box.setStyleSheet('''
+                    QSpinBox {
+                        background-color: rgb(40, 40, 40); 
+                        border-radius: 5px;
+                    }''')
 
         self.allocation_spin_box = QtWidgets.QSpinBox()
         self.allocation_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.allocation_spin_box.setFixedWidth(75)
+        self.allocation_spin_box.setFixedSize(75, 20)
         self.allocation_spin_box.setMaximum(self.end_frame_spin_box.value() - self.start_frame_spin_box.value())
         self.allocation_spin_box.setMinimum(1)
+        self.allocation_spin_box.setStyleSheet('''
+                    QSpinBox {
+                        background-color: rgb(40, 40, 40); 
+                        border-radius: 5px;
+                    }''')
 
         self.render_push_button = QtWidgets.QPushButton('Render')
+
+        self.updatess = QtWidgets.QPushButton('Restart')
 
     def create_layouts(self) -> None:
         """Creates the layouts."""
@@ -129,7 +149,7 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.render_settings_group_box = QtWidgets.QGroupBox()
         self.render_settings_group_box.setStyleSheet(
-            'QGroupBox {background-color: rgb(65, 65, 65); border-radius: 5px;}')
+            'QGroupBox {background-color: rgb(60, 60, 60); border-radius: 5px;}')
         self.main_right_v_box_layout.addWidget(self.render_settings_group_box)
 
         self.render_settings_form_layout = QtWidgets.QFormLayout()
@@ -142,6 +162,7 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.main_right_v_box_layout.addStretch()
         self.main_right_v_box_layout.addWidget(self.render_push_button)
+        self.main_right_v_box_layout.addWidget(self.updatess)
 
     def create_connections(self) -> None:
         """Creates the connections."""
@@ -149,14 +170,29 @@ class EnvyUI(QtWidgets.QDialog):
         self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
         self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
 
+        self.updatess.clicked.connect(self.update_window)
+
+    def create_call_backs(self) -> None:
+        """Creates the call-backs."""
+        om.MSceneMessage.addCallback(om.MSceneMessage.kAfterNew, self.update_window)
+        om.MSceneMessage.addCallback(om.MSceneMessage.kAfterOpen, self.update_window)
+
+    def create_script_jobs(self) -> None:
+        """Creates the script jobs."""
+        self.script_jobs.append(cmds.scriptJob(event=['DagObjectCreated', partial(self.update_window)]))
+
     def start_frame_spin_box_value_changed(self, value: int) -> None:
         """"""
         self.end_frame_spin_box.setMinimum(value)
+
+        self.update_frame_range_spin_boxes_display()
         self.set_allocation_max_value()
 
     def end_frame_spin_box_value_changed(self, value: int) -> None:
         """"""
         self.start_frame_spin_box.setMaximum(value)
+
+        self.update_frame_range_spin_boxes_display()
         self.set_allocation_max_value()
 
     def render_push_button_clicked(self):
@@ -172,15 +208,20 @@ class EnvyUI(QtWidgets.QDialog):
                         camera_name = camera_widget.get_camera_name()
 
                         envy = maya_to_envy.MayaToEnvy()
-                        envy.set_allocation(self.allocation_spin_box.value())
 
                         if camera_widget.use_custom_frame_range():
-                            envy.set_start_frame(camera_widget.get_start_frame())
-                            envy.set_end_frame(camera_widget.get_end_frame())
+                            start_frame = camera_widget.get_start_frame()
+                            end_frame = camera_widget.get_end_frame()
                         elif render_layer_widget.use_custom_frame_range():
-                            envy.set_start_frame(render_layer_widget.get_start_frame())
-                            envy.set_end_frame(render_layer_widget.get_end_frame())
+                            start_frame = render_layer_widget.get_start_frame()
+                            end_frame = render_layer_widget.get_end_frame()
+                        else:
+                            start_frame = self.start_frame_spin_box.value()
+                            end_frame = self.end_frame_spin_box.value()
 
+                        envy.set_start_frame(start_frame)
+                        envy.set_end_frame(end_frame)
+                        envy.set_allocation(self.allocation_spin_box.value())
                         envy.export_to_envy(camera_name, render_layer_name)
 
                         jobs_exported += 1
@@ -190,6 +231,9 @@ class EnvyUI(QtWidgets.QDialog):
 
     def create_render_layers_widgets(self) -> None:
         """Creates the render_layers_widgets."""
+        for render_layer in self.get_render_layers_items():
+            render_layer.deleteLater()
+
         for render_layer in self.maya_to_envy.get_render_layers():
             render_layer_widget = render_layer_wdt.RenderLayerWidget()
             render_layer_widget.set_start_frame(self.start_frame_spin_box.value())
@@ -213,12 +257,37 @@ class EnvyUI(QtWidgets.QDialog):
         """Sets the allocation max value."""
         self.allocation_spin_box.setMaximum(self.end_frame_spin_box.value() - self.start_frame_spin_box.value() + 1)
 
+    def update_frame_range_spin_boxes_display(self) -> None:
+        """Updates the frame range spin boxes display."""
+        start_frame = self.start_frame_spin_box.value()
+        end_frame = self.end_frame_spin_box.value()
+
+        for render_layer in self.get_render_layers_items():
+            if not render_layer.use_custom_frame_range():
+                render_layer.set_start_frame(start_frame)
+                render_layer.set_end_frame(end_frame)
+
+            for camera in render_layer.get_camera_widgets():
+                if not camera.use_custom_frame_range():
+                    camera.set_start_frame(start_frame)
+                    camera.set_end_frame(end_frame)
+
+    def update_window(self) -> None:
+        """Updates the window."""
+        self.create_render_layers_widgets()
+
+        self.start_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.startFrame'))
+        self.end_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.endFrame'))
+
+    def showEvent(self, event):
+        """"""
+        self.create_script_jobs()
 
 try:
-    ui.close()
-    ui.deleteLater()
+    ff.close()
+    ff.deleteLater()
 except:
     pass
 
-ui = EnvyUI()
-ui.show()
+ff = EnvyUI()
+ff.show()

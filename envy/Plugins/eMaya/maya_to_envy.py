@@ -100,32 +100,21 @@ class MayaToEnvy(object):
 
         self.render_engine = self.get_render_engine()
 
+        # Each render engine method will return True if the Maya file needs to be saved.
+        # If the user does not allow to save the Maya file, exporting to Envy will be aborted.
+
         if self.render_engine == MayaToEnvy.ARNOLD:
-            cmds.setAttr('defaultArnoldRenderOptions.log_verbosity', 2)
-            cmds.setAttr('defaultArnoldRenderOptions.log_to_console', 1)
-
-            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_verbosity = 2.')
-            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_to_console = 1.')
-
-            if not self.save_file():
-                return
-
+            if self.set_arnold_settings():
+                if not self.save_file():
+                    return
         elif self.render_engine == MayaToEnvy.REDSHIFT:
-            cmds.setAttr('redshiftOptions.logLevel', 2)
-
-            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] redshiftOptions.logLevel = 2.')
-
-            if not self.save_file():
-                return
+            if self.set_redshift_settings():
+                if not self.save_file():
+                    return
         elif self.render_engine == MayaToEnvy.VRAY:
-            cmds.setAttr('vraySettings.sys_message_level', 3)
-            cmds.setAttr('vraySettings.sys_progress_increment', 1)
-
-            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_message_level = 3.')
-            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_progress_increment = 1.')
-
-            if not self.save_file():
-                return
+            if self.set_vray_settings():
+                if not self.save_file():
+                    return
         else:
             om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine {self.render_engine} not supported.')
             return
@@ -134,7 +123,7 @@ class MayaToEnvy(object):
         import envyJobs.job as job
 
         maya_file_name = Path(self.get_maya_file()).stem
-        camera_short_name = cmds.ls(camera, shortNames=True)[0]
+        camera_short_name = cmds.ls(camera, shortNames=True)[0].replace(':', '')
         render_layer_short_name = render_layer.replace(':', '')
 
         render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer_short_name}')
@@ -274,7 +263,7 @@ class MayaToEnvy(object):
 
         result = cmds.confirmDialog(
             title='Export to Envy',
-            message='File must be save it to export to Envy.\nDo you want to save it?',
+            message='Maya file must be save it to export to Envy.\nDo you want to save it?',
             button=['Yes', 'No'],
             defaultButton='Yes',
             cancelButton='No',
@@ -284,7 +273,7 @@ class MayaToEnvy(object):
             cmds.file(save=True)
             return True
         else:
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy aborted by the user.')
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy aborted by the user. Maya file must be saved.')
             return False
 
     def set_allocation(self, allocation: int) -> None:
@@ -298,6 +287,49 @@ class MayaToEnvy(object):
     def set_start_frame(self, frame: int) -> None:
         """Sets the start frame."""
         self.start_frame = frame
+
+    def set_arnold_settings(self) -> bool:
+        """Sets Arnold settings."""
+        save_file = False
+
+        if cmds.getAttr('defaultArnoldRenderOptions.log_verbosity') != 2:
+            cmds.setAttr('defaultArnoldRenderOptions.log_verbosity', 2)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_verbosity = 2.')
+            save_file = True
+
+        if cmds.getAttr('defaultArnoldRenderOptions.log_to_console') != 1:
+            cmds.setAttr('defaultArnoldRenderOptions.log_to_console', 1)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] defaultArnoldRenderOptions.log_to_console = 1.')
+            save_file = True
+
+        return save_file
+
+    def set_redshift_settings(self) -> bool:
+        """Sets Redshift settings."""
+        save_file = False
+
+        if cmds.getAttr('redshiftOptions.logLevel') != 2:
+            cmds.setAttr('redshiftOptions.logLevel', 2)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] redshiftOptions.logLevel = 2.')
+            save_file = True
+
+        return save_file
+
+    def set_vray_settings(self) -> bool:
+        """Sets V-Ray settings."""
+        save_file = False
+
+        if cmds.getAttr('vraySettings.sys_message_level') != 3:
+            cmds.setAttr('vraySettings.sys_message_level', 3)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_message_level = 3.')
+            save_file = True
+
+        if cmds.getAttr('vraySettings.sys_progress_increment') != 1:
+            cmds.setAttr('vraySettings.sys_progress_increment', 1)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vraySettings.sys_progress_increment = 1.')
+            save_file = True
+
+        return save_file
 
 
 if __name__ == '__main__':

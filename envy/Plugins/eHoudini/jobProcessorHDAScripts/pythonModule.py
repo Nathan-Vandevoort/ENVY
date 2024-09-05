@@ -171,7 +171,7 @@ def createSimulationEnvyJob(node):
     job_id = new_job.get_id()
     environment['Job_Id'] = job_id
 
-    if is_simulation is True:
+    if is_simulation == 1:
         new_job.set_environment(environment)
         new_job.set_parameters(parameters)
         new_job.set_type('PLUGIN_eHoudini')
@@ -264,6 +264,19 @@ def setRenderParametersFromNode(node):
     end_frame_parm.set(f"`ch('{rop_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
                        follow_parm_reference=False)
     end_frame_value_parm.set(rop_end_frame_parm.evalAsString())
+
+    # Attempt to set post frame script settings
+    try:
+        render_node.parm('tpostframe').set(1)
+        render_node.parm('lpostframe').set('python')
+        render_node.parm('postframe').set("print('FINISHED')")
+    except Exception:
+        return
+
+    try:
+        render_node.parm('alfprogress').set(1)
+    except Exception as e:
+        return
 
 
 def writeRenderJob(node):
@@ -405,6 +418,18 @@ def setSimulationParametersFromNode(node):
                      follow_parm_reference=False)
     version_value_parm.set(file_cache_version_parm.evalAsString())
 
+    # Attempt to set post frame script settings
+    try:
+        cache_node.parm('tpostframe').set(1)
+        cache_node.parm('lpostframe').set('python')
+        cache_node.parm('postframe').set("print('FINISHED')")
+    except Exception:
+        return
+
+    try:
+        cache_node.parm('alfprogress').set(1)
+    except Exception:
+        return
 
 def createGenericEnvyJobs(node):
     selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',

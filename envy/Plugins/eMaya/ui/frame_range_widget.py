@@ -26,9 +26,9 @@ class FrameRangeWidget(QtWidgets.QWidget):
 
         self.icons_path = os.path.join(os.path.dirname(__file__), 'icons')
 
-        self.edit_frame_range_push_button = None
         self.start_frame_spin_box = None
         self.end_frame_spin_box = None
+        self.edit_frame_range_push_button = None
 
         self.main_layout = None
         self.render_frame_range_group_box = None
@@ -42,22 +42,6 @@ class FrameRangeWidget(QtWidgets.QWidget):
 
     def create_widgets(self) -> None:
         """Creates the widgets."""
-        self.edit_frame_range_push_button = QtWidgets.QPushButton()
-        self.edit_frame_range_push_button.setCheckable(True)
-        self.edit_frame_range_push_button.setFixedSize(26, 26)
-        self.edit_frame_range_push_button.setIcon(QtGui.QIcon(os.path.join(self.icons_path, 'clock-three.png')))
-        self.edit_frame_range_push_button.setIconSize(QtCore.QSize(18, 18))
-        self.edit_frame_range_push_button.setStyleSheet('''
-                            QPushButton {
-                                background-color: rgb(45, 45, 45); 
-                                border-radius: 5px; 
-                            }
-
-                            QPushButton:checked {
-                                background-color: rgb(54, 103, 124); 
-                                border: none;
-                            }''')
-
         self.start_frame_spin_box = QtWidgets.QSpinBox()
         self.start_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.start_frame_spin_box.setFixedSize(60, 20)
@@ -77,10 +61,25 @@ class FrameRangeWidget(QtWidgets.QWidget):
                         border-radius: 5px;
                     }''')
 
+        self.edit_frame_range_push_button = QtWidgets.QPushButton()
+        self.edit_frame_range_push_button.setCheckable(True)
+        self.edit_frame_range_push_button.setFixedSize(26, 26)
+        self.edit_frame_range_push_button.setIcon(QtGui.QIcon(os.path.join(self.icons_path, 'clock-three.png')))
+        self.edit_frame_range_push_button.setIconSize(QtCore.QSize(18, 18))
+        self.edit_frame_range_push_button.setStyleSheet('''
+                                    QPushButton {
+                                        background-color: rgb(45, 45, 45); 
+                                        border-radius: 5px; 
+                                    }
+
+                                    QPushButton:checked {
+                                        background-color: rgb(54, 103, 124); 
+                                        border: none;
+                                    }''')
+
     def create_layouts(self) -> None:
         """Creates the layouts."""
         self.main_layout = QtWidgets.QHBoxLayout(self)
-        self.main_layout.addWidget(self.edit_frame_range_push_button)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(2)
 
@@ -97,6 +96,8 @@ class FrameRangeWidget(QtWidgets.QWidget):
         self.render_frame_range_h_box_layout.setContentsMargins(2, 0, 0, 0)
         self.render_frame_range_h_box_layout.setSpacing(2)
         self.render_frame_range_group_box.setLayout(self.render_frame_range_h_box_layout)
+
+        self.main_layout.addWidget(self.edit_frame_range_push_button)
 
     def create_connections(self) -> None:
         """Creates the connections."""

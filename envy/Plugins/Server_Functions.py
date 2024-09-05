@@ -1,12 +1,15 @@
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
+import sys, os
+abs_file = os.path.abspath(__file__)
+sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
+from utils.config_bridge import Config
 from envyRepo.networkUtils import message as m
 from envyRepo.networkUtils.message_purpose import Message_Purpose
-import sys
 import json
-__config__ = sys.modules.get('__config__')
+__config__ = sys.modules.get('config_bridge')
 
 async def send_to_console(server, console: str, message: m.Message | m.FunctionMessage) -> None:
     """

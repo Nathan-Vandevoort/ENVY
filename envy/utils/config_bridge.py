@@ -22,10 +22,10 @@ config.read(os.path.join(file_dir, 'config.ini'))
 
 class Config:
     DISCOVERYPORT = config.getint('DEFAULT', 'discoveryport')
-    ENVYPATH = config.get('DEFAULT', 'envypath')
-    REPOPATH = config.get('DEFAULT', 'repopath')
-    HOUDINIBINPATH = config.get('DEFAULT', 'houdinibinpath')
-    MAYABINPATH = config.get('DEFAULT', 'mayabinpath')
+    ENVYPATH = config.get('DEFAULT', 'envypath').replace('\\', '/')
+    REPOPATH = config.get('DEFAULT', 'repopath').replace('\\', '/')
+    HOUDINIBINPATH = config.get('DEFAULT', 'houdinibinpath').replace('\\', '/')
+    MAYABINPATH = config.get('DEFAULT', 'mayabinpath').replace('\\', '/')
     TEMP = config.get('DEFAULT', 'TEMP')
 
 

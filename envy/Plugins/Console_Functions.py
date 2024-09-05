@@ -11,17 +11,20 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.2"
+__version__ = "1.0.7"
+import sys, os
 
+abs_file = os.path.abspath(__file__)
+sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
+
+from utils.config_bridge import Config
 from envyRepo.networkUtils import message as m
 from envyRepo.networkUtils.message_purpose import Message_Purpose
 from envyRepo.envyLib import envy_utils as eutils
 from envyRepo.envyLib.colors import Colors as c
 import shutil
-import sys
-import os
 import json
-__config__ = sys.modules.get('__config__')
+config = sys.modules.get('config_bridge')
 
 
 async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
@@ -78,8 +81,8 @@ async def install_maya_plugin(console) -> None:
     :param console: reference to the console calling the function
     """
     maya_user_folder = 'Z:/maya'
-    envy_plugin_path = '__ENVYTEST__/Plugins/eMaya/envyCore.py'
-
+    envy_plugin_path = os.path.join(Config.ENVYPATH, 'Plugins', 'eMaya', 'envy.py')
+    console.logger.info(envy_plugin_path)
     if not os.path.exists(maya_user_folder):
         console.display_error('Maya plugin installation failed: Maya user folder not found.')
         return

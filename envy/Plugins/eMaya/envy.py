@@ -1,6 +1,6 @@
 """
 ========================================================================================================================
-Name: envyCore.py
+Name: envy.py
 ========================================================================================================================
 """
 try:
@@ -14,12 +14,13 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 
 import sys
-import os
 
-e_maya_path = os.path.dirname(os.path.dirname(__file__))
+e_maya_ui_path = 'Z:/envy/plugins/eMaya/ui'
 
-if e_maya_path not in sys.path:
-    sys.path.append(e_maya_path)
+if e_maya_ui_path not in sys.path:
+    sys.path.append(e_maya_ui_path)
+
+import envy_ui
 
 
 envy_menu = None
@@ -37,11 +38,10 @@ class EnvyMenu:
 
     def __init__(self):
         """"""
-        maya_window_ptr = omui.MQtUtil.mainWindow()
-        self.maya_window = wrapInstance(int(maya_window_ptr), QtWidgets.QWidget)
+        self.maya_window = maya_main_window()
         self.maya_main_menu = self.maya_window.findChild(QtWidgets.QMenuBar)
 
-        self.envy_ui = EnvyUI()
+        self.envy_ui = envy_ui.EnvyUI()
 
     def add_envy_menu(self):
         """Adds the Envy menu to the main Maya window."""

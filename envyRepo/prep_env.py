@@ -21,48 +21,21 @@ try:
     calling_script_name = sys.modules['__main__'].__file__
 except Exception as e:
     calling_script_name = ''
-if 'launch_envy.py' in calling_script_name:
 
-    modules = [
-        'Envy_Functions',
-        'Server_Functions'
-    ]
+modules = [
+    'Console_Functions',
+    'Envy_Functions',
+    'Server_Functions'
+]
 
-    for module in modules:
-        envy_functions_path = os.path.join(ENVYPATH, 'Plugins', module + '.py')
-        spec = importlib.util.spec_from_file_location(module, envy_functions_path)
-        module_object = importlib.util.module_from_spec(spec)
-        sys.modules[module] = module_object
-        spec.loader.exec_module(module_object)
+for module in modules:
+    envy_functions_path = os.path.join(ENVYPATH, 'Plugins', module + '.py')
+    spec = importlib.util.spec_from_file_location(module, envy_functions_path)
+    module_object = importlib.util.module_from_spec(spec)
+    sys.modules[module] = module_object
+    spec.loader.exec_module(module_object)
 
-if 'server' in calling_script_name:
 
-    modules = [
-        'Envy_Functions',
-        'Server_Functions'
-    ]
-
-    for module in modules:
-        envy_functions_path = os.path.join(ENVYPATH, 'Plugins', module + '.py')
-        spec = importlib.util.spec_from_file_location(module, envy_functions_path)
-        module_object = importlib.util.module_from_spec(spec)
-        sys.modules[module] = module_object
-        spec.loader.exec_module(module_object)
-
-if 'console' in calling_script_name or 'UI' in calling_script_name:
-
-    modules = [
-        'Console_Functions',
-        'Envy_Functions',
-        'Server_Functions'
-    ]
-
-    for module in modules:
-        envy_functions_path = os.path.join(ENVYPATH, 'Plugins', module + '.py')
-        spec = importlib.util.spec_from_file_location(module, envy_functions_path)
-        module_object = importlib.util.module_from_spec(spec)
-        sys.modules[module] = module_object
-        spec.loader.exec_module(module_object)
 
 bin_dir = os.path.join(file_dir, os.pardir) + '/venv/Scripts/'
 base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file__, plus the path separator

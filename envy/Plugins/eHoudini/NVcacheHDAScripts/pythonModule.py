@@ -171,7 +171,7 @@ def createSimulationEnvyJob(node):
     job_id = new_job.get_id()
     environment['Job_Id'] = job_id
 
-    if is_simulation is True:
+    if is_simulation == 1:
         new_job.set_environment(environment)
         new_job.set_parameters(parameters)
         new_job.set_type('PLUGIN_eHoudini')

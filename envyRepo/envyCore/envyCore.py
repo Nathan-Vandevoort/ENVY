@@ -10,9 +10,11 @@ from envyRepo.envyLib.envy_utils import DummyLogger
 from envyRepo.networkUtils import message as m
 from envyRepo.envyJobs.enums import Status
 import subprocess
+import envyRepo.prep_env
 import envy.utils.config_bridge as config
 import safe_exit
 import psutil
+from datetime import datetime
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = os.environ['ENVYPATH']
@@ -43,6 +45,8 @@ class Envy:
         self.running = None
         self.restart_on_exit = False
 
+        self.sign_out = True
+
         # ------------------ Server / Client -------------------------
         self.role = None
         self.server = None
@@ -67,10 +71,10 @@ class Envy:
             return role_override
 
         server_ip = eutils.get_server_ip()
-        success = await self.client.health_check_server()
-        self.logger.debug(f'server health check status: {success}')
+        result = await self.client.health_check_server()
+        self.logger.debug(f'server health check status: {result}')
 
-        if success:  # if you were able to health check the server you are a client now
+        if result:  # if you were able to health check the server you are a client now
             self.logger.debug('I am a Client')
             return Message_Purpose.CLIENT
 
@@ -120,7 +124,7 @@ class Envy:
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
         self.logger.debug(f'{cmd}')
-        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
         if self.check_server_file():
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
             await asyncio.sleep(1)
@@ -130,14 +134,19 @@ class Envy:
         self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
         self.role = await self.choose_role(role_override)
+
         execution_loop_task = self.event_loop.create_task(self.execution_loop())
         execution_loop_task.set_name('envyCore.envy.execution_loop')
+
+        sign_out_monitor_task = self.event_loop.create_task(self.sign_out_monitor())
+        sign_out_monitor_task.set_name('envyCore.envy.sign_out_monitor')
+
         self.logger.info('Started Envy')
         while self.running:
             result = await self.connect()
 
             if result == 0:
-                sys.exit(0)
+                quit()
 
             if result == 1:  # elect new server
                 self.elect_server()
@@ -151,8 +160,7 @@ class Envy:
 
         :return: int
         """
-        await NV.send_status_to_server(self)  # add a message to the send queue
-
+        self.logger.debug('Connecting')
         self.logger.debug(f'envy.connect: Purpose is {self.role}')
         if self.role == Message_Purpose.SERVER:
             self.server_task = await self.start_server()
@@ -200,6 +208,7 @@ class Envy:
             return 0
 
         else:  # client was able to connect
+            #await NV.send_status_to_server(self)  # add a message to the send queue
             await self.client.start()  # program will hold here until client disconnects
 
             self.logger.debug('cleaning up envy.client_dependant_tasks')
@@ -242,6 +251,14 @@ class Envy:
 
     async def stop(self) -> None:
         self.running = False
+
+    async def sign_out_monitor(self) -> None:
+        sign_out_time = datetime.now()
+        sign_out_time.replace(hour=8, minute=30)
+        while self.sign_out is True:
+            await asyncio.sleep(5)
+            if datetime.today() >= sign_out_time:
+                await NV.sign_out()
 
     async def set_status_idle(self) -> None:
         self.status = Status.IDLE
