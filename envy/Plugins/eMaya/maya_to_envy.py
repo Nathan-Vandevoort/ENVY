@@ -15,14 +15,13 @@ import re
 envy_path = 'Z:/envy/'
 utils_path = os.path.join(envy_path, 'utils')
 
-import config_bridge as config
-
 if envy_path not in sys.path:
     sys.path.insert(0, envy_path)
 
 if utils_path not in sys.path:
     sys.path.insert(0, utils_path)
 
+import config_bridge as config
 
 class MayaToEnvy(object):
     ARNOLD = 'arnold'
