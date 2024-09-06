@@ -304,6 +304,12 @@ def writeRenderJob(node):
     allocation_size_parm = node.parm('render_allocationSize')
     allocation_size = allocation_size_parm.eval()
 
+    # check target button
+    rop_render_button_parm = target_button_parm.getReferencedParm()
+    if rop_render_button_parm == target_button_parm:
+        hou.ui.displayMessage('Target Button Parameter does not exist')
+        return
+
     # check start frame
     rop_start_frame_parm = start_frame_parm.getReferencedParm()
     if start_frame_parm == rop_start_frame_parm:
@@ -335,6 +341,7 @@ def writeRenderJob(node):
     environment['HIP'] = hou.hipFile.path()
     environment['JOB'] = hou.getenv('JOB')
     environment['Job_Type'] = 'cache'
+    environment['Target_Button'] = rop_render_button_parm.path()
     environment['Start_Frame'] = {rop_start_frame_parm.path(): start_frame}
     environment['End_Frame'] = {rop_end_frame_parm.path(): end_frame}
     environment['Substeps'] = {allocation_size_parm.path(): 1}
