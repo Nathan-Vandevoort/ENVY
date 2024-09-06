@@ -87,7 +87,7 @@ for key in start_frame_dict:
 end_frame_dict = environment['End_Frame']
 
 for key in end_frame_dict:
-    start_frame_dict[key] = tasks[task_list[-1]]
+    end_frame_dict[key] = tasks[task_list[-1]]
 
 set_environment(hip, job)  # load the hip file and set project
 
