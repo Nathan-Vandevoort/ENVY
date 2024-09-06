@@ -18,12 +18,9 @@ import sys
 e_maya_ui_path = 'Z:/envy/plugins/eMaya/ui'
 
 if e_maya_ui_path not in sys.path:
-    sys.path.append(e_maya_ui_path)
+    sys.path.insert(0, e_maya_ui_path)
 
 import envy_ui
-
-
-envy_menu = None
 
 
 def maya_main_window() -> any:
@@ -34,38 +31,37 @@ def maya_main_window() -> any:
     return main_window
 
 
-class EnvyMenu:
+def add_envy_menu():
+    """"""
+    maya_window = maya_main_window()
+    maya_main_menu = maya_window.findChild(QtWidgets.QMenuBar)
 
-    def __init__(self):
-        """"""
-        self.maya_window = maya_main_window()
-        self.maya_main_menu = self.maya_window.findChild(QtWidgets.QMenuBar)
+    if not maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu'):
+        main_envy_menu = QtWidgets.QMenu('Envy', maya_window)
+        main_envy_menu.setObjectName('MainEnvyMenu')
+        maya_main_menu.addMenu(main_envy_menu)
 
-        self.envy_ui = envy_ui.EnvyUI()
+        export_to_envy = main_envy_menu.addAction('Export to Envy')
+        export_to_envy.triggered.connect(show_envy_window)
 
-    def add_envy_menu(self):
-        """Adds the Envy menu to the main Maya window."""
-        if not self.maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu'):
-            main_envy_menu = QtWidgets.QMenu('Envy', self.maya_window)
-            main_envy_menu.setObjectName('MainEnvyMenu')
-            self.maya_main_menu.addMenu(main_envy_menu)
 
-            export_to_envy = main_envy_menu.addAction('Export to Envy')
-            export_to_envy.triggered.connect(self.show_envy_ui)
+def remove_envy_menu():
+    """"""
+    maya_window = maya_main_window()
+    maya_main_menu = maya_window.findChild(QtWidgets.QMenuBar)
+    main_envy_menu = maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu')
 
-    def show_envy_ui(self):
-        """Shows the Envy UI."""
-        self.envy_ui.show()
+    if main_envy_menu:
+        maya_main_menu.removeAction(main_envy_menu.menuAction())
+        main_envy_menu.deleteLater()
+    else:
+        om.MGlobal.displayWarning('Envy menu not found for removal.')
 
-    def remove_envy_menu(self):
-        """Removes the Envy menu from the main Maya window."""
-        main_envy_menu = self.maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu')
 
-        if main_envy_menu:
-            self.maya_main_menu.removeAction(main_envy_menu.menuAction())
-            main_envy_menu.deleteLater()
-        else:
-            om.MGlobal.displayWarning('Envy menu not found for removal.')
+def show_envy_window():
+    """"""
+    envy_window = envy_ui.EnvyUI()
+    envy_window.show_window()
 
 
 def maya_useNewAPI():
@@ -75,28 +71,19 @@ def maya_useNewAPI():
 
 def initializePlugin(plugin):
     """"""
-    global envy_menu
-
     vendor = 'Mauricio Gonzalez Soto'
     version = '1.0.0'
 
     plugin_fn = om.MFnPlugin(plugin, vendor, version)
 
-    envy_menu = EnvyMenu()
-    envy_menu.add_envy_menu()
+    add_envy_menu()
 
     om.MGlobal.displayInfo('[Envy] Envy initialized.')
 
 
 def uninitializePlugin(plugin):
     """"""
-    global envy_menu
-
-    if envy_menu:
-        envy_menu = EnvyMenu()
-        envy_menu.remove_envy_menu()
-
-        envy_menu = None
+    remove_envy_menu()
 
     plugin_fn = om.MFnPlugin(plugin)
 

@@ -4,6 +4,7 @@ Name: maya_render.py
 ========================================================================================================================
 """
 import asyncio
+import time
 import sys
 import re
 import os
@@ -259,7 +260,7 @@ class MayaRender(object):
 
     async def end_coroutines(self):
         """ends all coroutines"""
-        self.logger.debug(f'eHoudini: Ending coroutines')
+        self.logger.debug(f'eMaya: Ending coroutines')
         for task in self.coroutines:
             task.cancel()
 
@@ -293,7 +294,7 @@ class MayaRender(object):
 
         exit_code = await self.render_subprocess.wait()
 
-        if self.user_terminated == False:
+        if not self.user_terminated:
             if exit_code == 0:
                 await NV.finish_task_allocation(self.envy, self.allocation_id)
                 self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')

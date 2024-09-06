@@ -3,25 +3,26 @@
 Name: maya_to_envy.py
 ========================================================================================================================
 """
-import string
-
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
 from pathlib import Path
 import sys
 import os
+import re
 
 
-envy_path = 'Z:/Envy/'
+envy_path = 'Z:/envy/'
 utils_path = os.path.join(envy_path, 'utils')
+
+import config_bridge as config
+
 if envy_path not in sys.path:
     sys.path.insert(0, envy_path)
 
 if utils_path not in sys.path:
     sys.path.insert(0, utils_path)
 
-import config_bridge as config
 
 class MayaToEnvy(object):
     ARNOLD = 'arnold'
@@ -60,7 +61,7 @@ class MayaToEnvy(object):
         are_paths_valid = True
 
         paths = {
-            'References': self.check_references_paths(),
+            # 'References': self.check_references_paths(),
             'File Nodes': self.check_file_nodes_paths()
         }
 
@@ -90,10 +91,10 @@ class MayaToEnvy(object):
 
     def export_to_envy(self, camera: str, render_layer: str) -> None:
         """Exports to envy."""
-        # if not self.check_paths():
-        #     om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
-        #     return
-        if not self.is_maya_file_valid(self.get_maya_file()):
+        if not self.check_paths():
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
+            return
+        elif not self.is_maya_file_valid(self.get_maya_file()):
             return
         elif not self.is_project_path_valid(self.get_project_path()):
             return
@@ -173,21 +174,24 @@ class MayaToEnvy(object):
 
     def is_maya_file_valid(self, maya_file: str) -> bool:
         """Checks if the maya file exists."""
-        import re
         if not maya_file:
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return False
-        elif re.match("^[a-yA-Y]]*", project_path):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya File must be on a server (//titansrv, Z:/, //veloxsrv...)')
+        elif re.match("^[a-yA-Y]]*", maya_file):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file must be on a server (//titansrv, Z:/, //veloxsrv)')
             return False
+        elif not os.path.exists(maya_file):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file does not exists.')
         else:
             return True
 
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
-        import re
         if re.match("^[a-yA-Y]]*", project_path):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv...)')
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv)')
+            return False
+        elif not os.path.exists(project_path):
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project path does not exists.')
             return False
         else:
             return True
@@ -252,7 +256,7 @@ class MayaToEnvy(object):
         if render_layer_members:
             for obj in render_layer_members:
                 children_shapes = cmds.listRelatives(obj, children=True, shapes=True, fullPath=True)
-                print(children_shapes)
+
                 if children_shapes:
                     for shape in children_shapes:
                         if cmds.objectType(shape, isType='camera'):

@@ -52,9 +52,13 @@ class EnvyUI(QtWidgets.QDialog):
     WINDOW_NAME = 'Envy'
     WINDOW_TITLE = 'EnvyUI'
 
+    window_instance = None
+
     def __init__(self, parent=maya_main_window()):
         """"""
         super(EnvyUI, self).__init__(parent)
+        self.geometry = None
+
         self.maya_to_envy = maya_to_envy.MayaToEnvy()
 
         self.start_frame_spin_box = None
@@ -85,8 +89,17 @@ class EnvyUI(QtWidgets.QDialog):
         self.create_layouts()
         self.create_connections()
 
-        self.create_call_backs()
-        self.update_window()
+    @classmethod
+    def show_window(cls) -> None:
+        """Shows the window."""
+        if not cls.window_instance:
+            cls.window_instance = EnvyUI()
+
+        if cls.window_instance.isHidden():
+            cls.window_instance.show()
+        else:
+            cls.window_instance.raise_()
+            cls.window_instance.activateWindow()
 
     def create_widgets(self) -> None:
         """Creates the widgets."""
@@ -122,7 +135,7 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.render_push_button = QtWidgets.QPushButton('Render')
 
-        self.updatess = QtWidgets.QPushButton('Restart')
+        self.restart_button = QtWidgets.QPushButton('Restart')
 
     def create_layouts(self) -> None:
         """Creates the layouts."""
@@ -162,7 +175,7 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.main_right_v_box_layout.addStretch()
         self.main_right_v_box_layout.addWidget(self.render_push_button)
-        self.main_right_v_box_layout.addWidget(self.updatess)
+        self.main_right_v_box_layout.addWidget(self.restart_button)
 
     def create_connections(self) -> None:
         """Creates the connections."""
@@ -170,7 +183,7 @@ class EnvyUI(QtWidgets.QDialog):
         self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
         self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
 
-        self.updatess.clicked.connect(self.update_window)
+        self.restart_button.clicked.connect(self.update_window)
 
     def create_call_backs(self) -> None:
         """Creates the call-backs."""
@@ -278,15 +291,18 @@ class EnvyUI(QtWidgets.QDialog):
         self.start_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.startFrame'))
         self.end_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.endFrame'))
 
+    def closeEvent(self, event):
+        """Close event."""
+        if isinstance(self, EnvyUI):
+            super(EnvyUI, self).closeEvent(event)
+
+            self.geometry = self.saveGeometry()
+
     def showEvent(self, event):
-        """"""
-        self.create_script_jobs()
+        """Show event."""
+        super(EnvyUI, self).showEvent(event)
 
-try:
-    ff.close()
-    ff.deleteLater()
-except:
-    pass
+        if self.geometry:
+            self.restoreGeometry(self.geometry)
 
-ff = EnvyUI()
-ff.show()
+        self.update_window()
