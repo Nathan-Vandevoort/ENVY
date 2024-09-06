@@ -92,7 +92,7 @@ def createSimulationEnvyJob(node):
     environment['JOB'] = hou.getenv('JOB')
     environment['Job_Type'] = 'cache'
 
-    if is_simulation is 1:
+    if is_simulation == 1:
         environment['Job_Type'] = 'simulation'
         if is_resumable.eval() == 1:
 
