@@ -60,7 +60,7 @@ log_handler.setFormatter(formatter)
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
 logger.addHandler(log_handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 if not os.path.isdir(os.path.join(config_bridge.Config.ENVYPATH, 'Jobs', 'Jobs')):
     eutils.make_job_directories()

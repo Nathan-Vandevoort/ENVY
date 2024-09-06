@@ -284,7 +284,7 @@ def setSimulationParametersFromNode(node):
     version_value_parm.revertToDefaults()
     version_parm.deleteAllKeyframes()
     version_value_parm.deleteAllKeyframes()
-    file_cache_version_parm = cache_node.parm('substeps')
+    file_cache_version_parm = cache_node.parm('version')
     version_parm.set(f"`ch('{file_cache_version_parm.path()}')`", language=hou.exprLanguage.Hscript,
                      follow_parm_reference=False)
     version_value_parm.set(file_cache_version_parm.evalAsString())
