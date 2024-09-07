@@ -59,15 +59,12 @@ class JobTreeWidget(QTreeView):
             valid_items.append(self.model.getItem(index))
 
         context_menu = QMenu(self)
-        dirty_action = QAction('Dirty', self)
         finish_action = QAction('Finish', self)
         select_workers_action = QAction('Select Workers', self)
 
-        context_menu.addAction(dirty_action)
         context_menu.addAction(finish_action)
         context_menu.addAction(select_workers_action)
 
-        dirty_action.triggered.connect(lambda: self.dirty_action_triggered(valid_items))
         finish_action.triggered.connect(lambda: self.finish_action_triggered(valid_items))
         select_workers_action.triggered.connect(lambda: self.select_workers_action_triggered(valid_items))
 

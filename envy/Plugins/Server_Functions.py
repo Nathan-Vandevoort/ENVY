@@ -1,6 +1,6 @@
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 import sys, os
 abs_file = os.path.abspath(__file__)

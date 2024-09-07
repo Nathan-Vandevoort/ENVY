@@ -11,7 +11,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 import sys, os
 
 abs_file = os.path.abspath(__file__)

@@ -27,12 +27,14 @@ class Plugin:
         self.event_loop = envy.event_loop
         self.tasks = allocation_data['Tasks']
         self.task_list = list(self.tasks)
+        self.number_of_tasks = len(self.task_list)
         self.logger = self.envy.logger
         self.hython_process = None
         self.coroutines = []
         self.ignore_counter = 0
         self.return_code = None
         self.user_terminated = False
+        self.progress_buffer = 0
         safe_exit.register(self.exit_function)
 
         self.logger.debug(f'Allocation Data String: {allocation_data_string}')
@@ -125,6 +127,10 @@ class Plugin:
         monitor_error_task.set_name('monitor_error()')
         self.coroutines.append(monitor_error_task)
 
+        send_progress_task = self.event_loop.create_task(self.send_progress())
+        send_progress_task.set_name('send_progress()')
+        self.coroutines.append(send_progress_task)
+
         monitor_envy_task = self.event_loop.create_task(self.monitor_envy())
         monitor_envy_task.set_name('monitor_envy()')
         self.coroutines.append(monitor_envy_task)
@@ -178,6 +184,16 @@ class Plugin:
                     self.terminate_process()
                     running = False
 
+    async def send_progress(self):
+        last_progress = self.progress_buffer
+        while True:
+            await asyncio.sleep(2)
+            if self.progress_buffer == last_progress:
+                continue
+            if len(self.task_list) > 0:
+                await NV.send_task_progress(self.task_list[0], self.progress_buffer)
+            last_progress = self.progress_buffer
+
     async def end_coroutines(self):
         self.logger.debug(f'eHoudini: Ending coroutines')
         for task in self.coroutines:
@@ -198,6 +214,15 @@ class Plugin:
 
         if '%' in line:
             line_split = line.split()
+            for token in line_split:
+                if '%' not in token:
+                    continue
+                token = token[:-1]
+                try:
+                    progress = float(token)
+                    self.progress_buffer = (progress * self.number_of_tasks) % 100
+                except ValueError:
+                    return True
             return True
 
         if 'FINISHED' in line:
