@@ -340,3 +340,15 @@ async def sync_job(console, job_id: int) -> None:
     if console.console_widget is None:
         return
     console.console_widget.jobs_sync_job.emit(float(job_id))
+
+
+async def mark_task_as_failed(console, task_id: int, reason: str) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_fail_task.emit((task_id, reason))
+
+
+async def update_task_progress(console, task_id: int, progress: float) -> None:
+    if console.console_widget is None:
+        return
+    console.console_widget.jobs_update_task_progress.emit((task_id, progress))

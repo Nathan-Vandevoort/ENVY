@@ -8,7 +8,8 @@ class JobItem(NodeMixin):
         self._progress = 0
         self._status = enums.Status.PENDING
         self._computer = 'N/A'
-        self._data = [self._label, self._progress, self._status, self._computer]
+        self._info = ''
+        self._data = [self._label, self._progress, self._status, self._computer, self._info]
 
         if children:
             self.children = children
@@ -51,6 +52,15 @@ class JobItem(NodeMixin):
     def computer(self, value):
         self._computer = value
         self._data[3] = value
+
+    @property
+    def info(self):
+        return self._info
+
+    @info.setter
+    def info(self, value):
+        self._info = value
+        self._data[4] = value
 
     def data(self, column: int) -> any:
         return self._data[column]

@@ -25,10 +25,11 @@ class Status(str, Enum):
     PENDING = 'pending'
     INPROGRESS = 'inprogress'
     DONE = 'done'
-    DIRTY = 'dirty'
+    DIRTY = 'failed'
     IDLE = 'idle'
     WORKING = 'working'
     STOPPED = 'stopped'
+    FAILED = 'failed'
 
     def __str__(self):
         return self.value

@@ -23,7 +23,7 @@ class JobTreeItemModel(QAbstractItemModel):
         self.skip_complete_tasks = True
 
         #  UI Stuff
-        self.header = ['Job Name', 'Progress', 'Status', 'Computer']
+        self.header = ['Job Name', 'Progress', 'Status', 'Computer', 'Info']
 
     def set_db(self, db):
         self.db = db
@@ -135,11 +135,11 @@ class JobTreeItemModel(QAbstractItemModel):
                     label=f'Frame: {task_frame}',
                     frame=task_frame,
                     status=task_status,
-                    progress=0,
+                    progress='0%',
                     computer=task_computer,
                     node_type='Task',
-                    parent=new_allocation
-                )
+                    parent=new_allocation,
+                ) # todo Add Info task node and have it read from DB
             new_allocation.pending_tasks = pending_tasks
             new_allocation.active_tasks = active_tasks
             try:
@@ -202,6 +202,21 @@ class JobTreeItemModel(QAbstractItemModel):
         if self.check_if_children_are_done(allocation_node) is True:
             self.finish_allocation(allocation_node)
 
+        index = self.index_from_item(task_node, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
+        return task_node
+
+    def fail_task(self, task_id: int, reason: str) -> None:
+        task_node = task_id
+        if isinstance(task_id, int):
+            task_node = self.get_task(task_id)
+        if self.read_only is False:
+            # todo implement self.db.set_task_value(task_id, 'Info', reason)
+            self.db.set_task_value(task_id, 'Status', Job_Status.FAILED)
+            task_node.parent = None
+
+        self.logger.info(f'JobTree: {task_node.computer} Failed to finish task {task_id} for reason {reason}')
         index = self.index_from_item(task_node, column=2)
         self.dataChanged.emit(index, [Qt.DisplayRole])
 
@@ -407,6 +422,21 @@ class JobTreeItemModel(QAbstractItemModel):
         new_message.set_target(Message_Purpose.CLIENT)
         self.logger.debug(f'DB: Wrote Allocation: {allocation} as message')
         return new_message
+
+    def update_task_progress(self, task_id: int, progress: float):
+        task_node = task_id
+        if isinstance(task_node, int):
+            task_node = self.get_task(task_id)
+
+        if task_node is None:
+            return
+
+        if not isinstance(progress, float):
+            return
+
+        task_node.progress = f'{int(progress)}%'
+        index = self.index_from_item(task_node, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
 
     # ----------------------------------------- QAbstractItemModel overrides -------------------------------------
     

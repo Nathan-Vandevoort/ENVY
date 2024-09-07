@@ -150,9 +150,23 @@ async def stop_working(envy, hold_until: bool) -> None:
     await envy.set_status_idle()
 
 
-async def dirty_task(envy, task_id: int) -> None:
-    # todo implement
-    pass
+async def dirty_task(envy, task_id: int, reason: str = '') -> None:
+    """
+    This is here for legacy purposes It just points to fail_task
+    :param envy: reference to the envy instance making the call
+    :param task_id: The task ID to mark as failed
+    :param reason: The reason why the task failed
+    :return:
+    """
+    await fail_task(envy, task_id, reason=reason)
+
+
+async def fail_task(envy, task_id: int, reason: str = '') -> None:
+    new_message = m.FunctionMessage(f'fail_task(): {task_id}')
+    new_message.set_target(Message_Purpose.SERVER)
+    new_message.set_function('mark_task_as_failed')
+    new_message.format_arguments(task_id, reason)
+    envy.send(new_message)
 
 
 async def dirty_task_allocation(envy, allocation_id: int, reason: str = None) -> None:
@@ -161,8 +175,11 @@ async def dirty_task_allocation(envy, allocation_id: int, reason: str = None) ->
 
 
 async def send_task_progress(envy, task_id: int, progress: float) -> None:
-    # todo implement
-    pass
+    new_message = m.FunctionMessage(f'send_task_progress(): {task_id}')
+    new_message.set_target(Message_Purpose.SERVER)
+    new_message.set_function('update_task_progress')
+    new_message.format_arguments(task_id, progress)
+    envy.send(new_message)
 
 
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------

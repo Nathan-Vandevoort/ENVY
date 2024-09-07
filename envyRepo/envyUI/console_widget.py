@@ -17,6 +17,10 @@ class ConsoleWidget(QWidget):
     jobs_finish_allocation = Signal(float)
     jobs_finish_task = Signal(float)
 
+    jobs_fail_task = Signal(tuple)
+
+    jobs_update_task_progress = Signal(tuple)
+
     jobs_start_allocation = Signal(tuple)
     jobs_start_task = Signal(tuple)
 

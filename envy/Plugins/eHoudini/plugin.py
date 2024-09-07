@@ -197,7 +197,7 @@ class Plugin:
                 self.ignore_counter = int(value)
 
         if '%' in line:
-            self.logger.debug(line)
+            line_split = line.split()
             return True
 
         if 'FINISHED' in line:

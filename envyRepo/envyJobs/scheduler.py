@@ -68,6 +68,10 @@ class Scheduler:
 
         self.job_tree.finish_allocation(allocation_id)
 
+    async def fail_task(self, task_id: int, reason: str):
+        self.logger.info(f'Scheduler: failing task {task_id} for reason {reason}')
+        self.job_tree.fail_task(task_id, reason)
+
     def check_allocation(self, allocation: anytree.Node | int, computer: str = None) -> bool:
         self.logger.debug(f'checking allocation {allocation} with computer {computer}')
         if isinstance(allocation, int):

@@ -239,3 +239,18 @@ async def console_unregister_client(server, client: str) -> None:
     new_message.set_function('unregister_client')
     new_message.format_arguments(client)
     await send_to_consoles(server, new_message)
+
+async def mark_task_as_failed(server, task_id: int, reason: str) -> None:
+    new_message = m.FunctionMessage('mark_task_as_failed()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('mark_task_as_failed')
+    new_message.format_arguments(task_id, reason)
+    await send_to_consoles(server, new_message)
+    await server.job_scheduler.fail_task(task_id, reason)
+
+async def update_task_progress(server, task_id: int, progress: float) -> None:
+    new_message = m.FunctionMessage('update_task_progress()')
+    new_message.set_target(Message_Purpose.CONSOLE)
+    new_message.set_function('update_task_progress')
+    new_message.format_arguments(task_id, progress)
+    await send_to_consoles(server, new_message)

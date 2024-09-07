@@ -20,3 +20,8 @@ UI
     implement tree view selecting widgets based off their job
 
     implement state into the main window. For example if the console is not connected to envy have that effect the window
+
+Over Break:
+    Finish implimenting fail task with reason
+    1. Add Info to task nodes in jobTreeAbstractItemModel.py
+    2. Add

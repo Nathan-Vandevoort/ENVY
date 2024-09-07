@@ -77,6 +77,8 @@ class MainWindow(QMainWindow):
         self.console_widget.jobs_finish_task.connect(self.job_tree_widget.controller.mark_task_as_finished)  # console -> job tree. Tells the tree that a task has been finished
         self.console_widget.jobs_start_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_started)  # console -> job tree. Tells the tree a new allocation has been started
         self.console_widget.jobs_finish_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_finished)  # console -> job tree. tells the tree that an allocation has been finished
+        self.console_widget.jobs_fail_task.connect(self.job_tree_widget.controller.mark_task_as_failed)  # console -> jobTree. marks the task as finished and provides the reason
+        self.console_widget.jobs_update_task_progress.connect(self.job_tree_widget.controller.update_task_progress)  # console -> jobTree. updates the task progress in the tree
 
         self.console_widget.register_client.connect(self.viewport_widget.controller.register_client)  # console -> viewport telling the viewport hey I just got a new client
         self.console_widget.unregister_client.connect(self.viewport_widget.controller.unregister_client)  # console -> viewport telling the viewport hey I just lost connection to a client

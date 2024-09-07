@@ -10,9 +10,9 @@ from qasync import QApplication, QEventLoop
 from PySide6.QtWidgets import QSplashScreen
 from PySide6.QtGui import QPixmap
 
-#import faulthandler
-#faulthandler.enable()
-#os.environ['QT_DEBUG_PLUGINS'] = '1'
+import faulthandler
+faulthandler.enable()
+os.environ['QT_DEBUG_PLUGINS'] = '1'
 
 app = QApplication(sys.argv)
 

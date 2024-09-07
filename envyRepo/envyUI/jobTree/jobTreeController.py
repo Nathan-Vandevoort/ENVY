@@ -43,3 +43,15 @@ class JobTreeController(QObject):
     @Slot(int)
     def connected_with_server(self):
         pass
+
+    @Slot(tuple)
+    def mark_task_as_failed(self, data_tuple):
+        task_id = data_tuple[0]
+        reason = data_tuple[1]
+        self.model.fail_task(task_id, reason)
+
+    @Slot(tuple)
+    def update_task_progress(self, data_tuple):
+        task_id = data_tuple[0]
+        progress = data_tuple[1]
+        self.model.update_task_progress(task_id, progress)
