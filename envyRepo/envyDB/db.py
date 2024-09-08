@@ -31,6 +31,7 @@ class DB:
         self.connection.close()
 
     def configure_db(self):
+        # todo add info column to database
         self.logger.info('configuring database')
 
         self.cursor.execute("""
@@ -46,7 +47,6 @@ class DB:
             Range TEXT, 
             Status TEXT, 
             Dependencies TEXT,
-            Info TEXT,
             Allocation INTEGER)
             """)
 
@@ -57,7 +57,6 @@ class DB:
             Task_Ids TEXT,
             Computer TEXT,
             Status TEXT,
-            Info TEXT,
             FOREIGN KEY(Job_Id) REFERENCES jobs(Id))
             """)
 
@@ -69,7 +68,6 @@ class DB:
             Frame INTEGER, 
             Status TEXT, 
             Computer TEXT,
-            Info TEXT,
             FOREIGN KEY(Allocation_Id) REFERENCES allocations(Id))
             """)
 

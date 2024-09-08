@@ -147,6 +147,7 @@ class Plugin:
                 await NV.dirty_task_allocation(self.envy, self.allocation_id, reason=str(self.hython_process.returncode))
 
     def terminate_process(self, timeout: float = 10) -> bool:
+        self.logger.info('eHoudini: Terminating houdini process')
         self.user_terminated = True
         if self.hython_process is None:
             return True
@@ -179,7 +180,7 @@ class Plugin:
             await asyncio.sleep(.01)
             for task in self.coroutines:
                 if task.done():
-                    self.logger.debug(f'eHoudini: task {task.get_name()}')
+                    self.logger.debug(f'eHoudini: termination catalyst task -> {task.get_name()}')
                     await self.end_coroutines()
                     self.terminate_process()
                     running = False
@@ -187,11 +188,12 @@ class Plugin:
     async def send_progress(self):
         last_progress = self.progress_buffer
         while True:
+            self.logger.debug(f'eHoudini: Progress -> {self.progress_buffer}')
             await asyncio.sleep(2)
             if self.progress_buffer == last_progress:
                 continue
             if len(self.task_list) > 0:
-                await NV.send_task_progress(self.task_list[0], self.progress_buffer)
+                await NV.send_task_progress(self.envy, self.task_list[0], self.progress_buffer)
             last_progress = self.progress_buffer
 
     async def end_coroutines(self):

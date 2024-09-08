@@ -254,7 +254,7 @@ class Envy:
 
     async def sign_out_monitor(self) -> None:
         sign_out_time = datetime.now()
-        sign_out_time.replace(hour=8, minute=30)
+        sign_out_time = sign_out_time.replace(hour=8, minute=30)
         while self.sign_out is True:
             await asyncio.sleep(5)
             if datetime.today() >= sign_out_time:
