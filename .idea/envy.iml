@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/envy/HDAs/NV_cache/backup" />
-      <excludeFolder url="file://$MODULE_DIR$/venv" />
+    <content url="file://Y:">
+      <excludeFolder url="file://Y:/envy/HDAs/NV_cache/backup" />
+      <excludeFolder url="file://Y:/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.11 (envy_repo)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.11 (Y:)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

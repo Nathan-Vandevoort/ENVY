@@ -12,7 +12,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.3"
+__version__ = "1.0.8"
 import sys, os
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
@@ -161,11 +161,21 @@ async def dirty_task(envy, task_id: int, reason: str = '') -> None:
     await fail_task(envy, task_id, reason=reason)
 
 
-async def fail_task(envy, task_id: int, reason: str = '') -> None:
+async def fail_task(envy, task_id: int, reason: str) -> None:
     new_message = m.FunctionMessage(f'fail_task(): {task_id}')
     new_message.set_target(Message_Purpose.SERVER)
     new_message.set_function('mark_task_as_failed')
     new_message.format_arguments(task_id, reason)
+    envy.send(new_message)
+
+
+async def fail_task_allocation(envy, allocation_id: int, reason: str) -> None:
+    envy.logger.debug(reason)
+    new_message = m.FunctionMessage(f'fail_allocation(): {allocation_id}')
+    new_message.set_target(Message_Purpose.SERVER)
+    new_message.set_function('mark_allocation_as_failed')
+    new_message.format_arguments(allocation_id, reason)
+    envy.logger.debug(new_message.as_function())
     envy.send(new_message)
 
 

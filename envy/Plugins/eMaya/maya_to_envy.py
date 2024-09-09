@@ -229,7 +229,7 @@ class MayaToEnvy(object):
     @staticmethod
     def get_project_path() -> str:
         """Gets the project path."""
-        return cmds.workspace(active=True, query=True)
+        return cmds.workspace(query=True, fullName=True)
 
     @staticmethod
     def get_render_engine() -> str:
@@ -271,9 +271,12 @@ class MayaToEnvy(object):
 
         if render_layer_members:
             for obj in render_layer_members:
-                children_shapes = cmds.listRelatives(obj, children=True, shapes=True, fullPath=True)
+                try:
+                    children_shapes = cmds.listRelatives(obj, children=True, shapes=True, fullPath=True)
+                except ValueError:
+                    continue
 
-                if children_shapes:
+                if children_shapes is not None:
                     for shape in children_shapes:
                         if cmds.objectType(shape, isType='camera'):
                             if not cmds.getAttr(f'{shape}.orthographic'):

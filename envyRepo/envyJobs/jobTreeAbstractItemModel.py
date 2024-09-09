@@ -76,7 +76,8 @@ class JobTreeItemModel(QAbstractItemModel):
             status=job_status,
             progress=0,
             node_type='Job',
-            parent=self.root
+            parent=self.root,
+            info=''
         )
         allocation_ids = self.db.get_allocation_ids(job_id)
         pending_allocations = []
@@ -85,7 +86,7 @@ class JobTreeItemModel(QAbstractItemModel):
         for allocation_id in allocation_ids:
             allocation_status = self.db.get_allocation_value(allocation_id, 'Status')
 
-            if (allocation_status == Job_Status.DONE or allocation_status == Job_Status.DIRTY) and skip_complete_allocations is True:
+            if (allocation_status == Job_Status.DONE or allocation_status == Job_Status.FAILED) and skip_complete_allocations is True:
                 done_allocations.append(allocation_id)
                 continue
 
@@ -106,7 +107,8 @@ class JobTreeItemModel(QAbstractItemModel):
                 progress=0,
                 computer=allocation_computer,
                 node_type='Allocation',
-                parent=new_job
+                parent=new_job,
+                info=''
             )
 
             task_ids = self.db.get_task_ids(allocation_id)
@@ -120,7 +122,7 @@ class JobTreeItemModel(QAbstractItemModel):
                 task_status = task_data[4]
                 task_computer = task_data[5]
 
-                if (task_status == Job_Status.DONE or task_status == Job_Status.DIRTY) and skip_complete_tasks is True:
+                if (task_status == Job_Status.DONE or task_status == Job_Status.FAILED) and skip_complete_tasks is True:
                     done_tasks.append(task_id)
                     continue
 
@@ -139,6 +141,7 @@ class JobTreeItemModel(QAbstractItemModel):
                     computer=task_computer,
                     node_type='Task',
                     parent=new_allocation,
+                    info=''
                 ) # todo Add Info task node and have it read from DB
             new_allocation.pending_tasks = pending_tasks
             new_allocation.active_tasks = active_tasks
@@ -211,16 +214,43 @@ class JobTreeItemModel(QAbstractItemModel):
         task_node = task_id
         if isinstance(task_id, int):
             task_node = self.get_task(task_id)
+            if task_node is None:
+                return
         if self.read_only is False:
             # todo implement self.db.set_task_value(task_id, 'Info', reason)
             self.db.set_task_value(task_id, 'Status', Job_Status.FAILED)
             task_node.parent = None
 
+        allocation_node = task_node.parent
+        task_node.status = Job_Status.FAILED
+        task_node.info = reason
+        self.fail_allocation(allocation_node, reason)
         self.logger.info(f'JobTree: {task_node.computer} Failed to finish task {task_id} for reason {reason}')
         index = self.index_from_item(task_node, column=2)
         self.dataChanged.emit(index, [Qt.DisplayRole])
 
         return task_node
+
+    def fail_allocation(self, allocation_id: any, reason: str) -> None:
+        self.logger.info(f'jobTree: Failing allocation {allocation_id} for reason {reason}')
+        allocation_node = allocation_id
+        if isinstance(allocation_node, int):
+            allocation_node = self.get_allocation(allocation_id)
+            if allocation_node is None:
+                return
+        if self.read_only is False:
+            # todo implement self.db.set_allocation_value(allocation_id, 'Info', reason)
+            self.db.set_allocation_value(allocation_id, 'Status', Job_Status.FAILED)
+            allocation_node.parent = None
+
+        allocation_node.status = Job_Status.FAILED
+        allocation_node.info = reason
+
+        self.logger.info(f'JobTree: {allocation_node.computer} Failed to finish allocation {allocation_id} for reason {reason}')
+        index = self.index_from_item(allocation_node, column=2)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
+        return allocation_node
 
     def finish_allocation(self, allocation: jobItem.JobItem | int) -> (jobItem.JobItem, None):
         """

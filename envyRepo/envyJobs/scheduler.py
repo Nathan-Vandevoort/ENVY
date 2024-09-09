@@ -72,6 +72,10 @@ class Scheduler:
         self.logger.info(f'Scheduler: failing task {task_id} for reason {reason}')
         self.job_tree.fail_task(task_id, reason)
 
+    async def fail_allocation(self, allocation_id: int, reason: str):
+        self.logger.info(f'Scheduler: Failing allocation {allocation_id} for reason {reason}')
+        self.job_tree.fail_allocation(allocation_id, reason)
+
     def check_allocation(self, allocation: anytree.Node | int, computer: str = None) -> bool:
         self.logger.debug(f'checking allocation {allocation} with computer {computer}')
         if isinstance(allocation, int):
@@ -79,7 +83,7 @@ class Scheduler:
         if allocation is None:
             self.logger.debug(f'Scheduler: {allocation} is None cannot be allocated')
             return False
-        if allocation.status == Status.DIRTY:
+        if allocation.status == Status.DIRTY or allocation.status == Status.FAILED:
             return False
         if allocation.computer in self.clients:
             if allocation.computer == computer:
