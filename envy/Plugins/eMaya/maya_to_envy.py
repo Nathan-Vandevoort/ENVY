@@ -42,6 +42,11 @@ class MayaToEnvy(object):
         self.end_frame = 0
         self.allocation = 1
 
+        self.tiled_rendering = False
+        self.tile_bound_min = (0, 0)
+        self.tile_bound_max = (100, 100)
+        self.image_output_prefix = '<Scene>/<RenderLayer>/<Camera>_000'
+
     def check_file_nodes_paths(self) -> list:
         """Checks the file nodes paths."""
         file_nodes = cmds.ls(type='file')
@@ -88,7 +93,7 @@ class MayaToEnvy(object):
 
         return invalid_paths
 
-    def export_to_envy(self, camera: str, render_layer: str) -> None:
+    def export_to_envy(self, camera: str, render_layer: str, tile_idx: int) -> None:
         """Exports to envy."""
         if not self.check_paths():
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy failed. Paths not found.')
@@ -132,20 +137,30 @@ class MayaToEnvy(object):
         camera_short_name = cmds.ls(camera, shortNames=True)[0].replace(':', '')
         render_layer_short_name = render_layer.replace(':', '')
 
-        render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer_short_name}')
+        render_job = job.Job(f'{maya_file_name}_{camera_short_name}_{render_layer_short_name}_{str(tile_idx).zfill(3)}')
         render_job.add_range(self.start_frame, self.end_frame, 1)
         render_job.set_meta()
         render_job.set_allocation(self.allocation)
         render_job.set_purpose(Purpose.RENDER)
         render_job.set_type('PLUGIN_eMaya')
-        render_job.set_environment({
+
+        environment = {
             'maya_file': self.get_maya_file(),
             'project_path': self.get_project_path(),
             'maya_version': self.get_maya_version(),
             'render_engine': self.get_render_engine(),
             'render_layer': render_layer,
             'camera': camera,
-        })
+            'use_tiled_rendering': False
+        }
+
+        if self.tiled_rendering is True:
+            environment['use_tiled_rendering'] = True
+            environment['tile_bound_min'] = self.tile_bound_min
+            environment['tile_bound_max'] = self.tile_bound_max
+            environment['image_output_prefix'] = self.image_output_prefix.replace('$TILEINDEX', str(tile_idx).zfill(3))
+
+        render_job.set_environment(environment)
         render_job.write()
 
         om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Exporting to Envy...\n'
@@ -166,13 +181,14 @@ class MayaToEnvy(object):
         if file:
             if os.path.exists(file):
                 return True
-            elif file.startswith('Z:/'):
+            elif not re.match("^[a-yA-Y]]*", file):
                 return True
 
         return False
 
     def is_maya_file_valid(self, maya_file: str) -> bool:
         """Checks if the maya file exists."""
+        print(maya_file)
         if not maya_file:
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return False
@@ -180,17 +196,18 @@ class MayaToEnvy(object):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file must be on a server (//titansrv, Z:/, //veloxsrv)')
             return False
         elif not os.path.exists(maya_file):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file does not exists.')
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Maya file does not exist.')
         else:
             return True
 
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
+        print(project_path)
         if re.match("^[a-yA-Y]]*", project_path):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv)')
             return False
         elif not os.path.exists(project_path):
-            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project path does not exists.')
+            om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project path does not exist.')
             return False
         else:
             return True
@@ -298,6 +315,17 @@ class MayaToEnvy(object):
     def set_start_frame(self, frame: int) -> None:
         """Sets the start frame."""
         self.start_frame = frame
+
+    def set_tile_bounds(self, min: tuple, max: tuple) -> None:
+        """Sets the minimum and maximum coordinates for a tile"""
+        self.tile_bound_min = min
+        self.tile_bound_max = max
+
+    def set_tiled_rendering_settings(self, min_bound=(0, 0), max_bound=(100, 100), image_output_prefix='<Scene>/<RenderLayer>/<Camera>_000'):
+        self.tiled_rendering = True
+        self.tile_bound_min = min_bound
+        self.tile_bound_max = max_bound
+        self.image_output_prefix = image_output_prefix
 
     def set_arnold_settings(self) -> bool:
         """Sets Arnold settings."""

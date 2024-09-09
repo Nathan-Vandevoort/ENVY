@@ -43,6 +43,11 @@ class MayaRender(object):
         self.start_frame = 1
         self.end_frame = 1
 
+        self.use_tiled_rendering = False
+        self.tile_bound_min = (0, 0)
+        self.tile_bound_max = (100, 100)
+        self.image_output_prefix = ''
+
         self.current_frame = 1
         self.current_layer = 1
         self.progress = 0
@@ -62,14 +67,15 @@ class MayaRender(object):
             'render_engine',
             'camera',
             'render_layer',
+            'use_tiled_rendering',
         ]
 
         actual_keys = set(settings.keys())
         expected_keys_set = set(expected_keys)
 
-        return actual_keys == expected_keys_set
+        return expected_keys_set.issubset(actual_keys)
 
-    def get_settings_from_data_base(self) -> bool:
+    def get_settings_from_job(self) -> bool:
         """Gets the settings from json."""
         if not self.check_settings_keys(settings=self.environment):
             self.logger.error(f'{MayaRender.PLUGIN_NAME}: Settings are invalid.\n{self.environment}')
@@ -87,7 +93,13 @@ class MayaRender(object):
         self.render_layer = self.environment['render_layer']
         self.maya_version = self.environment['maya_version']
 
-        self.logger.info(f'{MayaRender.PLUGIN_NAME}: Settings from data base read successfully.')
+        self.use_tiled_rendering = self.environment['use_tiled_rendering']
+        if self.use_tiled_rendering is True:
+            self.tile_bound_min = self.environment['tile_bound_min']
+            self.tile_bound_max = self.environment['tile_bound_max']
+            self.image_output_prefix = self.environment['image_output_prefix']
+
+        self.logger.info(f'{MayaRender.PLUGIN_NAME}: Settings from Job read successfully.')
 
         return True
 
@@ -268,7 +280,7 @@ class MayaRender(object):
         """Renders the Maya file."""
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Launching {MayaRender.PLUGIN_NAME}.')
 
-        if not self.get_settings_from_data_base():
+        if not self.get_settings_from_job():
             return
         elif not self.is_maya_file_valid(self.maya_file):
             return
@@ -281,7 +293,10 @@ class MayaRender(object):
 
         self.current_frame = self.start_frame
 
-        await self.start_render_subprocess()
+        if self.use_tiled_rendering is False:
+            await self.start_render_subprocess()
+        else:
+            await self.start_render_subprocess_tile()
 
         await NV.start_task(self.envy, self.task_list[0])
 
@@ -381,6 +396,27 @@ class MayaRender(object):
             self.maya_file]
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess: {command}')
+
+        self.render_subprocess = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+
+    async def start_render_subprocess_tile(self) -> None:
+        """Stats the render subprocess."""
+        command = [
+            MayaRender.MAYA_RENDER_EXE_PATH,
+            '-r', self.render_engine,
+            '-cam', self.camera,
+            '-rl', self.render_layer,
+            '-s', str(self.start_frame),
+            '-e', str(self.end_frame),
+            '-proj', self.project_path,
+            '-im', self.image_output_prefix,
+            '-reg', f'{self.tile_bound_min[0]}', f'{self.tile_bound_max[0]}', f'{self.tile_bound_min[1]}', f'{self.tile_bound_max[1]}',
+            self.maya_file]
+
+        self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess tiled: {command}')
 
         self.render_subprocess = await asyncio.create_subprocess_exec(
             *command,

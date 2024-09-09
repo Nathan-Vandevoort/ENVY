@@ -214,7 +214,7 @@ class Server:
         new_client_data = {
             'IP': ip,
             'Socket': websocket,
-            'Status': Status.IDLE,
+            'Status': Status.WORKING,
             'Job': None,
             'Allocation': None,
         }

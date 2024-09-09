@@ -69,6 +69,7 @@ class CameraWidget(QtWidgets.QWidget):
                             }''')
 
         self.camera_name_label = QtWidgets.QLabel()
+        self.camera_name_label.setMaximumWidth(400)
         self.camera_name_label.setEnabled(False)
 
         self.frame_range_widget = frame_range_wdt.FrameRangeWidget()

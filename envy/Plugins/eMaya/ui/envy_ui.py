@@ -34,6 +34,7 @@ if e_maya_ui_path not in sys.path:
 
 import render_layer_widget as render_layer_wdt
 import maya_to_envy
+import advanced_settings_widget
 
 import imp
 imp.reload(render_layer_wdt)
@@ -64,6 +65,7 @@ class EnvyUI(QtWidgets.QDialog):
         self.start_frame_spin_box = None
         self.end_frame_spin_box = None
         self.allocation_spin_box = None
+        self.advanced_settings_widget = None
         self.render_push_button = None
 
         self.main_layout = None
@@ -133,6 +135,8 @@ class EnvyUI(QtWidgets.QDialog):
                         border-radius: 5px;
                     }''')
 
+        self.advanced_settings_widget = advanced_settings_widget.AdvancedSettingsWidget()
+
         self.render_push_button = QtWidgets.QPushButton('Render')
 
         self.restart_button = QtWidgets.QPushButton('Restart')
@@ -168,12 +172,12 @@ class EnvyUI(QtWidgets.QDialog):
         self.render_settings_form_layout = QtWidgets.QFormLayout()
         self.render_settings_form_layout.addRow('Start Frame: ', self.start_frame_spin_box)
         self.render_settings_form_layout.addRow('End Frame: ', self.end_frame_spin_box)
-        self.render_settings_form_layout.addRow('Allocation: ', self.allocation_spin_box)
+        self.render_settings_form_layout.addRow('Batch Size: ', self.allocation_spin_box)
         self.render_settings_form_layout.setContentsMargins(80, 4, 4, 4)
         self.render_settings_form_layout.setSpacing(4)
         self.render_settings_group_box.setLayout(self.render_settings_form_layout)
 
-        self.main_right_v_box_layout.addStretch()
+        self.main_right_v_box_layout.addWidget(self.advanced_settings_widget)
         self.main_right_v_box_layout.addWidget(self.render_push_button)
         self.main_right_v_box_layout.addWidget(self.restart_button)
 
@@ -211,16 +215,17 @@ class EnvyUI(QtWidgets.QDialog):
     def render_push_button_clicked(self):
         """Sets the Maya scene to Envy."""
         jobs_exported = 0
+        use_tiled_rendering = self.advanced_settings_widget.use_tiled_rendering()
 
-        for render_layer_widget in self.get_render_layers_items():
+        for render_layer_widget in self.get_render_layers_items():  # FOR EACH LAYER
             if render_layer_widget.is_renderable():
                 render_layer_name = render_layer_widget.get_render_layer_name()
 
-                for camera_widget in render_layer_widget.get_camera_widgets():
+                for camera_widget in render_layer_widget.get_camera_widgets():  # FOR EACH CAMERA
                     if camera_widget.is_renderable():
                         camera_name = camera_widget.get_camera_name()
-
-                        envy = maya_to_envy.MayaToEnvy()
+                        divisions_x = self.advanced_settings_widget.get_divisions_x()
+                        divisions_y = self.advanced_settings_widget.get_divisions_y()
 
                         if camera_widget.use_custom_frame_range():
                             start_frame = camera_widget.get_start_frame()
@@ -232,15 +237,46 @@ class EnvyUI(QtWidgets.QDialog):
                             start_frame = self.start_frame_spin_box.value()
                             end_frame = self.end_frame_spin_box.value()
 
-                        envy.set_start_frame(start_frame)
-                        envy.set_end_frame(end_frame)
-                        envy.set_allocation(self.allocation_spin_box.value())
-                        envy.export_to_envy(camera_name, render_layer_name)
-
-                        jobs_exported += 1
+                        if use_tiled_rendering is True:
+                            image_output_prefix = self.advanced_settings_widget.get_image_output_prefix()
+                            for i, min_max_pair in enumerate(self.compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y)):
+                                envy = maya_to_envy.MayaToEnvy()
+                                envy.set_tiled_rendering_settings(
+                                    min_bound=min_max_pair[0],
+                                    max_bound=min_max_pair[1],
+                                    image_output_prefix=image_output_prefix.replace('$RENDERLAYER', render_layer_name)
+                                )
+                                envy.set_start_frame(start_frame)
+                                envy.set_end_frame(end_frame)
+                                envy.set_allocation(self.allocation_spin_box.value())
+                                envy.export_to_envy(camera_name, render_layer_name, i)
+                                jobs_exported += 1
+                        else:
+                            envy = maya_to_envy.MayaToEnvy()
+                            envy.set_start_frame(start_frame)
+                            envy.set_end_frame(end_frame)
+                            envy.set_allocation(self.allocation_spin_box.value())
+                            envy.export_to_envy(camera_name, render_layer_name, 0)
+                            jobs_exported += 1
 
         if not jobs_exported:
             om.MGlobal.displayWarning('[EnvyUI] No jobs exported.')
+
+    @staticmethod
+    def compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y) -> list:
+        resolution_x = cmds.getAttr('defaultResolution.width')
+        resolution_y = cmds.getAttr('defaultResolution.height')
+        increment_y = resolution_y // divisions_y
+        increment_x = resolution_x // divisions_x
+        min_max_pair_list = []
+        for division_y in range(divisions_y):  # FOR EACH Y TILE
+            y_min = increment_y * division_y
+            y_max = increment_y * (division_y + 1)
+            for division_x in range(divisions_x):  # FOR EACH X TILE
+                x_min = increment_x * division_x
+                x_max = increment_x * (division_x + 1)
+                min_max_pair_list.append(((x_min, y_min), (x_max, y_max)))
+        return min_max_pair_list
 
     def create_render_layers_widgets(self) -> None:
         """Creates the render_layers_widgets."""

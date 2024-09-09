@@ -208,7 +208,7 @@ class Envy:
             return 0
 
         else:  # client was able to connect
-            #await NV.send_status_to_server(self)  # add a message to the send queue
+            await NV.send_status_to_server(self)  # add a message to the send queue
             await self.client.start()  # program will hold here until client disconnects
 
             self.logger.debug('cleaning up envy.client_dependant_tasks')
