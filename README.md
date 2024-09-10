@@ -3,7 +3,12 @@
 Envy is a render manager with native Maya and Houdini support. Envy was built and designed for the Gnomon campus and that use case has influenced the design a great deal. As Envy was built for Gnomon students this readme will assume you are one.
 
 ## Table Of Contents
-- [Features](#markdown-header-Features)
+- [Features](#Features)
+- [Installation](#Installation)
+- [Usage](#Usage)
+  - [Basics](#Basics)  
+  - [Maya](#Maya)
+  - [Houdini](#Houdini)
 
 
 ## Features
@@ -26,6 +31,14 @@ Installation is very simple!
 
 ## Usage
 Using envy is also very simple. The following section will be split in usage for Maya and Houdini feel free to skip to which ever section you require.
+
+### Basics
+Your `Z:/envy` folder should look kind of like this:
+
+![envy_layout](https://github.com/user-attachments/assets/def6542b-82ef-484f-aa61-b51399753f53)
+
+
+### Maya
 
 
 ## Requirements
