@@ -12,7 +12,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 import sys, os
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
@@ -190,6 +190,24 @@ async def send_task_progress(envy, task_id: int, progress: float) -> None:
     new_message.set_function('update_task_progress')
     new_message.format_arguments(task_id, progress)
     envy.send(new_message)
+
+
+async def on_start(envy) -> None:
+    """
+    This function will run on envy start
+    :param envy: a reference to the envy instance making the call
+    :return: Void
+    """
+    pass
+
+
+async def on_close(envy) -> None:
+    """
+    This function will run on envy close
+    :param envy: a reference to the envy instance making the call
+    :return:
+    """
+    pass
 
 
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------

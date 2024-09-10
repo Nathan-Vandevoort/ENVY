@@ -6,6 +6,7 @@ import logging, socket, os, sys
 from queue import Queue
 from envyRepo.envyLib import envy_utils as eutils
 import time
+from envyRepo import prep_env
 from envyRepo.envyLib.envy_utils import DummyLogger
 from envyRepo.networkUtils import message as m
 from envyRepo.envyJobs.enums import Status
@@ -13,7 +14,7 @@ import subprocess
 import envy.utils.config_bridge as config
 import safe_exit
 import psutil
-from datetime import datetime
+import datetime
 
 NV = sys.modules.get('Envy_Functions')  # get user defined Envy_Functions as NV
 ENVYPATH = os.environ['ENVYPATH']
@@ -253,12 +254,16 @@ class Envy:
         self.running = False
 
     async def sign_out_monitor(self) -> None:
-        sign_out_time = datetime.now()
+        sign_out_time = datetime.datetime.today()
         sign_out_time = sign_out_time.replace(hour=8, minute=30)
+
+        if sign_out_time.hour > 7:
+            sign_out_time = sign_out_time + datetime.timedelta(days=1)
+
         while self.sign_out is True:
             await asyncio.sleep(5)
-            if datetime.today() >= sign_out_time:
-                await NV.sign_out()
+            if datetime.datetime.today() >= sign_out_time:
+                await NV.sign_out(self)
 
     async def set_status_idle(self) -> None:
         self.status = Status.IDLE
