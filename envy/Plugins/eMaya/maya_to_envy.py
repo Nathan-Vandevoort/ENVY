@@ -66,12 +66,12 @@ class MayaToEnvy(object):
 
         paths = {
             # 'References': self.check_references_paths(),
-            'File Nodes': self.check_file_nodes_paths()
+            # 'File Nodes': self.check_file_nodes_paths()
         }
 
         for name, nodes_paths in paths.items():
             if nodes_paths:
-                om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] Missing {name}')
+                om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] Missing {name} {nodes_paths}')
 
                 for node_path in nodes_paths:
                     om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] \t{node_path}')

@@ -113,9 +113,6 @@ class MayaRender(object):
         elif not os.path.exists(maya_file):
             self.logger.error(f'{MayaRender.PLUGIN_NAME}: Maya file does not exists.')
             return False
-        elif not maya_file.startswith('Z:/'):
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Maya file must be saved on the Z:/ drive.')
-            return False
         else:
             return True
 
@@ -126,9 +123,6 @@ class MayaRender(object):
             return False
         elif not os.path.exists(project_path):
             self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path does not exists.')
-            return False
-        elif not project_path.startswith('Z:/'):
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Project path must be set on the Z:/ drive.')
             return False
         else:
             return True
