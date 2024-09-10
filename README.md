@@ -1,6 +1,10 @@
-## ENVY
+# ENVY
 
 Envy is a render manager with native Maya and Houdini support. Envy was built and designed for the Gnomon campus and that use case has influenced the design a great deal. As Envy was built for Gnomon students this readme will assume you are one.
+
+## Table Of Contents
+- [Features](#markdown-header-Features)
+
 
 ## Features
 - First class maya support: via the envy plugin
@@ -17,11 +21,11 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
 Installation is very simple!
 1. Navigate to `\\titansrv\studentShare\__ENVY__\`
 2. Copy the `envy` folder to your Z:/ drive
-3. It's VERY IMPORTANT that the envy folder is at the root of your zdrive it should look like `Z:/envy`
+3. It's VERY IMPORTANT that the envy folder is at the root of your zdrive. It should look like `Z:/envy`
 
 
 ## Usage
-Using envy is also very simple 
+Using envy is also very simple. The following section will be split in usage for Maya and Houdini feel free to skip to which ever section you require.
 
 
 ## Requirements
