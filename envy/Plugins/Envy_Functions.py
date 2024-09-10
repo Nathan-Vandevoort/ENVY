@@ -201,15 +201,6 @@ async def on_start(envy) -> None:
     pass
 
 
-async def on_close(envy) -> None:
-    """
-    This function will run on envy close
-    :param envy: a reference to the envy instance making the call
-    :return:
-    """
-    pass
-
-
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
 async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     """

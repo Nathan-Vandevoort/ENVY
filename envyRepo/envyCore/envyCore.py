@@ -142,6 +142,8 @@ class Envy:
         sign_out_monitor_task = self.event_loop.create_task(self.sign_out_monitor())
         sign_out_monitor_task.set_name('envyCore.envy.sign_out_monitor')
 
+        await NV.on_start(self)
+
         self.logger.info('Started Envy')
         while self.running:
             result = await self.connect()

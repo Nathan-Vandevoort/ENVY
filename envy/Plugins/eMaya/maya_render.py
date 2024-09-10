@@ -314,7 +314,7 @@ class MayaRender(object):
                 await NV.finish_task_allocation(self.envy, self.allocation_id)
                 self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
             else:
-                await NV.dirty_task_allocation(self.envy, self.allocation_id)
+                await NV.fail_task_allocation(self.envy, self.allocation_id, f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
                 self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Closing {MayaRender.PLUGIN_NAME}.')
