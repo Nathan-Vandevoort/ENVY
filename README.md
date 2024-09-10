@@ -1,5 +1,5 @@
-ENVY
-****
+## ENVY
+
 Envy is a render manager with native Maya and Houdini support. Envy was built and designed for the Gnomon campus and that use case has influenced the design a great deal. Here are Envy's core features:
 
 - First class maya support: via the envy plugin
@@ -12,8 +12,7 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
 - Automatic signout: To allow Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
 
 
-Requirements
-************
+## Requirements
 Envy was built for the Gnomon campus and such has no gaurentee to work in other environments without some customization. Here are the major requirements:
 
 - Some sort of network attached storage drive/partition which is unique to each user
@@ -21,3 +20,6 @@ Envy was built for the Gnomon campus and such has no gaurentee to work in other 
 - User's machines must be running Windows
 - At least Python 3.10 on User's machines
 - All User machines must be on the same LAN
+
+
+## Resources
