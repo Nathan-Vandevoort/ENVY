@@ -11,7 +11,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.10"
+__version__ = "1.0.12"
 import sys, os
 
 abs_file = os.path.abspath(__file__)
@@ -354,7 +354,7 @@ async def mark_allocation_as_failed(console, allocation_id: int, reason: str) ->
     console.console_widget.jobs_fail_allocation.emit((allocation_id, reason))
 
 
-async def update_task_progress(console, task_id: int, progress: float) -> None:
+async def update_allocation_progress(console, allocation_id: int, progress: int) -> None:
     if console.console_widget is None:
         return
-    console.console_widget.jobs_update_task_progress.emit((task_id, progress))
+    console.console_widget.jobs_update_allocation_progress.emit((allocation_id, progress))

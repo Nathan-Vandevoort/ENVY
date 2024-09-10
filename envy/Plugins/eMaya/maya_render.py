@@ -31,6 +31,7 @@ class MayaRender(object):
         self.allocation_id = allocation_data['Allocation_Id']
         self.logger = envy.logger
         self.tasks = allocation_data['Tasks']
+        self.number_of_tasks = len(list(self.tasks))
         self.task_list = list(self.tasks)
         self.environment = allocation_data['Environment']
 
@@ -51,6 +52,7 @@ class MayaRender(object):
         self.current_frame = 1
         self.current_layer = 1
         self.progress = 0
+        self.allocation_progress = 0
 
         self.render_subprocess = None
         self.vray_is_rendering = False
@@ -193,6 +195,19 @@ class MayaRender(object):
         else:
             return -1
 
+    async def send_progress(self):
+        progress_buffer = self.allocation_progress
+        while True:
+            await asyncio.sleep(5)
+
+            remaining_tasks = len(self.task_list)
+            finished_tasks = self.number_of_tasks - remaining_tasks
+            progress = int((finished_tasks / self.number_of_tasks) + (self.progress * (1 / self.number_of_tasks)))
+
+            if progress_buffer != progress:
+                await NV.send_allocation_progress(self.envy, self.allocation_id, progress)
+                progress_buffer = progress
+
     async def calculate_render_progress(self, progress: int) -> None:
         """Calculates and print the render progress such as the current frame, layer."""
         if progress < self.progress:
@@ -306,6 +321,9 @@ class MayaRender(object):
         monitor_envy_task = self.envy.event_loop.create_task(self.monitor_envy())
         monitor_envy_task.set_name('maya_render_envy_task')
         self.coroutines.append(monitor_envy_task)
+        send_progress_task = self.event_loop.create_task(self.send_progress())
+        send_progress_task.set_name('send_progress_task')
+        self.coroutines.append(send_progress_task)
 
         exit_code = await self.render_subprocess.wait()
 

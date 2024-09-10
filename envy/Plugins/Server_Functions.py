@@ -1,6 +1,6 @@
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.6"
+__version__ = "1.0.8"
 
 import sys, os
 abs_file = os.path.abspath(__file__)
@@ -256,9 +256,9 @@ async def mark_allocation_as_failed(server, allocation_id: int, reason: str) -> 
     await send_to_consoles(server, new_message)
     await server.job_scheduler.fail_allocation(allocation_id, reason)
 
-async def update_task_progress(server, task_id: int, progress: float) -> None:
-    new_message = m.FunctionMessage('update_task_progress()')
+async def update_allocation_progress(server, allocation_id: int, progress: int) -> None:
+    new_message = m.FunctionMessage('update_allocation_progress()')
     new_message.set_target(Message_Purpose.CONSOLE)
-    new_message.set_function('update_task_progress')
-    new_message.format_arguments(task_id, progress)
+    new_message.set_function('update_allocation_progress')
+    new_message.format_arguments(allocation_id, progress)
     await send_to_consoles(server, new_message)

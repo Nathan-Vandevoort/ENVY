@@ -137,7 +137,7 @@ class JobTreeItemModel(QAbstractItemModel):
                     label=f'Frame: {task_frame}',
                     frame=task_frame,
                     status=task_status,
-                    progress='0%',
+                    progress='N/A',
                     computer=task_computer,
                     node_type='Task',
                     parent=new_allocation,
@@ -197,6 +197,7 @@ class JobTreeItemModel(QAbstractItemModel):
 
         allocation_node = task_node.parent
         task_node.status = Job_Status.DONE
+        task_node.progress = 100
         if self.read_only is False:
             self.db.set_task_value(task_id, 'Status', Job_Status.DONE)
             task_node.parent = None
@@ -270,6 +271,7 @@ class JobTreeItemModel(QAbstractItemModel):
         job_node = allocation.parent
         allocation_id = allocation.name
         allocation.status = Job_Status.DONE
+        allocation.progress = 100
         if self.read_only is False:
             self.db.set_allocation_value(allocation_id, 'Status', Job_Status.DONE)
             allocation.parent = None
@@ -292,6 +294,7 @@ class JobTreeItemModel(QAbstractItemModel):
                 return None
         job_id = job.name
         job.status = Job_Status.DONE
+        job.progress = 100
         if self.read_only is False:
             self.db.set_job_value(job_id, 'Status', Job_Status.DONE)
             job.parent = None
@@ -453,19 +456,37 @@ class JobTreeItemModel(QAbstractItemModel):
         self.logger.debug(f'DB: Wrote Allocation: {allocation} as message')
         return new_message
 
-    def update_task_progress(self, task_id: int, progress: float):
-        task_node = task_id
-        if isinstance(task_node, int):
-            task_node = self.get_task(task_id)
+    def update_allocation_progress(self, allocation_id: int, progress: int):
+        allocation_node = allocation_id
+        if isinstance(allocation_node, int):
+            allocation_node = self.get_allocation(allocation_id)
 
-        if task_node is None:
+        if allocation_node is None:
             return
 
-        if not isinstance(progress, float):
-            return
+        job_node = allocation_node.parent
 
-        task_node.progress = f'{int(progress)}%'
-        index = self.index_from_item(task_node, column=2)
+        allocation_node.progress = int(progress)
+        self.update_job_progress(job_node)
+        index = self.index_from_item(allocation_node, column=1)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
+
+    def update_job_progress(self, job_id: int):
+        job_node = job_id
+        if isinstance(job_node, int):
+            try:
+                job_node = self.resolver.get(self.root, f'/root/{job_node}')
+            except anytree.resolver.ChildResolverError:
+                self.logger.info(f'jobTree: unable to find job {job_node}')
+                return
+
+        progresses = 0
+        counter = 0
+        for allocation in job_node.children:
+            progresses += allocation.progress
+            counter += 1
+        job_node.progress = int(progresses / counter)
+        index = self.index_from_item(job_node, column=1)
         self.dataChanged.emit(index, [Qt.DisplayRole])
 
     # ----------------------------------------- QAbstractItemModel overrides -------------------------------------

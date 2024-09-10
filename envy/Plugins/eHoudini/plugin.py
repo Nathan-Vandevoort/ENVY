@@ -153,11 +153,10 @@ class Plugin:
             if self.hython_process.returncode == 0:
                 await NV.finish_task_allocation(self.envy, self.allocation_id)
             else:
-                await NV.dirty_task_allocation(self.envy, self.allocation_id, str(self.hython_process.returncode))
+                await NV.fail_task_allocation(self.envy, self.allocation_id, str(self.hython_process.returncode))
 
     def terminate_process(self, timeout: float = 10) -> bool:
         self.logger.info('eHoudini: Terminating houdini process')
-        self.user_terminated = True
         if self.hython_process is None:
             return True
 
@@ -213,7 +212,7 @@ class Plugin:
             if self.progress_buffer == last_progress:
                 continue
             if len(self.task_list) > 0:
-                await NV.send_task_progress(self.envy, self.task_list[0], self.progress_buffer)
+                await NV.send_allocation_progress(self.envy, self.allocation_id, self.progress_buffer)
             last_progress = self.progress_buffer
 
     async def end_coroutines(self):
@@ -240,7 +239,7 @@ class Plugin:
             value = command_split[1]
 
             if command == 'NEWSTARTFRAME':
-                self.ignore_counter = int(value)
+                self.ignore_counter = int(value) - 1
 
         if '%' in line:
             line_split = line.split()
@@ -250,7 +249,7 @@ class Plugin:
                 token = token[:-1]
                 try:
                     progress = float(token)
-                    self.progress_buffer = (progress * self.number_of_tasks) % 100
+                    self.progress_buffer = int(progress)
                 except ValueError:
                     return True
             return True
@@ -274,6 +273,7 @@ class Plugin:
     async def monitor_envy(self) -> int:
         while self.envy.status == Job_Status.WORKING:
             await asyncio.sleep(.5)
+        self.user_terminated = True
         return -1
 
     def exit_function(self) -> None:

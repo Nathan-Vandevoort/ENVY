@@ -51,10 +51,10 @@ class JobTreeController(QObject):
         self.model.fail_task(task_id, reason)
 
     @Slot(tuple)
-    def update_task_progress(self, data_tuple):
-        task_id = data_tuple[0]
+    def update_allocation_progress(self, data_tuple):
+        allocation_id = data_tuple[0]
         progress = data_tuple[1]
-        self.model.update_task_progress(task_id, progress)
+        self.model.update_allocation_progress(allocation_id, progress)
 
     @Slot(tuple)
     def mark_allocation_as_failed(self, data_tuple):

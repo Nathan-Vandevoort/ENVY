@@ -33,7 +33,7 @@ class JobItem(NodeMixin):
     @progress.setter
     def progress(self, value):
         self._progress = value
-        self._data[1] = value
+        self._data[1] = f'{value}%'
 
     @property
     def status(self):

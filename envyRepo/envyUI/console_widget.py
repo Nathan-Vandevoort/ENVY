@@ -20,7 +20,7 @@ class ConsoleWidget(QWidget):
     jobs_fail_task = Signal(tuple)
     jobs_fail_allocation = Signal(tuple)
 
-    jobs_update_task_progress = Signal(tuple)
+    jobs_update_allocation_progress = Signal(tuple)
 
     jobs_start_allocation = Signal(tuple)
     jobs_start_task = Signal(tuple)

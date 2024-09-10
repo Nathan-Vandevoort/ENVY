@@ -12,7 +12,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.9"
+__version__ = "1.0.11"
 import sys, os
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
@@ -170,25 +170,18 @@ async def fail_task(envy, task_id: int, reason: str) -> None:
 
 
 async def fail_task_allocation(envy, allocation_id: int, reason: str) -> None:
-    envy.logger.debug(reason)
     new_message = m.FunctionMessage(f'fail_allocation(): {allocation_id}')
     new_message.set_target(Message_Purpose.SERVER)
     new_message.set_function('mark_allocation_as_failed')
     new_message.format_arguments(allocation_id, reason)
-    envy.logger.debug(new_message.as_function())
     envy.send(new_message)
 
 
-async def dirty_task_allocation(envy, allocation_id: int, reason: str = None) -> None:
-    # todo implement
-    pass
-
-
-async def send_task_progress(envy, task_id: int, progress: float) -> None:
-    new_message = m.FunctionMessage(f'send_task_progress(): {task_id}')
+async def send_allocation_progress(envy, allocation_id: int, progress: int) -> None:
+    new_message = m.FunctionMessage(f'send_allocation_progress(): {allocation_id}')
     new_message.set_target(Message_Purpose.SERVER)
-    new_message.set_function('update_task_progress')
-    new_message.format_arguments(task_id, progress)
+    new_message.set_function('update_allocation_progress')
+    new_message.format_arguments(allocation_id, progress)
     envy.send(new_message)
 
 
