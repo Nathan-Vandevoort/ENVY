@@ -45,6 +45,8 @@ The launch_console.pyw file is what you open to monitor envy and cancel jobs. He
 
 The Large window on the left is the viewport. Each one of the little blue balls represents a computer you have signed in. The top right window is your job viewer. You can see I have an in progress job called test_scene.0001. In the bottom right window is your console. Feel free to mess around with it! I'll talk more about the console in the [Customization](#Customization) section. If you ever want to cancel a job simply right click the job and mark it as finished.
 
+***There are somethings to note about using envy:** All of your dependencies (textures, references, caches, files, project, etc...) **MUST** be on a server `(Z:/ \\titansrv \\veloxsrv)`. If your job is not exporting check your file paths.
+
 
 ### Maya
 
@@ -64,9 +66,7 @@ If you click that dropdown and select `Export to Envy` another UI window should 
 
 ![mayaUI-ezgif com-optimize](https://github.com/user-attachments/assets/5d959639-5b5d-4078-b62d-38069987d7be)
 
-
-Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)!. 
-
+Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)!
 
 
 ## Requirements
