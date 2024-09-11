@@ -48,7 +48,24 @@ The Large window on the left is the viewport. Each one of the little blue balls 
 
 ### Maya
 
-To setup the maya plugin for envy need to type `install_maya_plugin()` into the console and press enter. Please **Note:** 
+To setup the maya plugin for envy need to type `install_maya_plugin()` into the console and press enter. 
+
+**Please Note:** This command will only install the maya plugin if you have already opened maya this term. If you use a new version of maya during the term you will need to type in `install_maya_plugin()` again.
+
+The console should inform you that the maya plugin was installed successfully. To use the plugin within maya open the plugin manager under `windows -> settings/preferences -> plugin manager` and then check `load` on the envy plugin.
+
+![maya plugin manager](https://github.com/user-attachments/assets/0ced8e6f-ce27-46c6-84de-7484288df233)
+
+You should see an envy menu appear at the top of maya:
+
+![envy dropdown](https://github.com/user-attachments/assets/cdb60104-68e3-4904-bdde-4786a2f0b1f8)
+
+If you click that dropdown and select `Export to Envy` another UI window should appear and it should look like this:
+
+![maya ui window](https://github.com/user-attachments/assets/df92e049-6cc4-477e-883c-5622a069a736)
+
+Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer learn more about batch sizes and what they mean practically [here](#batch-size). 
+
 
 
 ## Requirements
@@ -62,3 +79,11 @@ Envy was built for the Gnomon campus and such has no gaurentee to work in other 
 
 ## Resources
 I created a discord servers for users to get in touch with me and report bugs. Feel free to [join](https://discord.gg/r259susGAS)!
+
+## Glossary
+### batch size
+To put it simply the batch size is how many frames will envy try to give each computer. You may want to increase this number if you have very fast renders (less then 2 minutes per frame). Under the hood envy needs to launch whatever software you want to render in (maya, houdini, etc...) and that can take time. The batch size tells envy how often should each computer restart that software. If it takes longer to open maya then it does to render your frame then you probably want to increase your batch size. The batchsize also tells envy how many work items the scheduler can allocate. which is `(frame range // batch size)`.
+
+
+For Example: if you have 100 frames to render and a batch size of 10 then 10 computers will be able to work on your job. This can be not optimal if you have 20 computers running envy as 10 of them wont have any work. 
+In this case you may want to set a lower batchsize such as 5. If you dont want to worry about batch size just leave it at 1.
