@@ -62,7 +62,7 @@ You should see an envy menu appear at the top of maya:
 
 If you click that dropdown and select `Export to Envy` another UI window should appear and it should look like this:
 
-![maya ui window](https://github.com/user-attachments/assets/df92e049-6cc4-477e-883c-5622a069a736)
+![mayaUI](https://github.com/user-attachments/assets/9eec0078-4aab-4662-9530-e2ddd6e1ca9a)
 
 Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)!. 
 
