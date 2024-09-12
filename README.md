@@ -17,24 +17,15 @@ Envy is a render manager I created to help students with rendering at Gnomon. En
 
 
 ## Features
-- First class Maya support:
-  - via the Envy plugin
-- First class Houdini support:
-  - via custom built HDAs
-- User customization:
-  - each Envy user is able to completely customize their instance's functionality. 
-- Plugin support:
-  - for users to support any softwares in the future.
-- Render node failover:
-  - If a render node is signed out the scheduler will simply reallocate the work to another node.
-- Server failover:
-  - If the machine running the Envy server is signed out the remaining nodes will elect a new server.
-- Management GUI:
-  - For users to graphically manage their work items.
-- Automatic signout:
-  - Allows Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
-- An update system:
-  - Allows development while students use Envy.
+- First class Maya support: via the Envy plugin
+- First class Houdini support: via custom built HDAs
+- User customization: each Envy user is able to completely customize their instance's functionality. 
+- Plugin support: for users to support any softwares in the future.
+- Render node failover: If a render node is signed out the scheduler will simply reallocate the work to another node.
+- Server failover: If the machine running the Envy server is signed out the remaining nodes will elect a new server.
+- Management GUI: For users to graphically manage their work items.
+- Automatic signout: Allows Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
+- An update system: Allows development while students use Envy.
 
 
 ## Installation
