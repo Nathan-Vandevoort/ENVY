@@ -18,6 +18,7 @@ Envy is a render manager designed to help students with rendering and caching. I
 
 ## Features
 - **First class Maya support:** via the Envy plugin
+- **Tiled rendering support in Maya:** via the Envy plugin
 - **First class Houdini support:** via custom built HDAs
 - **User customization:** each Envy user is able to completely customize their instance's functionality. 
 - **Plugin support:** for users to support any softwares in the future.
