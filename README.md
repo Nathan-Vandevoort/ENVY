@@ -64,7 +64,7 @@ The launch_console.pyw file is what you open to monitor envy and cancel jobs. He
 
 The Large window on the left is the viewport. Each one of the little blue balls represents a computer you have signed in. The top right window is your job viewer, you can see I have some jobs already created! In the bottom right window is your console, feel free to mess around with it! I'll talk more about the console in the [Customization](#Customization) section. If you ever want to cancel a job simply right click the job and mark it as finished.
 
-***There are somethings to note about using envy:** All of your dependencies (textures, references, caches, files, project, etc...) **MUST** be on a server `(Z:/ \\titansrv \\veloxsrv)`. If your job is not exporting check your file paths.
+***There are somethings to note about using envy:** All of your dependencies (textures, references, caches, files, project, etc...) **MUST** be on a server `(Z:/ \\titansrv \\veloxsrv)`. If your job is not exporting, check your file paths.
 
 
 ### Maya
