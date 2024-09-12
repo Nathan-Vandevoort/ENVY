@@ -108,7 +108,7 @@ The job submitter is your bridge from houdini to envy. It is capable of issuing:
 
 
 To render with the job submitter simply drag and drop your rop node (will work for OUT context rops as well as solaris USD render ROP) into the `Render Node` parameter and click `Set From Node` (This pattern exists for all of the job types).
-You can edit the all the parameters values if needed! Click `Write Job` and accept the save pop-up. 
+You can edit the all the parameters values if needed! Click `Write Job` and accept the save pop-up. To learn about the `Batch Size` parameter click [here](#batch-size).
 
 
 #### Job Submitter Caching / Simulation
@@ -116,7 +116,7 @@ You can edit the all the parameters values if needed! Click `Write Job` and acce
 ![jobProcessor_caching](https://github.com/user-attachments/assets/9ac02eff-92e3-4d86-91ee-dcf3f70ce158)
 
 
-To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`. As with rendering you can edit all start frame, end frame, substeps, and version parameters here. If you are caching a simulation check on the simulation checkbox. This will ensure envy does not try to distribute the job (Envy does not support distributing simulations). If you have a non time dependant job then you can mess with the `Batch Size` parameter. Then you click `Write Job` and accept the save scene popup.
+To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`. As with rendering you can edit all start frame, end frame, substeps, and version parameters here. If you are caching a simulation check on the simulation checkbox. This will ensure envy does not try to distribute the job (Envy does not support distributing simulations). If you have a non time dependant job then you can mess with the `Batch Size` [parameter[(#batch-size). Then you click `Write Job` and accept the save scene popup.
 
 #### Job Submitter Generic Job
 
