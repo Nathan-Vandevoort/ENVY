@@ -59,7 +59,7 @@ The launch_console.pyw file is what you open to monitor envy and cancel jobs. He
 ![envy_console](https://github.com/user-attachments/assets/fddaacf3-8364-4e90-8f79-409ca07c30d9)
 
 
-The Large window on the left is the viewport. Each one of the little blue balls represents a computer you have signed in. The top right window is your job viewer. You can see I have an in progress job called test_scene.0001. In the bottom right window is your console. Feel free to mess around with it! I'll talk more about the console in the [Customization](#Customization) section. If you ever want to cancel a job simply right click the job and mark it as finished.
+The Large window on the left is the viewport. Each one of the little blue balls represents a computer you have signed in. The top right window is your job viewer, you can see I have some jobs already created! In the bottom right window is your console, feel free to mess around with it! I'll talk more about the console in the [Customization](#Customization) section. If you ever want to cancel a job simply right click the job and mark it as finished.
 
 ***There are somethings to note about using envy:** All of your dependencies (textures, references, caches, files, project, etc...) **MUST** be on a server `(Z:/ \\titansrv \\veloxsrv)`. If your job is not exporting check your file paths.
 
@@ -122,6 +122,12 @@ To Cache you simply drag and drop your file node into the `File Cache Node` para
 
 Generic Jobs are intended to be used for wedging. They allow you to have envy press any arbitrary Houdini button and set any arbitrary parameters. To use Generic Jobs drag and drop the button you want envy to press in the `Button To Press` parameter field. You can then set parameter edits by dragging the parameter you want to set into the `Parameter` field. 
 Then the value you want envy to set. These Jobs don't give envy some information such as your start frame and end frame and so they will appear as a single frame in your console. This is intended.
+
+
+## Customization
+Envy offers you a whole lot of customization if you don't mind writing a little bit of python. In your `envy/Plugins` folder you will see `Envy_Functions.py`, `Server_Functions.py`, and `Console_Functions.py`. Inside of these three python scripts is all the functionality of Envy. Feel free to poke around and look at how stuff works! In each of those scripts there is also an example function for you to see how to write your own. If you want to extend Envy's functionality outside of just writing a few functions check out the `envy/Plugins/Example` folder. Inside of there I wrote an example plugin. If you follow the steps outlined there you can have envy run anything! Happy coding!
+
+![Plugin_Layout](https://github.com/user-attachments/assets/70c5c366-f992-47a0-8e7b-03fbc02eeea8)
 
 
 ## Glossary
