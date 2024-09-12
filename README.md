@@ -23,7 +23,7 @@ Envy is a render manager I created to help students with rendering at Gnomon. En
 - Plugin support: for users to support any softwares in the future.
 - Render node failover: If a render node is signed out the scheduler will simply reallocate the work to another node.
 - Server failover: If the machine running the Envy server is signed out the remaining nodes will elect a new server.
-- Management GUI: To allow users to graphically manage their work items.
+- Management GUI: for users to graphically manage their work items.
 - Automatic signout: To allow Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
 - An update system: to allow development while students use Envy.
 
