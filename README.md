@@ -137,7 +137,7 @@ Envy offers you a whole lot of customization if you don't mind writing a little 
 
 ## FAQ
  - Q: Will Envy do Skip Rendered Frames?
-   - A: Envy will never re-allocate a finished frame. However if you create a new job and tell envy to render frames 1-100 envy will render frames 1-100 regardless if some of those frames are already rendered.
+   - A: Envy will never re-allocate a finished frame. However, if you create a new job and tell envy to render frames 1-100 envy will render frames 1-100 regardless if some of those frames are already rendered.
  - Q: What happens if all my computers sign out but not all my frames are finished?
    - A: If you start up some more Envy instances they will pick back up where they left off.
  - Q: I'm not getting any frames from Envy!
