@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
 
         # Widgets
         screen_geometry = self.qapp.primaryScreen().geometry()
-        self.viewport_widget = viewportWidget.ViewportWidget(width=950, height=550)
+        self.viewport_widget = viewportWidget.ViewportWidget(width=750, height=550)
         self.job_tree_widget = jobTreeWidget.JobTreeWidget()
         self.console_widget = console_widget.ConsoleWidget(event_loop=self.event_loop)
 

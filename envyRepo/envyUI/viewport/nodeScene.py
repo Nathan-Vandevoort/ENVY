@@ -38,8 +38,6 @@ class NodeScene(QGraphicsScene):
         self.nodes = {}
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
-        #self.setSceneRect(0, 0, 800, 800)
-
         # ---------------------------------- space partitions ------------------------------------ #
         self.num_tiles_x = 0
         self.num_tiles_y = 0
