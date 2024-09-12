@@ -17,15 +17,15 @@ Envy is a render manager designed to help students with rendering and caching. I
 
 
 ## Features
-- First class Maya support: via the Envy plugin
-- First class Houdini support: via custom built HDAs
-- User customization: each Envy user is able to completely customize their instance's functionality. 
-- Plugin support: for users to support any softwares in the future.
-- Render node failover: If a render node is signed out the scheduler will simply reallocate the work to another node.
-- Server failover: If the machine running the Envy server is signed out the remaining nodes will elect a new server.
-- Management GUI: For users to graphically manage their work items.
-- Automatic signout: Allows Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
-- An update system: Allows development while students use Envy.
+- **First class Maya support:** via the Envy plugin
+- **First class Houdini support:** via custom built HDAs
+- **User customization:** each Envy user is able to completely customize their instance's functionality. 
+- **Plugin support:** for users to support any softwares in the future.
+- **Render node failover:** If a render node is signed out the scheduler will simply reallocate the work to another node.
+- **Server failover:** If the machine running the Envy server is signed out the remaining nodes will elect a new server.
+- **Management GUI:** For users to graphically manage their work items.
+- **Automatic signout:** Allows Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
+- **An update system:** Allows development while students use Envy.
 
 
 ## Installation
@@ -35,12 +35,12 @@ Envy is a render manager designed to help students with rendering and caching. I
 
 
 ## Requirements
-I built Envy for the Gnomon campus and such has no gaurentee to work in other environments without some customization.
-- Some sort of network attached storage drive/partition which is unique to each user
-- Some sort of network attached storage which all users have access to
-- User's machines must be running Windows
-- At least Python 3.10 on User's machines
-- All User machines must be on the same LAN
+I built Envy for the Gnomon campus and may require customization before it works elsewhere.
+- A network-attached storage drive/partition which is unique to each user
+- A network-attached storage which all users have access to
+- User machines must be running Windows
+- At least Python 3.10 on user machines
+- All user machines must be on the same LAN
 
 
 ## Resources
@@ -81,11 +81,11 @@ You should see an Envy menu appear at the top of Maya:
 
 ![envy dropdown](https://github.com/user-attachments/assets/cdb60104-68e3-4904-bdde-4786a2f0b1f8)
 
-If you click that dropdown and select `Export to Envy` another UI window should appear and it should look like this:
+If you click that dropdown and select `Export to Envy` another UI window will appear and it will look like this:
 
 ![mayaUI-ezgif com-optimize](https://github.com/user-attachments/assets/5d959639-5b5d-4078-b62d-38069987d7be)
 
-Right now you can see I have two cameras which are both inactive. To tell Envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have Envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)! When you are ready to render click the render button! Envy will prompt you to save your scene, say yes or weird things may happen; or better yet increment and save your scene before exporting to Envy. If you get an error in your script editor at the bottom right follow these trouble shooting steps:
+Right now you can see I have two cameras which are both inactive. To tell Envy to render this camera you simply click on the camera icon and it will turn blue. You can also click on the clock icon to adjust the frame range per camera to have Envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)! When you are ready to render click the render button! Envy will prompt you to save your scene, say yes or weird things may happen; or better yet increment and save your scene before exporting to Envy. If you get an error in your script editor at the bottom right follow these trouble shooting steps:
 
 1. Is your project set? (Your project and maya file must be on the server)
 2. Is your maya file / project on the server?
@@ -107,8 +107,12 @@ The job submitter is your bridge from houdini to Envy. It is capable of issuing:
 ![jobProcessor_rendering](https://github.com/user-attachments/assets/e976795f-be20-482c-8b14-b99738e78b25)
 
 
-To render with the job submitter simply drag and drop your ROP node (will work for OUT context ROPs as well as solaris USD render ROP) into the `Render Node` parameter and click `Set From Node` (This pattern exists for all of the job types).
-You can edit the all the parameters values if needed! Click `Write Job` and accept the save pop-up. To learn about the `Batch Size` parameter click [here](#batch-size).
+To Render:
+
+ 1. Drag and drop your ROP node (will work for OUT context ROPs as well as solaris USD render ROP) into the `Render Node` parameter
+ 2. Click `Set From Node` (This pattern exists for all of the job types).
+ 3. Override the `Start Frame` and `End Frame` if needed
+ 4. Click `Write Job` and accept the save pop-up. To learn about the `Batch Size` parameter click [here](#batch-size).
 
 
 #### Job Submitter Caching / Simulation
@@ -116,15 +120,26 @@ You can edit the all the parameters values if needed! Click `Write Job` and acce
 ![jobProcessor_caching](https://github.com/user-attachments/assets/9ac02eff-92e3-4d86-91ee-dcf3f70ce158)
 
 
-To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`. As with rendering you can edit all start frame, end frame, substeps, and version parameters here. If you are caching a simulation check on the simulation checkbox. This will ensure Envy does not try to distribute the job (Envy does not support distributing simulations). If you have a non time dependant job then you can mess with the `Batch Size` [parameter](#batch-size). Then you click `Write Job` and accept the save scene popup.
+To Cache:
+ 
+ 1. Drag and drop your file-cache node into the `File Cache Node` parameter and click `Set From Node`.
+ 2. Edit your `Start Frame`, `End Frame`, `Substeps`, and `Version` parameters if needed.
+ 3. If you are caching a simulation check on the simulation checkbox. This will ensure Envy does not try to distribute the job (Envy does not support distributing simulations).
+ 4. If you have a non time dependant job then you can mess with the `Batch Size` [parameter](#batch-size).
+ 5. Click `Write Job` and accept the save scene popup.
 
 #### Job Submitter Generic Job
 
 ![jobProcessor_generic](https://github.com/user-attachments/assets/e5920706-37fa-4f43-9c27-3bc868dd4e8e)
 
 
-Generic Jobs are intended to be used for wedging. They allow you to have Envy press any arbitrary Houdini button and set any arbitrary parameters. To use Generic Jobs drag and drop the button you want Envy to press in the `Button To Press` parameter field. You can then set parameter edits by dragging the parameter you want to set into the `Parameter` field. 
-Then input the desired value in the `Value` field. These Jobs don't give Envy some information such as your start frame and end frame and so they will appear as a single frame in your console. This is intended.
+Generic Jobs are intended to be used for wedging. They allow you to have Envy press any arbitrary Houdini button and set any arbitrary parameters. To use Generic Jobs:
+
+ 1. drag and drop the button you want Envy to press in the `Button To Press` parameter field.
+ 2. Drag and drop the parameter(s) you want to set in the `Parameter` field.
+ 3. Input the desired value in the `Value` field.
+
+**Note:** These Jobs don't give Envy some information such as your start frame and end frame and so they will appear as a single frame in your console. Generic jobs may also require more direct user management.
 
 
 ## Customization
