@@ -12,6 +12,7 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
   - [Maya](#Maya)
   - [Houdini](#Houdini)
 - [Customization](#Customization)
+- [FAQ](#FAQ)
 - [Glossary](#Glossary)
 
 
