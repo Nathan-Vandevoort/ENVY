@@ -101,9 +101,14 @@ To render with the job submitter simply drag and drop your rop node (will work f
 You can edit the all the parameters values if needed! Click `Write Job` and accept the save pop-up. 
 
 
-### Job Submitter Caching / Simulation
+#### Job Submitter Caching / Simulation
 
 To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`. As with rendering you can edit all start frame, end frame, substeps, and version parameters here. If you are caching a simulation check on the simulation checkbox. This will ensure envy does not try to distribute the job (Envy does not support distributing simulations). If you have a non time dependant job then you can mess with the `Batch Size` parameter. Then you click `Write Job` and accept the save scene popup.
+
+#### Job Submitter Generic Job
+
+Generic Jobs are intended to be used for wedging. They allow you to have envy press any arbitrary Houdini button and set any arbitrary parameters. To use Generic Jobs drag and drop the button you want envy to press in the `Button To Press` parameter field. You can then set parameter edits by dragging the parameter you want to set into the `Parameter` field. 
+Then the value you want envy to set. These Jobs don't give envy some information such as your start frame and end frame and so they will appear as a single frame in your console. This is intended.
 
 
 ## Glossary
