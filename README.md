@@ -66,7 +66,23 @@ If you click that dropdown and select `Export to Envy` another UI window should 
 
 ![mayaUI-ezgif com-optimize](https://github.com/user-attachments/assets/5d959639-5b5d-4078-b62d-38069987d7be)
 
-Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)!
+Right now you can see I have two cameras which are both inactive. To tell envy to render this camera you simply click on the camera icon and it should turn blue. You can also click on the clock icon to adjust the frame range per camera to have envy render your sequences for you. the `Start Frame` and `End Frame` parameters set themselves from your render settings but you can overwrite them within this UI. the `Batch Size` parameter is how many frames will be allocated to each computer, learn more about batch sizes and what they mean practically [here](#batch-size)! When you are ready to render click the render button! If you get an error in your script editor at the bottom right follow these trouble shooting steps:
+
+1. Is your project set? (Your project and maya file must be on the server)
+2. Is your maya file / project on the server?
+3. check your file path editor under `windows -> general editors -> file path editor` and make sure that all of your paths look okay.
+4. If it's still not working feel free to reach out in the discord server!
+
+
+### Houdini
+
+To use Envy in Houdini you need to load a couple of HDA's into your scene. The HDA's live under `envy/Plugins/eHoudini/HDAs` Inside of that folder you should find:
+
+![HDA file layout](https://github.com/user-attachments/assets/2f66b48e-233b-4725-ac08-81fcf8c80d4e)
+
+The NV_jobSubmitter HDA is the important one. The NVcache HDA is simply a normal file cache HDA with the job submitter wrapped inside of it (it also does some USD prep stuff). 
+The job submitter is your bridge from houdini to envy. It is capable of issuing: Render, Cache, and Simulation jobs. Here is how you use it!
+
 
 
 ## Requirements
