@@ -24,6 +24,7 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
 - Server failover: If the machine running the Envy server is signed out the remaining nodes will elect a new server.
 - Management GUI: To allow users to graphically manage their work items.
 - Automatic signout: To allow Gnomon students to take as many render nodes as needed without worrying about signing out of them in the morning.
+- An update system: to allow development while students use Envy.
 
 
 ## Installation
@@ -126,9 +127,24 @@ Then the value you want envy to set. These Jobs don't give envy some information
 
 
 ## Customization
-Envy offers you a whole lot of customization if you don't mind writing a little bit of python. In your `envy/Plugins` folder you will see `Envy_Functions.py`, `Server_Functions.py`, and `Console_Functions.py`. Inside of these three python scripts is all the functionality of Envy. Feel free to poke around and look at how stuff works! In each of those scripts there is also an example function for you to see how to write your own. If you want to extend Envy's functionality outside of just writing a few functions check out the `envy/Plugins/Example` folder. Inside of there I wrote an example plugin. If you follow the steps outlined there you can have envy run anything! I would also check out the on_start() function in `Envy_Functions.py` Envy run that function on start-up so you can have envy display render messages or maybe do some house keeping tasks. Happy coding!
+Envy offers you a whole lot of customization if you don't mind writing a little bit of python. In your `envy/Plugins` folder you will see `Envy_Functions.py`, `Server_Functions.py`, and `Console_Functions.py`. Inside of these three python scripts is all the functionality of Envy. Feel free to poke around and look at how stuff works! At the top of each of those scripts I have some rules you have to follow for your functions to work there is also an example function for you to see how to write your own. If you want to extend Envy's functionality outside of just writing a few functions check out the `envy/Plugins/Example` folder. Inside of there I wrote an example plugin. If you follow the steps outlined there you can have envy run anything! I would also check out the on_start() function in `Envy_Functions.py` Envy will run that function on start-up so you can have envy display render messages or maybe do some house keeping tasks. Happy coding!
+
+**Note:** If you receive an update 
 
 ![Plugin_Layout](https://github.com/user-attachments/assets/70c5c366-f992-47a0-8e7b-03fbc02eeea8)
+
+
+## FAQ
+ - Q: Will Envy do Skip Rendered Frames?
+   - A: Envy will never re-allocate a finished frame. However if you create a new job and tell envy to render frames 1-100 envy will render frames 1-100 regardless if some of those frames are already rendered.
+ - Q: What happens if all my computers sign out but not all my frames are finished?
+   - A: If you start up some more Envy instances they will pick back up where they left off.
+ - Q: I'm not getting any frames from Envy!
+   - A: Check your scene and project. If envy hasnt marked those frames as `Done` then they aren't done maybe your render settings are too crazy? If you are getting frames that look weird, check your dependencies and makes sure all of them are on the server. Envy is just pressing the render button for you it's not doing anything fancy.
+ - Q: I was messing around with my `Envy_Functions.py` script and I broke envy!
+   - A: No worries just pull the broken file again from the `\\titansrv`
+ - Q: I'm marking jobs as finished but it's not working!
+   - A: If envy is not running somewhere you won't be able to mark jobs as finished.
 
 
 ## Glossary
