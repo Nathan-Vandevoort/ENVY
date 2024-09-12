@@ -23,14 +23,13 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
 
 
 ## Installation
-Installation is very simple!
 1. Navigate to `\\titansrv\studentShare\__ENVY__\`
 2. Copy the `envy` folder to your Z:/ drive
 3. It's **VERY IMPORTANT** that the envy folder is at the root of your zdrive. It should look like `Z:/envy`
 
 
 ## Requirements
-Envy was built for the Gnomon campus and such has no gaurentee to work in other environments without some customization. Here are the major requirements:
+Envy was built for the Gnomon campus and such has no gaurentee to work in other environments without some customization.
 - Some sort of network attached storage drive/partition which is unique to each user
 - Some sort of network attached storage which all users have access to
 - User's machines must be running Windows
@@ -99,12 +98,12 @@ The job submitter is your bridge from houdini to envy. It is capable of issuing:
 #### Job Submitter Rendering
 
 To render with the job submitter simply drag and drop your rop node (will work for OUT context rops as well as solaris USD render ROP) into the `Render Node` parameter and click `Set From Node` (This pattern exists for all of the job types).
-You can edit the all the parameters values if needed! Click write job and accept the save pop-up. 
+You can edit the all the parameters values if needed! Click `Write Job` and accept the save pop-up. 
 
 
 ### Job Submitter Caching / Simulation
 
-To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`
+To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`. As with rendering you can edit all start frame, end frame, substeps, and version parameters here. If you are caching a simulation check on the simulation checkbox. This will ensure envy does not try to distribute the job (Envy does not support distributing simulations). If you have a non time dependant job then you can mess with the `Batch Size` parameter. Then you click `Write Job` and accept the save scene popup.
 
 
 ## Glossary
