@@ -56,7 +56,8 @@ The launch_envy.py file is what you open on every computer you want to render on
 
 The launch_console.pyw file is what you open to monitor envy and cancel jobs. Here's a walk through of the console:
 
-![envy_console_layout](https://github.com/user-attachments/assets/30fb5e3c-64f4-4dd7-b867-81f3cd5dbc79)
+![envy_console](https://github.com/user-attachments/assets/fddaacf3-8364-4e90-8f79-409ca07c30d9)
+
 
 The Large window on the left is the viewport. Each one of the little blue balls represents a computer you have signed in. The top right window is your job viewer. You can see I have an in progress job called test_scene.0001. In the bottom right window is your console. Feel free to mess around with it! I'll talk more about the console in the [Customization](#Customization) section. If you ever want to cancel a job simply right click the job and mark it as finished.
 
