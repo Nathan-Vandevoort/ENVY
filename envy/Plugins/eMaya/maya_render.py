@@ -196,7 +196,9 @@ class MayaRender(object):
 
             remaining_tasks = len(self.task_list)
             finished_tasks = self.number_of_tasks - remaining_tasks
-            progress = int((finished_tasks / self.number_of_tasks) + (self.progress * (1 / self.number_of_tasks)))
+            completed_task_progress = finished_tasks / self.number_of_tasks
+            current_task_progress = self.progress * (1 / self.number_of_tasks)
+            progress = int(100 * (completed_task_progress + current_task_progress))
 
             if progress_buffer != progress:
                 await NV.send_allocation_progress(self.envy, self.allocation_id, progress)

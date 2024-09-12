@@ -38,30 +38,6 @@ async def ENVY_EXAMPLE(envy, arg1: int, arg2: str = 'potato') -> None:
         print(arg2)
 
 
-async def PLUGIN_EXAMPLE(envy, allocation_data: str) -> None:
-    """
-    A template on how you can implement your own plugins for envy.
-    This is the "Handle" function for envy that any job I create is referencing as its Type: job.set_type('PLUGIN_EXAMPLE')
-    :param envy: As always you MUST include a reference to the envy instance making the call
-    :param allocation_data: (json string) This will ALWAYS be a json encoded string that will contain the Allocation_Id, Purpose, Tasks, Environment, Parameters
-    :return: Void
-    """
-    from example import envy_plugin as ep  # Here I'm importing the plugin data I've written in my 'example' plugin library
-    await envy.set_status_working()  # ALWAYS start a new plugin by setting the envy status to working. This tells the scheduler to not issue more tasks to this instance
-
-    allocation_data = json.loads(allocation_data)  # converting task_data from a json string to a dictionary
-    allocation_id = allocation_data['Allocation_Id']
-    tasks = allocation_data['Tasks']  # allocation_data.tasks is ALWAYS a dictionary where the Key is the task ID (You can use this to tell the scheduler individual frames are done) and the Value is the frame to render
-    environment = allocation_data['Environment']  # environment can contain whatever information you want. You encode this information into the job. I normally use it for scene file path / project path
-    parameters = allocation_data['Parameters']  # This can also contain any arbitrary data you want
-
-    debug_process = ep.Example_Plugin_Handler(envy, tasks)  # Here I'm initializing my example plugin. You can do this however you want. take a look inside /example/envy_plugin
-
-    await debug_process.run()  # Here I'm starting my example plugin take a look inside /example/envy_plugin to learn more
-    await finish_task_allocation(envy, allocation_id)  # Always end your plugin by finishing the assigned task allocation. If you do not the scheduler will not know that it is finished.
-    await envy.set_status_idle()  # THIS IS IMPORTANT. when the plugin is done set the status to idle. This tells the scheduler that its okay to issue more jobs to this instance[
-
-
 async def fill_buffer(envy, buffer_name: str, data: any) -> None:
     """
     fills a buffer on envy given the buffers name and data to fill the buffer with
@@ -84,6 +60,11 @@ async def restart_envy(envy) -> None:
 
 
 async def sign_out(envy) -> None:
+    """
+    Has envy sign out
+    :param envy: reference to the envy instance calling the function
+    :return: Void
+    """
     import os
     os.system('shutdown -l -f')
     
@@ -143,6 +124,12 @@ async def start_task(envy, task_id: int) -> None:
 
 
 async def stop_working(envy, hold_until: bool) -> None:
+    """
+    To have envy stop any running plugins
+    :param envy: reference to the envy instance calling the function
+    :param hold_until: If this is True envy will not enter idle unless explicitly told to.
+    :return:
+    """
     await envy.set_status_stopped()
     if hold_until is True:
         return
@@ -156,12 +143,19 @@ async def dirty_task(envy, task_id: int, reason: str = '') -> None:
     :param envy: reference to the envy instance making the call
     :param task_id: The task ID to mark as failed
     :param reason: The reason why the task failed
-    :return:
+    :return: Void
     """
     await fail_task(envy, task_id, reason=reason)
 
 
 async def fail_task(envy, task_id: int, reason: str) -> None:
+    """
+    Allows plugins to mark a task as failed if something went wrong
+    :param envy: reference to the envy instance calling the function
+    :param task_id: The ID of the task to mark as failed
+    :param reason: the reason why the task failed
+    :return: Void
+    """
     new_message = m.FunctionMessage(f'fail_task(): {task_id}')
     new_message.set_target(Message_Purpose.SERVER)
     new_message.set_function('mark_task_as_failed')
@@ -170,6 +164,13 @@ async def fail_task(envy, task_id: int, reason: str) -> None:
 
 
 async def fail_task_allocation(envy, allocation_id: int, reason: str) -> None:
+    """
+    Mark's an allocation as failed and supplies a reason
+    :param envy: reference to the envy instance calling the function
+    :param allocation_id: The ID of the allocation to mark as failed
+    :param reason: The reason why the allocation failed
+    :return: Void
+    """
     new_message = m.FunctionMessage(f'fail_allocation(): {allocation_id}')
     new_message.set_target(Message_Purpose.SERVER)
     new_message.set_function('mark_allocation_as_failed')
@@ -178,6 +179,14 @@ async def fail_task_allocation(envy, allocation_id: int, reason: str) -> None:
 
 
 async def send_allocation_progress(envy, allocation_id: int, progress: int) -> None:
+    """
+    Reports the progress of a given allocation to the server.
+    When using this function be careful that you don't flood the server with progress updates.
+    :param envy: reference to the envy instance calling the function
+    :param allocation_id: The ID of the allocation to update the progress on
+    :param progress: The new progress
+    :return:
+    """
     new_message = m.FunctionMessage(f'send_allocation_progress(): {allocation_id}')
     new_message.set_target(Message_Purpose.SERVER)
     new_message.set_function('update_allocation_progress')
@@ -195,6 +204,29 @@ async def on_start(envy) -> None:
 
 
 # ------------------------------------------------------------------------------------- PLUG-INS -------------------------------------------------------------------------------------
+async def PLUGIN_EXAMPLE(envy, allocation_data: str) -> None:
+    """
+    A template on how you can implement your own plugins for envy.
+    This is the function that will start your plugin. To set which plugin to use within your job you can use the envyRepo.envyJobs.job.Job.set_type('PLUGIN_EXAMPLE')
+    :param envy: As always you MUST include a reference to the envy instance making the call
+    :param allocation_data: (json string) This will ALWAYS be a json encoded string that will contain the Allocation_Id, Purpose, Tasks, Environment, Parameters
+    :return: Void
+    """
+    from example import envy_plugin as ep  # Here I'm importing the plugin data I've written in my 'example' plugin library
+    await envy.set_status_working()  # ALWAYS start a new plugin by setting the envy status to working. This tells the scheduler to not issue more tasks to this instance
+
+    allocation_data = json.loads(allocation_data)  # converting task_data from a json string to a dictionary
+    allocation_id = allocation_data['Allocation_Id']
+    tasks = allocation_data['Tasks']  # allocation_data.tasks is ALWAYS a dictionary where the Key is the task ID (You can use this to tell the scheduler individual frames are done) and the Value is the frame to render
+    environment = allocation_data['Environment']  # environment can contain whatever information you want. You encode this information into the job. I normally use it for scene file path / project path
+    parameters = allocation_data['Parameters']  # This can also contain any arbitrary data you want
+
+    debug_process = ep.Example_Plugin_Handler(envy, allocation_data)  # Here I'm initializing my example plugin. You can do this however you want. take a look inside /example/envy_plugin
+
+    await debug_process.run()  # Here I'm starting my example plugin take a look inside /example/envy_plugin to learn more
+    await finish_task_allocation(envy, allocation_id)  # Always end your plugin by finishing the assigned task allocation. If you do not the scheduler will not know that it is finished.
+    await envy.set_status_idle()  # THIS IS IMPORTANT. when the plugin is done set the status to idle. This tells the scheduler that its okay to issue more jobs to this instance[
+
 async def PLUGIN_eHoudini(envy, allocation_data_string: str) -> None:
     """
     The Houdini plugin. Allows for caching and rendering through Houdini.
