@@ -134,6 +134,7 @@ class Envy:
         self.running = True
         self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
+        time.sleep(2)
         self.role = await self.choose_role(role_override)
 
         execution_loop_task = self.event_loop.create_task(self.execution_loop())

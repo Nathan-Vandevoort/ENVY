@@ -215,7 +215,7 @@ class FunctionMessage(Message):
             validated_arg = arg
 
             if isinstance(arg, str):  # if you are a string make sure you have quotes
-                validated_arg = f"'''{arg}'''"
+                validated_arg = f"'{arg}'"
 
             if isinstance(arg, dict):
                 validated_arg = f"'{json.dumps(arg)}'"

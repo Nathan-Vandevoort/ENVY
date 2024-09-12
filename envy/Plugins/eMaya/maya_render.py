@@ -193,16 +193,9 @@ class MayaRender(object):
         progress_buffer = self.allocation_progress
         while True:
             await asyncio.sleep(5)
-
-            remaining_tasks = len(self.task_list)
-            finished_tasks = self.number_of_tasks - remaining_tasks
-            completed_task_progress = (finished_tasks / self.number_of_tasks) * 100
-            current_task_progress = self.progress * (1 / self.number_of_tasks)
-            progress = int(completed_task_progress + current_task_progress)
-
-            if progress_buffer != progress:
-                await NV.send_allocation_progress(self.envy, self.allocation_id, progress)
-                progress_buffer = progress
+            if progress_buffer != self.allocation_progress:
+                await NV.send_allocation_progress(self.envy, self.allocation_id, self.allocation_progress)
+                progress_buffer = self.allocation_progress
 
     async def calculate_render_progress(self, progress: int) -> None:
         """Calculates and print the render progress such as the current frame, layer."""
@@ -212,16 +205,11 @@ class MayaRender(object):
                 self.current_layer += 1
 
         self.progress = progress
-
-        if len(self.task_list) > 0:
-            await NV.send_task_progress(self.envy, self.task_list[0], float(self.progress))
-
-        if self.progress == 100:
-            if len(self.task_list) > 0:
-                await NV.finish_task(self.envy, self.task_list.pop(0))
-
-            if len(self.task_list) > 0:
-                await NV.start_task(self.envy, self.task_list[0])
+        remaining_tasks = len(self.task_list)
+        finished_tasks = self.number_of_tasks - remaining_tasks
+        completed_task_progress = (finished_tasks / self.number_of_tasks) * 100
+        current_task_progress = self.progress * (1 / self.number_of_tasks)
+        self.allocation_progress = int(completed_task_progress + current_task_progress)
 
         self.logger.info(
             f'{MayaRender.PLUGIN_NAME}: '
@@ -260,6 +248,12 @@ class MayaRender(object):
                             await self.calculate_render_progress(progress=progress)
                 else:
                     self.logger.info(f'eMaya: {log_line}')
+
+                if 'FINISHED' in log_line:
+                    if len(self.task_list) > 0:
+                        await NV.finish_task(self.envy, self.task_list.pop(0))
+                        await NV.start_task(self.envy, self.task_list[0])
+
             else:
                 break
 
@@ -407,6 +401,7 @@ class MayaRender(object):
             '-s', str(self.start_frame),
             '-e', str(self.end_frame),
             '-proj', self.project_path,
+            '-postFrame', 'print("FINISHED");',
             self.maya_file]
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess: {command}')
@@ -428,6 +423,7 @@ class MayaRender(object):
             '-proj', self.project_path,
             '-im', self.image_output_prefix,
             '-reg', f'{self.tile_bound_min[0]}', f'{self.tile_bound_max[0]}', f'{self.tile_bound_min[1]}', f'{self.tile_bound_max[1]}',
+            '-postFrame', 'print("FINISHED");',
             self.maya_file]
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess tiled: {command}')
