@@ -11,6 +11,7 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
   - [Basics](#Basics)  
   - [Maya](#Maya)
   - [Houdini](#Houdini)
+- [Customization](#Customization)
 - [Glossary](#Glossary)
 
 
@@ -125,7 +126,7 @@ Then the value you want envy to set. These Jobs don't give envy some information
 
 
 ## Customization
-Envy offers you a whole lot of customization if you don't mind writing a little bit of python. In your `envy/Plugins` folder you will see `Envy_Functions.py`, `Server_Functions.py`, and `Console_Functions.py`. Inside of these three python scripts is all the functionality of Envy. Feel free to poke around and look at how stuff works! In each of those scripts there is also an example function for you to see how to write your own. If you want to extend Envy's functionality outside of just writing a few functions check out the `envy/Plugins/Example` folder. Inside of there I wrote an example plugin. If you follow the steps outlined there you can have envy run anything! Happy coding!
+Envy offers you a whole lot of customization if you don't mind writing a little bit of python. In your `envy/Plugins` folder you will see `Envy_Functions.py`, `Server_Functions.py`, and `Console_Functions.py`. Inside of these three python scripts is all the functionality of Envy. Feel free to poke around and look at how stuff works! In each of those scripts there is also an example function for you to see how to write your own. If you want to extend Envy's functionality outside of just writing a few functions check out the `envy/Plugins/Example` folder. Inside of there I wrote an example plugin. If you follow the steps outlined there you can have envy run anything! I would also check out the on_start() function in `Envy_Functions.py` Envy run that function on start-up so you can have envy display render messages or maybe do some house keeping tasks. Happy coding!
 
 ![Plugin_Layout](https://github.com/user-attachments/assets/70c5c366-f992-47a0-8e7b-03fbc02eeea8)
 
