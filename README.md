@@ -1,6 +1,6 @@
 # ENVY
 
-Envy is a render manager I created to help students with rendering at Gnomon. Envy supports all render engines Gnomon supports as well as caching in Houdini. The design and features and limitations of Envy are solely influenced by the Gnomon Campus. Because I created Envy for Gnomon students this document will assume you are one.
+Envy is a render manager I created to help students with rendering at Gnomon. Envy supports all render engines Gnomon supports as well as caching in Houdini. The design and features and limitations of Envy are solely influenced by the Gnomon Campus. Because I created Envy for Gnomon students, this document will assume you are one.
 
 ## Table Of Contents
 - [Features](#Features)
