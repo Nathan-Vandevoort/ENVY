@@ -7,7 +7,7 @@ Envy is a render manager with native Maya and Houdini support. Envy was built an
 - [Installation](#Installation)
 - [Requirements](#Requirements)
 - [Resources](#Resources)
-- [Usage](#Usage)
+- [How-To](#How-To)
   - [Basics](#Basics)  
   - [Maya](#Maya)
   - [Houdini](#Houdini)
@@ -44,7 +44,7 @@ Envy was built for the Gnomon campus and such has no gaurentee to work in other 
 I created a discord servers for users to get in touch with me and report bugs. Feel free to [join](https://discord.gg/r259susGAS)!
 
 
-## Usage
+## How-To
 Using envy is also very simple. The following section will be split in usage for Maya and Houdini feel free to skip to which ever section you require.
 
 ### Basics
