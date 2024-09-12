@@ -100,6 +100,7 @@ The job submitter is your bridge from houdini to envy. It is capable of issuing:
 
 #### Job Submitter Rendering
 
+![jobProcessor_rendering](https://github.com/user-attachments/assets/e976795f-be20-482c-8b14-b99738e78b25)
 
 
 To render with the job submitter simply drag and drop your rop node (will work for OUT context rops as well as solaris USD render ROP) into the `Render Node` parameter and click `Set From Node` (This pattern exists for all of the job types).
