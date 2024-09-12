@@ -1,4 +1,6 @@
-import envyRepo.prep_env
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
+
 import job
 from enums import Purpose as p
 from datetime import datetime

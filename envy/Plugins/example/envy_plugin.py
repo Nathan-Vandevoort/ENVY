@@ -143,14 +143,14 @@ class Example_Plugin_Handler:
         :return: Void
         """
         line = line.decode().rstrip()
-        self.envy.logger.info(f'Example Plugin: {line}')
 
         if '%' in line:
             percentage = float(line[:-1])
             completed_tasks = self.number_of_tasks - len(self.task_ids)
-            completed_task_progress = completed_tasks / self.number_of_tasks
+            completed_task_progress = (completed_tasks / self.number_of_tasks) * 100
             current_task_progress = percentage * (1 / self.number_of_tasks)
-            self.progress_buffer = int(100 * (completed_task_progress + current_task_progress))
+            self.envy.logger.info(f'Example Plugin: completed task progress {completed_task_progress} - current task progress {current_task_progress}')
+            self.progress_buffer = int(completed_task_progress + current_task_progress)
 
         if 'FINISHED' in line:
             await NV.finish_task(self.envy, self.task_ids.pop(0))  # this tells the scheduler that it successfully finished the task
