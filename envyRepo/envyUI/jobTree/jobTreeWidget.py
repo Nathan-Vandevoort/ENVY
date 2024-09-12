@@ -89,6 +89,9 @@ class JobTreeWidget(QTreeView):
                 new_message.set_target(MP.SERVER)
                 new_message.format_arguments(selected_item.name, from_console=True)
 
+            if job_type == 'Task':
+                return
+
             self.finish_job_element.emit(new_message)
 
 if __name__ == '__main__':
