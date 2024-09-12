@@ -29,6 +29,19 @@ Installation is very simple!
 3. It's **VERY IMPORTANT** that the envy folder is at the root of your zdrive. It should look like `Z:/envy`
 
 
+## Requirements
+Envy was built for the Gnomon campus and such has no gaurentee to work in other environments without some customization. Here are the major requirements:
+- Some sort of network attached storage drive/partition which is unique to each user
+- Some sort of network attached storage which all users have access to
+- User's machines must be running Windows
+- At least Python 3.10 on User's machines
+- All User machines must be on the same LAN
+
+
+## Resources
+I created a discord servers for users to get in touch with me and report bugs. Feel free to [join](https://discord.gg/r259susGAS)!
+
+
 ## Usage
 Using envy is also very simple. The following section will be split in usage for Maya and Houdini feel free to skip to which ever section you require.
 
@@ -81,21 +94,18 @@ To use Envy in Houdini you need to load a couple of HDA's into your scene. The H
 ![HDA file layout](https://github.com/user-attachments/assets/2f66b48e-233b-4725-ac08-81fcf8c80d4e)
 
 The NV_jobSubmitter HDA is the important one. The NVcache HDA is simply a normal file cache HDA with the job submitter wrapped inside of it (it also does some USD prep stuff). 
-The job submitter is your bridge from houdini to envy. It is capable of issuing: Render, Cache, and Simulation jobs. Here is how you use it!
+The job submitter is your bridge from houdini to envy. It is capable of issuing: Render, Cache, and Simulation jobs. Here's how you use it!
+
+#### Job Submitter Rendering
+
+To render with the job submitter simply drag and drop your rop node (will work for OUT context rops as well as solaris USD render ROP) into the `Render Node` parameter and click `Set From Node` (This pattern exists for all of the job types).
+You can edit the all the parameters values if needed! Click write job and accept the save pop-up. 
 
 
+### Job Submitter Caching / Simulation
 
-## Requirements
-Envy was built for the Gnomon campus and such has no gaurentee to work in other environments without some customization. Here are the major requirements:
-- Some sort of network attached storage drive/partition which is unique to each user
-- Some sort of network attached storage which all users have access to
-- User's machines must be running Windows
-- At least Python 3.10 on User's machines
-- All User machines must be on the same LAN
+To Cache you simply drag and drop your file node into the `File Cache Node` parameter and click `Set From Node`
 
-
-## Resources
-I created a discord servers for users to get in touch with me and report bugs. Feel free to [join](https://discord.gg/r259susGAS)!
 
 ## Glossary
 ### batch size
