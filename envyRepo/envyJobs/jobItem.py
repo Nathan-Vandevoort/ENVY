@@ -60,7 +60,16 @@ class JobItem(NodeMixin):
     @info.setter
     def info(self, value):
         self._info = value
-        self._data[4] = value
+        word_split = value.split()
+        counter = 0
+        output_string = []
+        for word in word_split:
+            counter += len(word)
+            if counter > 45:
+                output_string.append('\n')
+                counter = 0
+            output_string.append(word)
+        self._data[4] = ' '.join(output_string)
 
     def data(self, column: int) -> any:
         return self._data[column]

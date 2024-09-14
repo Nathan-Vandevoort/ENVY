@@ -250,6 +250,8 @@ class JobTreeItemModel(QAbstractItemModel):
         self.logger.info(f'JobTree: {allocation_node.computer} Failed to finish allocation {allocation_id} for reason {reason}')
         index = self.index_from_item(allocation_node, column=2)
         self.dataChanged.emit(index, [Qt.DisplayRole])
+        index = self.index_from_item(allocation_node.parent, column=4)
+        self.dataChanged.emit(index, [Qt.DisplayRole])
 
         return allocation_node
 

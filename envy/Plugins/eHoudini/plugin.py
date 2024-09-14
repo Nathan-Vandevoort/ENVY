@@ -10,6 +10,7 @@ import sys
 import json
 from envyRepo.envyJobs.enums import Status as Job_Status
 from envyRepo.envyLib import envy_utils as eutils
+import re
 
 c = sys.modules.get('utils.config_bridge').Config
 NV = sys.modules.get('Envy_Functions')
@@ -179,7 +180,9 @@ class Plugin:
         self.logger.info('eHoudini: Monitoring error')
         async for line in self.hython_process.stderr:
             has_error = await self.parse_line_error(line)
-            self.fail_reason += line.decode()
+            line_sanitized = line.decode('unicode_escape', errors='ignore').strip()
+            line_sanitized = re.sub(r'\\[nrt]]', '', line_sanitized)
+            self.fail_reason += f' {line_sanitized}'
             if has_error is True and self.failed is False:
                 self.failed = True
                 fail_task = self.event_loop.create_task(self.fail_allocation())
@@ -224,7 +227,7 @@ class Plugin:
         line = line.decode()
         line = line.strip()
         self.logger.error(f'eHoudini: {line}')
-        if 'Error:' in line:
+        if 'Render failed.' in line:
             return True
         return False
 

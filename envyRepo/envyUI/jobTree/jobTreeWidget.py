@@ -19,6 +19,7 @@ class JobTreeWidget(QTreeView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setSelectionMode(QTreeView.ExtendedSelection)
         self.customContextMenuRequested.connect(self.open_context_menu)
+        self.setWordWrap(True)
 
         self.db = db.DB()
         self.db.start()
