@@ -28,7 +28,7 @@ class NodeItem(QGraphicsEllipseItem):
         self.target_size = self.rest_size
 
         # -------------------------------------- Physics Attributes ----------------------------------- #
-        self.damp = .9
+        self.damp = 1
         self.mag = 5
         self.v = np.array([random.random() * self.mag, random.random() * self.mag]).astype(float)
         self.P = np.array([0, 0]).astype(float)
