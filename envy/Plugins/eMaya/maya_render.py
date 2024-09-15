@@ -33,6 +33,7 @@ class MayaRender(object):
         self.tasks = allocation_data['Tasks']
         self.number_of_tasks = len(list(self.tasks))
         self.task_list = list(self.tasks)
+
         self.environment = allocation_data['Environment']
 
         self.maya_file = None
@@ -285,6 +286,11 @@ class MayaRender(object):
         """Renders the Maya file."""
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Launching {MayaRender.PLUGIN_NAME}.')
 
+        if self.number_of_tasks == 0:
+            await NV.finish_task_allocation(self.envy, self.allocation_id)
+            self.logger.warning(f'{MayaRender.PLUGIN_NAME}: Allocation does not seem to have any tasks')
+            return
+
         if not self.get_settings_from_job():
             return
         elif not self.is_maya_file_valid(self.maya_file):
@@ -322,10 +328,24 @@ class MayaRender(object):
                 await NV.finish_task_allocation(self.envy, self.allocation_id)
                 self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
             else:
-                await NV.fail_task_allocation(self.envy, self.allocation_id, f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
-                self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
+                if self.eval_return_code(exit_code) is True:
+                    return
+                else:
+                    await NV.fail_task_allocation(self.envy, self.allocation_id, f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
+                    self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Closing {MayaRender.PLUGIN_NAME}.')
+
+    def eval_return_code(self, code):
+        if code == 3221225786:  # manual interrupt code (ctrl + c)
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} interrupt event')
+            return True
+
+        elif code == 3221225477:  # invalid access error (I cant do shit about this so just try again I guess)
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} Invalid access error')
+            return True
+
+        return False
 
     def set_maya_file(self, maya_file: str) -> None:
         """Sets the maya file."""

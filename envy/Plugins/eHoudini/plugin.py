@@ -104,6 +104,12 @@ class Plugin:
         return proc
 
     async def start(self) -> None:
+
+        if self.number_of_tasks == 0:
+            await NV.finish_task_allocation(self.envy, self.allocation_id)
+            self.logger.warning(f'eHoudini: Allocation does not seem to have any tasks')
+            return
+
         if self.job_type == 'simulation':
             self.logger.debug('eHoudini: starting simulation process')
             self.hython_process = await self.start_simulation_process()
