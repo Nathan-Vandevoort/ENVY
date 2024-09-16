@@ -123,7 +123,7 @@ class Envy:
         plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverCore.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
-        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
         result = self.check_server_file()
         self.logger.debug(f'Checking server file: {result}')
         if result:
@@ -200,8 +200,8 @@ class Envy:
                 if status_code == 500:  # duplicate connection from host
                     self.logger.debug('Another connection from this host to that server already exists')
                     self.logger.warning(f'Envy already has another connection from {self.hostname}')
-                    input('Press Enter to close')
-                    return 0
+                    time.sleep(5)
+                    return 1
 
             if isinstance(exception, Exception):  # the connection failed for a general reason
                 self.logger.info('Failed to connect for a general reason')

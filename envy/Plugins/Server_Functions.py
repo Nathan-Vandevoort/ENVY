@@ -3,6 +3,8 @@ __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.8"
 
 import sys, os
+import websockets
+
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
 from utils.config_bridge import Config
@@ -36,7 +38,14 @@ async def send_to_client(server, client: str, message: (m.Message, m.FunctionMes
     server.logger.debug(f'sending {message} to {client}')
     ws = server.clients[client]['Socket']
     json_message = message.encode()
-    await ws.send(json_message)
+    try:
+        await ws.send(json_message)
+    except (
+        websockets.exceptions.ConnectionClosedError,
+        websockets.ConnectionClosed,
+        websockets.ConnectionClosedOK
+    ):
+        return
 
 
 async def send_attribute_to_client(server, client: str, attribute: str, buffer_name: str) -> None:

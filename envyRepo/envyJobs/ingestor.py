@@ -37,8 +37,11 @@ class Ingestor:
 
             self.logger.info(f'New jobs found {new_jobs}')
             for envy_job in new_jobs:
-                await self.ingest(envy_job)
-                os.remove(os.path.join(self.path, envy_job))
+                try:
+                    await self.ingest(envy_job)
+                    os.remove(os.path.join(self.path, envy_job))
+                except Exception as e:
+                    self.logger.error(f'ingester: Failed to ingest job -> {e}')
 
     async def ingest(self, job_path: str) -> bool:
         file, ext = os.path.splitext(job_path)
