@@ -18,6 +18,23 @@ os.environ['ENVYPATH'] = ENVYPATH
 if ENVYPATH not in sys.path:
     sys.path.append(ENVYPATH)
 
+bin_dir = os.path.join(file_dir, os.pardir) + '/venv/Scripts/'
+base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file__, plus the path separator
+
+# prepend bin to PATH (this file is inside the bin directory)
+os.environ["PATH"] = os.pathsep.join([bin_dir, *os.environ.get("PATH", "").split(os.pathsep)])
+os.environ["VIRTUAL_ENV"] = base  # virtual env is right above bin directory
+os.environ["VIRTUAL_ENV_PROMPT"] = "" or os.path.basename(base)  # noqa: SIM222
+# add the virtual environments libraries to the host python import mechanism
+prev_length = len(sys.path)
+for lib in "..\\Lib\\site-packages".split(os.pathsep):
+    path = os.path.realpath(os.path.join(bin_dir, lib))
+    site.addsitedir(path.decode("utf-8") if "" else path)
+sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
+
+sys.real_prefix = sys.prefix
+sys.prefix = base
+
 try:
     calling_script_name = sys.modules['__main__'].__file__
 except Exception as e:
@@ -35,20 +52,3 @@ for module in modules:
     module_object = importlib.util.module_from_spec(spec)
     sys.modules[module] = module_object
     spec.loader.exec_module(module_object)
-
-bin_dir = os.path.join(file_dir, os.pardir) + '/venv/Scripts/'
-base = bin_dir[: -len("Scripts") - 1]  # strip away the bin part from the __file__, plus the path separator
-
-# prepend bin to PATH (this file is inside the bin directory)
-os.environ["PATH"] = os.pathsep.join([bin_dir, *os.environ.get("PATH", "").split(os.pathsep)])
-os.environ["VIRTUAL_ENV"] = base  # virtual env is right above bin directory
-os.environ["VIRTUAL_ENV_PROMPT"] = "" or os.path.basename(base)  # noqa: SIM222
-# add the virtual environments libraries to the host python import mechanism
-prev_length = len(sys.path)
-for lib in "..\\Lib\\site-packages".split(os.pathsep):
-    path = os.path.realpath(os.path.join(bin_dir, lib))
-    site.addsitedir(path.decode("utf-8") if "" else path)
-sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
-
-sys.real_prefix = sys.prefix
-sys.prefix = base
