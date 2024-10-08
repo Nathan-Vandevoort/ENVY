@@ -60,7 +60,7 @@ class JobTreeWidget(QTreeView):
             valid_items.append(self.model.getItem(index))
 
         context_menu = QMenu(self)
-        finish_action = QAction('Finish', self)
+        finish_action = QAction('Cancel', self)
         select_workers_action = QAction('Select Workers', self)
 
         context_menu.addAction(finish_action)

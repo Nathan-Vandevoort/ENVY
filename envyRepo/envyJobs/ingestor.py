@@ -46,6 +46,7 @@ class Ingestor:
     async def ingest(self, job_path: str) -> bool:
         file, ext = os.path.splitext(job_path)
         job_path = os.path.join(self.path, job_path)
+        self.logger.debug(f'ingester: Ingesting Job -> {file}')
 
         if ext.upper() != '.JSON':
             self.logger.warning(f'{job_path} is not a valid job file (not a .json file)')
@@ -55,8 +56,10 @@ class Ingestor:
         with open(job_path, 'r') as job_file:
             job_as_dict = json.load(job_file)
             job_file.close()
+        self.logger.debug(f'ingester: Loaded json')
 
         new_job = job.job_from_dict(job_as_dict, logger=self.logger)
+        self.logger.debug(f'ingester: Job Data -> {new_job}')
 
         new_id = await self.add_to_db(new_job)
         await self.scheduler.sync_job(new_id)
