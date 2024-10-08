@@ -47,7 +47,8 @@ class DB:
             Range TEXT, 
             Status TEXT, 
             Dependencies TEXT,
-            Allocation INTEGER)
+            Allocation INTEGER,
+            Info Text)
             """)
 
         self.cursor.execute("""
@@ -57,6 +58,7 @@ class DB:
             Task_Ids TEXT,
             Computer TEXT,
             Status TEXT,
+            Info TEXT,
             FOREIGN KEY(Job_Id) REFERENCES jobs(Id))
             """)
 
@@ -127,13 +129,15 @@ class DB:
         dependencies = sqlite_job['Dependencies']
         allocation = sqlite_job['Allocation']
 
+        self.logger.debug(f'DB: sqlite_job -> {sqlite_job} - ID -> {job_id}')
+
         # create job
         try:
             self.logger.debug(f'DB: Creating Job Entry')
             self.cursor.execute(
-                "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (job_id, name, '', purpose, metadata, job_type, environment, parameters, frame_range, Status.PENDING,
-                 dependencies, allocation)
+                 dependencies, allocation, '')
             )
             self.connection.commit()
             return job_id
@@ -144,8 +148,8 @@ class DB:
     def create_allocation_entry(self, job: j.Job, job_id: int) -> int:
         try:
             self.cursor.execute(
-                "INSERT INTO allocations VALUES(?, ?, ?, ?, ?)",
-                (None, job_id, '', None, Status.PENDING,)
+                "INSERT INTO allocations VALUES(?, ?, ?, ?, ?, ?)",
+                (None, job_id, '', '', Status.PENDING, '')
             )
             self.connection.commit()
             return self.cursor.lastrowid

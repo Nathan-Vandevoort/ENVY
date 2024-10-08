@@ -60,6 +60,7 @@ class JobTreeItemModel(QAbstractItemModel):
         job_status = job_values[9]
         job_dependencies = job_values[10]
         job_allocation = job_values[11]
+        info = job_values[12]
 
         new_job = jobItem.JobItem(
             name=job_id,
@@ -77,7 +78,7 @@ class JobTreeItemModel(QAbstractItemModel):
             progress=0,
             node_type='Job',
             parent=self.root,
-            info=''
+            info=info
         )
         allocation_ids = self.db.get_allocation_ids(job_id)
         pending_allocations = []
@@ -97,6 +98,7 @@ class JobTreeItemModel(QAbstractItemModel):
                 pending_allocations.append(allocation_id)
 
             allocation_computer = self.db.get_allocation_value(allocation_id, 'Computer')
+            info = self.db.get_allocation_value(allocation_id, 'Info')
 
             new_allocation = jobItem.JobItem(
                 name=allocation_id,
@@ -108,7 +110,7 @@ class JobTreeItemModel(QAbstractItemModel):
                 computer=allocation_computer,
                 node_type='Allocation',
                 parent=new_job,
-                info=''
+                info=info
             )
 
             task_ids = self.db.get_task_ids(allocation_id)
@@ -141,8 +143,7 @@ class JobTreeItemModel(QAbstractItemModel):
                     computer=task_computer,
                     node_type='Task',
                     parent=new_allocation,
-                    info=''
-                ) # todo Add Info task node and have it read from DB
+                )
             new_allocation.pending_tasks = pending_tasks
             new_allocation.active_tasks = active_tasks
             try:
@@ -218,7 +219,6 @@ class JobTreeItemModel(QAbstractItemModel):
             if task_node is None:
                 return
         if self.read_only is False:
-            # todo implement self.db.set_task_value(task_id, 'Info', reason)
             self.db.set_task_value(task_id, 'Status', Job_Status.FAILED)
             task_node.parent = None
 
@@ -239,9 +239,14 @@ class JobTreeItemModel(QAbstractItemModel):
             allocation_node = self.get_allocation(allocation_id)
             if allocation_node is None:
                 return
+
+        job_node = allocation_node.parent
+        job_node.info = 'Possible Error: one or more ranges have failed'
+
         if self.read_only is False:
-            # todo implement self.db.set_allocation_value(allocation_id, 'Info', reason)
+            self.db.set_allocation_value(allocation_id, 'Info', reason)
             self.db.set_allocation_value(allocation_id, 'Status', Job_Status.FAILED)
+            self.db.set_job_value(job_node.name, 'Info', 'Possible Error: one or more ranges have failed')
             allocation_node.parent = None
 
         allocation_node.status = Job_Status.FAILED

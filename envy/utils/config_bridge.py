@@ -32,7 +32,9 @@ class Config:
 # -------------------------------------------------------------- THE LINES BELOW ARE IMPORTANT -------------------------------------------------------------------
 plugin_path = os.path.join(Config.ENVYPATH, 'Plugins')
 if plugin_path not in sys.path:
+    print(f'Loaded Plugin_Path: {plugin_path}')
     sys.path.append(os.path.join(Config.ENVYPATH, 'Plugins'))
 
 if Config.REPOPATH not in sys.path:
+    print(f'Loaded RepoPath: {Config.REPOPATH}')
     sys.path.insert(0, Config.REPOPATH)
