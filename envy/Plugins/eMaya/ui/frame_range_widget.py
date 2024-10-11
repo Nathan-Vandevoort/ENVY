@@ -15,7 +15,15 @@ except ModuleNotFoundError:
     import PySide2.QtGui as QtGui
     from shiboken2 import wrapInstance
 
+import sys
 import os
+
+e_maya_ui_path = os.path.dirname(__file__)
+
+if e_maya_ui_path not in sys.path:
+    sys.path.append(e_maya_ui_path)
+
+from spin_box import MSpinBox
 
 
 class FrameRangeWidget(QtWidgets.QWidget):
@@ -42,24 +50,13 @@ class FrameRangeWidget(QtWidgets.QWidget):
 
     def create_widgets(self) -> None:
         """Creates the widgets."""
-        self.start_frame_spin_box = QtWidgets.QSpinBox()
-        self.start_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.start_frame_spin_box = MSpinBox()
         self.start_frame_spin_box.setFixedSize(60, 20)
-        self.start_frame_spin_box.setStyleSheet('''
-            QSpinBox {
-                background-color: rgb(40, 40, 40); 
-                border-radius: 5px;
-            }''')
+        self.start_frame_spin_box.setMaximum(10000)
 
-        self.end_frame_spin_box = QtWidgets.QSpinBox()
-        self.end_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.end_frame_spin_box = MSpinBox()
         self.end_frame_spin_box.setFixedSize(60, 20)
         self.end_frame_spin_box.setMaximum(10000)
-        self.end_frame_spin_box.setStyleSheet('''
-                    QSpinBox {
-                        background-color: rgb(40, 40, 40); 
-                        border-radius: 5px;
-                    }''')
 
         self.edit_frame_range_push_button = QtWidgets.QPushButton()
         self.edit_frame_range_push_button.setCheckable(True)
@@ -102,20 +99,10 @@ class FrameRangeWidget(QtWidgets.QWidget):
     def create_connections(self) -> None:
         """Creates the connections."""
         self.edit_frame_range_push_button.toggled.connect(self.edit_frame_range_push_button_toggled)
-        self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
-        self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
 
     def edit_frame_range_push_button_toggled(self, checked: bool) -> None:
         """"""
         self.render_frame_range_group_box.setEnabled(checked)
-
-    def start_frame_spin_box_value_changed(self, value: int) -> None:
-        """"""
-        self.end_frame_spin_box.setMinimum(value)
-
-    def end_frame_spin_box_value_changed(self, value: int) -> None:
-        """"""
-        self.start_frame_spin_box.setMaximum(value)
 
     def get_start_frame(self) -> int:
         """Gets the start frame."""
@@ -132,12 +119,10 @@ class FrameRangeWidget(QtWidgets.QWidget):
     def set_start_frame(self, frame: int) -> None:
         """Sets the start frame."""
         self.start_frame_spin_box.setValue(frame)
-        self.end_frame_spin_box.setMinimum(frame)
 
     def set_end_frame(self, frame: int) -> None:
         """SEts the end frame."""
         self.end_frame_spin_box.setValue(frame)
-        self.start_frame_spin_box.setMaximum(frame)
 
     def use_custom_frame_range(self) -> bool:
         """"""

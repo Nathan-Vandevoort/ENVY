@@ -25,9 +25,6 @@ if e_maya_ui_path not in sys.path:
 
 import frame_range_widget as frame_range_wdt
 
-import imp
-imp.reload(frame_range_wdt)
-
 
 class CameraWidget(QtWidgets.QWidget):
 
