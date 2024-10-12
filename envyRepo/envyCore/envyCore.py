@@ -124,7 +124,7 @@ class Envy:
         plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverCore.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
-        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
         result = self.check_server_file()
         self.logger.debug(f'Checking server file: {result}')
         if result:
@@ -315,7 +315,7 @@ class Envy:
                 pass
 
         if self.restart_on_exit == True:
-            os.startfile(f"launch_envy.py", cwd=str(ENVYPATH), show_cmd=True)
+            os.startfile(f"launch_envy.pyw", cwd=str(ENVYPATH), show_cmd=True)
             quit()
 
 

@@ -81,7 +81,6 @@ class Scheduler:
         if isinstance(allocation, int):
             allocation = self.job_tree.get_allocation(allocation)
         if allocation is None:
-            self.logger.debug(f'Scheduler: {allocation} is None cannot be allocated')
             return False
         if allocation.status == Status.DIRTY or allocation.status == Status.FAILED:
             return False
@@ -125,7 +124,7 @@ class Scheduler:
                     continue
                 success = await self.issue_task(client)
                 if not success:
-                    self.logger.debug('Scheduler: Failed to issue allocations')
+                    continue
 
 
 if __name__ == '__main__':

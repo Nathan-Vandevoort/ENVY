@@ -12,7 +12,7 @@ feel free to use any of the existing functions as a template to build your own!
 
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
-__version__ = "1.0.12"
+__version__ = "1.0.15"
 import sys, os
 abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
