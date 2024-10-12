@@ -20,6 +20,7 @@ import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
 from functools import partial
+import webbrowser
 import sys
 import os
 
@@ -32,13 +33,13 @@ if e_maya_path not in sys.path:
 if e_maya_ui_path not in sys.path:
     sys.path.append(e_maya_ui_path)
 
-import render_layer_widget as render_layer_wdt
+from render_layer_widget import RenderLayerWidget
+import frame_layout
+from spin_box import MSpinBox
 import maya_to_envy
-import advanced_settings_widget
 
 import imp
-imp.reload(render_layer_wdt)
-imp.reload(maya_to_envy)
+imp.reload(frame_layout)
 
 
 def maya_main_window() -> any:
@@ -64,17 +65,14 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.start_frame_spin_box = None
         self.end_frame_spin_box = None
-        self.allocation_spin_box = None
-        self.advanced_settings_widget = None
-        self.render_push_button = None
+        self.batch_size_spin_box = None
+        self.use_tiled_rendering_check_box = None
+        self.tiles_x_spin_box = None
+        self.tiles_y_spin_box = None
+        self.export_to_envy_push_button = None
 
-        self.main_layout = None
-        self.main_left_v_box_layout = None
-        self.layer_renders_group_box = None
         self.layer_renders_v_box_layout = None
-        self.main_right_v_box_layout = None
-        self.render_settings_group_box = None
-        self.render_settings_form_layout = None
+        self.layer_renders_group_box = None
 
         self.script_jobs = []
 
@@ -87,6 +85,11 @@ class EnvyUI(QtWidgets.QDialog):
         self.setPalette(palette)
         self.setWindowTitle(self.WINDOW_NAME)
 
+        self.main_layout = QtWidgets.QHBoxLayout(self)
+        self.main_layout.setContentsMargins(2, 2, 2, 2)
+        self.main_layout.setSpacing(2)
+
+        self.create_menu_bar()
         self.create_widgets()
         self.create_layouts()
         self.create_connections()
@@ -103,91 +106,137 @@ class EnvyUI(QtWidgets.QDialog):
             cls.window_instance.raise_()
             cls.window_instance.activateWindow()
 
+    def create_menu_bar(self):
+        """Creates the menu bar."""
+        # Main QMenuBar.
+        main_menu_bar = QtWidgets.QMenuBar()
+        self.main_layout.setMenuBar(main_menu_bar)
+
+        # Edit menu.
+        edit_menu = main_menu_bar.addMenu('Edit')
+        edit_menu.addAction('Reload', self.update_window)
+
+        # Help menu.
+        help_menu = main_menu_bar.addMenu('Help')
+        help_menu.addAction('Help', self.show_help)
+
     def create_widgets(self) -> None:
         """Creates the widgets."""
-        self.start_frame_spin_box = QtWidgets.QSpinBox()
-        self.start_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.start_frame_spin_box.setFixedSize(75, 20)
-        self.start_frame_spin_box.setStyleSheet('''
-                    QSpinBox {
-                        background-color: rgb(40, 40, 40); 
-                        border-radius: 5px;
-                    }''')
+        # Start frame MSpinBox.
+        self.start_frame_spin_box = MSpinBox()
+        self.start_frame_spin_box.setMaximum(10000)
 
-        self.end_frame_spin_box = QtWidgets.QSpinBox()
-        self.end_frame_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.end_frame_spin_box.setFixedSize(75, 20)
+        # End frame MSpinBox.
+        self.end_frame_spin_box = MSpinBox()
         self.end_frame_spin_box.setMaximum(10000)
-        self.end_frame_spin_box.setStyleSheet('''
-                    QSpinBox {
-                        background-color: rgb(40, 40, 40); 
-                        border-radius: 5px;
-                    }''')
 
-        self.allocation_spin_box = QtWidgets.QSpinBox()
-        self.allocation_spin_box.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.allocation_spin_box.setFixedSize(75, 20)
-        self.allocation_spin_box.setMaximum(self.end_frame_spin_box.value() - self.start_frame_spin_box.value())
-        self.allocation_spin_box.setMinimum(1)
-        self.allocation_spin_box.setStyleSheet('''
-                    QSpinBox {
-                        background-color: rgb(40, 40, 40); 
-                        border-radius: 5px;
-                    }''')
+        # Batch size MSpinBox.
+        self.batch_size_spin_box = MSpinBox()
+        self.batch_size_spin_box.setMinimum(1)
 
-        self.advanced_settings_widget = advanced_settings_widget.AdvancedSettingsWidget()
+        # Use tiled rendering QCheckBox.
+        self.use_tiled_rendering_check_box = QtWidgets.QCheckBox('Use Tiled Rendering')
 
-        self.render_push_button = QtWidgets.QPushButton('Render')
+        # Tiles X MSpinBox.
+        self.tiles_x_spin_box = MSpinBox()
+        self.tiles_x_spin_box.setRange(1, 100)
 
-        self.restart_button = QtWidgets.QPushButton('Restart')
+        # Tiles Y MSpinBox.
+        self.tiles_y_spin_box = MSpinBox()
+        self.tiles_y_spin_box.setRange(1, 100)
+
+        # Export to Envy QPushButton.
+        self.export_to_envy_push_button = QtWidgets.QPushButton('Export To Envy')
+        self.export_to_envy_push_button.setFixedHeight(30)
+        self.export_to_envy_push_button.setStyleSheet('''
+        QPushButton {
+            background-color: rgb(30, 30, 30); 
+            border-radius: 5px;}''')
 
     def create_layouts(self) -> None:
         """Creates the layouts."""
-        self.main_layout = QtWidgets.QHBoxLayout(self)
-        self.main_layout.setContentsMargins(2, 2, 2, 2)
-        self.main_layout.setSpacing(2)
+        # Main left QVBoxLayout.
+        main_left_v_box_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addLayout(main_left_v_box_layout)
 
-        self.main_left_v_box_layout = QtWidgets.QVBoxLayout()
-        self.main_layout.addLayout(self.main_left_v_box_layout)
-
+        # Layer renders QGroupBox.
         self.layer_renders_group_box = QtWidgets.QGroupBox()
-        self.layer_renders_group_box.setStyleSheet('QGroupBox {background-color: rgb(30, 30, 30); border-radius: 5px;}')
-        self.main_left_v_box_layout.addWidget(self.layer_renders_group_box)
+        self.layer_renders_group_box.setStyleSheet('''
+        QGroupBox {
+            background-color: rgb(30, 30, 30); 
+            border-radius: 5px;}''')
+        main_left_v_box_layout.addWidget(self.layer_renders_group_box)
 
+        # Layer renders QVBoxLayout.
         self.layer_renders_v_box_layout = QtWidgets.QVBoxLayout()
         self.layer_renders_v_box_layout.setAlignment(QtCore.Qt.AlignTop)
         self.layer_renders_v_box_layout.setContentsMargins(4, 4, 4, 4)
         self.layer_renders_v_box_layout.setSpacing(2)
         self.layer_renders_group_box.setLayout(self.layer_renders_v_box_layout)
 
-        self.main_right_v_box_layout = QtWidgets.QVBoxLayout()
-        self.main_right_v_box_layout.setAlignment(QtCore.Qt.AlignTop)
-        self.main_layout.addLayout(self.main_right_v_box_layout)
+        # Main right QVBoxLayout.
+        main_right_v_box_layout = QtWidgets.QVBoxLayout()
+        main_right_v_box_layout.setAlignment(QtCore.Qt.AlignTop)
+        main_right_v_box_layout.setSpacing(2)
+        self.main_layout.addLayout(main_right_v_box_layout)
 
-        self.render_settings_group_box = QtWidgets.QGroupBox()
-        self.render_settings_group_box.setStyleSheet(
+        # Render settings QGroupBox.
+        render_settings_group_box = QtWidgets.QGroupBox()
+        render_settings_group_box.setStyleSheet(
             'QGroupBox {background-color: rgb(60, 60, 60); border-radius: 5px;}')
-        self.main_right_v_box_layout.addWidget(self.render_settings_group_box)
+        main_right_v_box_layout.addWidget(render_settings_group_box)
 
-        self.render_settings_form_layout = QtWidgets.QFormLayout()
-        self.render_settings_form_layout.addRow('Start Frame: ', self.start_frame_spin_box)
-        self.render_settings_form_layout.addRow('End Frame: ', self.end_frame_spin_box)
-        self.render_settings_form_layout.addRow('Batch Size: ', self.allocation_spin_box)
-        self.render_settings_form_layout.setContentsMargins(80, 4, 4, 4)
-        self.render_settings_form_layout.setSpacing(4)
-        self.render_settings_group_box.setLayout(self.render_settings_form_layout)
+        # Render settings QFormLayout.
+        render_settings_form_layout = QtWidgets.QFormLayout()
+        render_settings_form_layout.addRow('Start Frame: ', self.start_frame_spin_box)
+        render_settings_form_layout.addRow('End Frame: ', self.end_frame_spin_box)
+        render_settings_form_layout.addRow('Batch Size: ', self.batch_size_spin_box)
+        render_settings_form_layout.setContentsMargins(80, 4, 4, 4)
+        render_settings_form_layout.setSpacing(4)
+        render_settings_group_box.setLayout(render_settings_form_layout)
 
-        self.main_right_v_box_layout.addWidget(self.advanced_settings_widget)
-        self.main_right_v_box_layout.addWidget(self.render_push_button)
-        self.main_right_v_box_layout.addWidget(self.restart_button)
+        # Main right QWidget.
+        main_right_widget = QtWidgets.QWidget()
+        main_right_v_box_layout.addWidget(main_right_widget)
+
+        # Advanced settings main QVBoxLayout.
+        advanced_settings_main_v_box_layout = QtWidgets.QVBoxLayout()
+        advanced_settings_main_v_box_layout.setContentsMargins(0, 0, 0, 0)
+        main_right_widget.setLayout(advanced_settings_main_v_box_layout)
+
+        # Advanced settings MFrameLayout.
+        advanced_settings_frame_layout = frame_layout.MFrameLayout('Advanced Settings', main_right_widget)
+        advanced_settings_frame_layout.set_height(76)
+        advanced_settings_main_v_box_layout.addWidget(advanced_settings_frame_layout)
+
+        # Tiled rendering QGroupBox.
+        tiled_rendering_group_box = QtWidgets.QGroupBox()
+        tiled_rendering_group_box.setStyleSheet(
+            'QGroupBox {background-color: rgb(60, 60, 60); border-radius: 5px;}')
+        advanced_settings_frame_layout.add_widget(tiled_rendering_group_box)
+
+        # Tiled rendering QFormLayout.
+        tiled_rendering_form_layout = QtWidgets.QFormLayout()
+        tiled_rendering_form_layout.addWidget(self.use_tiled_rendering_check_box)
+        tiled_rendering_form_layout.addRow('Tile X: ', self.tiles_x_spin_box)
+        tiled_rendering_form_layout.addRow('Tile Y: ', self.tiles_y_spin_box)
+        tiled_rendering_form_layout.setContentsMargins(110, 4, 4, 4)
+        tiled_rendering_form_layout.setSpacing(4)
+        tiled_rendering_group_box.setLayout(tiled_rendering_form_layout)
+
+        main_right_v_box_layout.addStretch()
+        main_right_v_box_layout.addWidget(self.export_to_envy_push_button)
 
     def create_connections(self) -> None:
         """Creates the connections."""
-        self.render_push_button.clicked.connect(self.render_push_button_clicked)
+        self.export_to_envy_push_button.clicked.connect(self.export_to_envy_push_button_clicked)
         self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
         self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
 
-        self.restart_button.clicked.connect(self.update_window)
+    @staticmethod
+    def show_help():
+        """"""
+        webbrowser.open('https://github.com/Nathan-Vandevoort/ENVY')
 
     def create_call_backs(self) -> None:
         """Creates the call-backs."""
@@ -198,24 +247,18 @@ class EnvyUI(QtWidgets.QDialog):
         """Creates the script jobs."""
         self.script_jobs.append(cmds.scriptJob(event=['DagObjectCreated', partial(self.update_window)]))
 
-    def start_frame_spin_box_value_changed(self, value: int) -> None:
+    def start_frame_spin_box_value_changed(self) -> None:
         """"""
-        self.end_frame_spin_box.setMinimum(value)
+        self.update_frame_range_spin_boxes_values()
 
-        self.update_frame_range_spin_boxes_display()
-        self.set_allocation_max_value()
-
-    def end_frame_spin_box_value_changed(self, value: int) -> None:
+    def end_frame_spin_box_value_changed(self) -> None:
         """"""
-        self.start_frame_spin_box.setMaximum(value)
+        self.update_frame_range_spin_boxes_values()
 
-        self.update_frame_range_spin_boxes_display()
-        self.set_allocation_max_value()
-
-    def render_push_button_clicked(self):
+    def export_to_envy_push_button_clicked(self):
         """Sets the Maya scene to Envy."""
         jobs_exported = 0
-        use_tiled_rendering = self.advanced_settings_widget.use_tiled_rendering()
+        use_tiled_rendering = self.use_tiled_rendering_check_box.isChecked()
 
         for render_layer_widget in self.get_render_layers_items():  # FOR EACH LAYER
             if render_layer_widget.is_renderable():
@@ -224,8 +267,6 @@ class EnvyUI(QtWidgets.QDialog):
                 for camera_widget in render_layer_widget.get_camera_widgets():  # FOR EACH CAMERA
                     if camera_widget.is_renderable():
                         camera_name = camera_widget.get_camera_name()
-                        divisions_x = self.advanced_settings_widget.get_divisions_x()
-                        divisions_y = self.advanced_settings_widget.get_divisions_y()
 
                         if camera_widget.use_custom_frame_range():
                             start_frame = camera_widget.get_start_frame()
@@ -237,9 +278,18 @@ class EnvyUI(QtWidgets.QDialog):
                             start_frame = self.start_frame_spin_box.value()
                             end_frame = self.end_frame_spin_box.value()
 
-                        if use_tiled_rendering is True:
-                            image_output_prefix = self.advanced_settings_widget.get_image_output_prefix()
-                            for i, min_max_pair in enumerate(self.compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y)):
+                        if end_frame < start_frame:
+                            om.MGlobal.displayError(
+                                f'[EnvyUI] Invalid frame range. Start frame: {start_frame} End frame: {end_frame}')
+                            return
+
+                        if use_tiled_rendering:
+                            image_output_prefix = '<Scene>/$RENDERLAYER/<Camera>_$TILEINDEX'
+                            divisions_x = self.tiles_x_spin_box.value()
+                            divisions_y = self.tiles_y_spin_box.value()
+                            divisions = self.compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y)
+
+                            for i, min_max_pair in enumerate(divisions):
                                 envy = maya_to_envy.MayaToEnvy()
                                 envy.set_tiled_rendering_settings(
                                     min_bound=min_max_pair[0],
@@ -248,14 +298,14 @@ class EnvyUI(QtWidgets.QDialog):
                                 )
                                 envy.set_start_frame(start_frame)
                                 envy.set_end_frame(end_frame)
-                                envy.set_allocation(self.allocation_spin_box.value())
+                                envy.set_allocation(self.batch_size_spin_box.value())
                                 envy.export_to_envy(camera_name, render_layer_name, i)
                                 jobs_exported += 1
                         else:
                             envy = maya_to_envy.MayaToEnvy()
                             envy.set_start_frame(start_frame)
                             envy.set_end_frame(end_frame)
-                            envy.set_allocation(self.allocation_spin_box.value())
+                            envy.set_allocation(self.batch_size_spin_box.value())
                             envy.export_to_envy(camera_name, render_layer_name, 0)
                             jobs_exported += 1
 
@@ -266,16 +316,22 @@ class EnvyUI(QtWidgets.QDialog):
     def compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y) -> list:
         resolution_x = cmds.getAttr('defaultResolution.width')
         resolution_y = cmds.getAttr('defaultResolution.height')
+
         increment_y = resolution_y // divisions_y
         increment_x = resolution_x // divisions_x
+
         min_max_pair_list = []
-        for division_y in range(divisions_y):  # FOR EACH Y TILE
+
+        for division_y in range(divisions_y):
             y_min = increment_y * division_y
             y_max = increment_y * (division_y + 1)
-            for division_x in range(divisions_x):  # FOR EACH X TILE
+
+            for division_x in range(divisions_x):
                 x_min = increment_x * division_x
                 x_max = increment_x * (division_x + 1)
+
                 min_max_pair_list.append(((x_min, y_min), (x_max, y_max)))
+
         return min_max_pair_list
 
     def create_render_layers_widgets(self) -> None:
@@ -284,7 +340,7 @@ class EnvyUI(QtWidgets.QDialog):
             render_layer.deleteLater()
 
         for render_layer in self.maya_to_envy.get_render_layers():
-            render_layer_widget = render_layer_wdt.RenderLayerWidget()
+            render_layer_widget = RenderLayerWidget()
             render_layer_widget.set_start_frame(self.start_frame_spin_box.value())
             render_layer_widget.set_end_frame(self.end_frame_spin_box.value())
             render_layer_widget.set_render_layer_name(render_layer)
@@ -297,17 +353,13 @@ class EnvyUI(QtWidgets.QDialog):
         render_layers = []
 
         for widget in self.layer_renders_group_box.children():
-            if type(widget) is render_layer_wdt.RenderLayerWidget:
+            if type(widget) is RenderLayerWidget:
                 render_layers.append(widget)
 
         return render_layers
 
-    def set_allocation_max_value(self) -> None:
-        """Sets the allocation max value."""
-        self.allocation_spin_box.setMaximum(self.end_frame_spin_box.value() - self.start_frame_spin_box.value() + 1)
-
-    def update_frame_range_spin_boxes_display(self) -> None:
-        """Updates the frame range spin boxes display."""
+    def update_frame_range_spin_boxes_values(self) -> None:
+        """Updates the frame range spin boxes values."""
         start_frame = self.start_frame_spin_box.value()
         end_frame = self.end_frame_spin_box.value()
 

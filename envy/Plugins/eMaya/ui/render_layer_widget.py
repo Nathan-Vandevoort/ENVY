@@ -32,10 +32,6 @@ import frame_range_widget as frame_range_wdt
 import camera_widget as camera_wdt
 import maya_to_envy
 
-import imp
-imp.reload(camera_wdt)
-imp.reload(frame_range_wdt)
-
 
 class RenderLayerWidget(QtWidgets.QWidget):
 
