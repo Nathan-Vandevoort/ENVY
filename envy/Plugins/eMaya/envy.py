@@ -39,6 +39,7 @@ def add_envy_menu():
     if not maya_window.findChild(QtWidgets.QMenu, 'MainEnvyMenu'):
         main_envy_menu = QtWidgets.QMenu('Envy', maya_window)
         main_envy_menu.setObjectName('MainEnvyMenu')
+        main_envy_menu.setTearOffEnabled(True)
         maya_main_menu.addMenu(main_envy_menu)
 
         export_to_envy = main_envy_menu.addAction('Export to Envy')

@@ -23,6 +23,7 @@ if utils_path not in sys.path:
 
 import config_bridge as config
 
+
 class MayaToEnvy(object):
     ARNOLD = 'arnold'
     REDSHIFT = 'redshift'
@@ -188,7 +189,6 @@ class MayaToEnvy(object):
 
     def is_maya_file_valid(self, maya_file: str) -> bool:
         """Checks if the maya file exists."""
-        print(maya_file)
         if not maya_file:
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] There is not Maya file saved.')
             return False
@@ -202,7 +202,6 @@ class MayaToEnvy(object):
 
     def is_project_path_valid(self, project_path: str) -> bool:
         """Checks if the project exists."""
-        print(project_path)
         if re.match("^[a-yA-Y]]*", project_path):
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Project must be on a server (//titansrv, Z:/, //veloxsrv)')
             return False
@@ -360,6 +359,11 @@ class MayaToEnvy(object):
     def set_vray_settings(self) -> bool:
         """Sets V-Ray settings."""
         save_file = False
+
+        if cmds.fileInfo("vrayPLE", query=True):
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] vrayPLE = 0.')
+            cmds.fileInfo("vrayPLE", 0)
+            save_file = True
 
         if cmds.getAttr('vraySettings.sys_message_level') != 3:
             cmds.setAttr('vraySettings.sys_message_level', 3)

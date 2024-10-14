@@ -81,6 +81,9 @@ class EnvyUI(QtWidgets.QDialog):
         palette.setColor(QtGui.QPalette.Window, QtGui.QColor(50, 50, 50))
 
         self.setAutoFillBackground(True)
+        self.setMinimumWidth(600)
+        self.setMinimumHeight(300)
+        self.setModal(True)
         self.setObjectName(self.WINDOW_TITLE)
         self.setPalette(palette)
         self.setWindowTitle(self.WINDOW_NAME)
@@ -197,6 +200,7 @@ class EnvyUI(QtWidgets.QDialog):
 
         # Main right QWidget.
         main_right_widget = QtWidgets.QWidget()
+        main_right_widget.setFixedHeight(20)
         main_right_v_box_layout.addWidget(main_right_widget)
 
         # Advanced settings main QVBoxLayout.
