@@ -64,7 +64,7 @@ class Envy:
         safe_exit.register(self.exit_function)
 
     async def choose_role(self, role_override: Message_Purpose = None) -> Message_Purpose:
-        self.logger.debug('choosing role')
+        self.logger.info('choosing role')
 
         if role_override:  # if role override detected
             self.logger.debug(f'role_override detected, setting self to {role_override}')
@@ -75,18 +75,19 @@ class Envy:
         self.logger.debug(f'server health check status: {result}')
 
         if result:  # if you were able to health check the server you are a client now
-            self.logger.debug('I am a Client')
+            self.logger.info('I am a Client')
             return Message_Purpose.CLIENT
 
         #  check to see if the ip changed
         if server_ip == eutils.get_server_ip():
             # that means that you are now the server
-            self.logger.debug('I am the server')
+            self.logger.info('I am the server')
             return Message_Purpose.SERVER
 
         return await self.choose_role()
 
     async def execute(self, message: m.FunctionMessage) -> bool:
+        self.logger.info(f'Executing: {message}')
         function = message.as_function()
         try:
             self.event_loop.create_task(self.async_exec('await NV.' + function))
@@ -111,7 +112,7 @@ class Envy:
         self.client_send_queue.put(message)
 
     def check_server_file(self):
-        self.logger.debug('Checking server file')
+        self.logger.info('Checking server file')
         try:
             os.rename(os.path.join(self.server_directory, 'server.txt'),
                       os.path.join(self.server_directory, 'server.txt'))  # rename file to same name to check if its being used by another server
@@ -123,14 +124,16 @@ class Envy:
         plugin_path = os.path.join(REPOPATH, 'envyRepo', 'envyCore', 'serverCore.py')
         self.logger.debug(f'server file path: {plugin_path}')
         cmd = ['python', plugin_path]
-        flags = subprocess.CREATE_NEW_CONSOLE | subprocess.HIGH_PRIORITY_CLASS
+        flags = subprocess.CREATE_NO_WINDOW | subprocess.HIGH_PRIORITY_CLASS
         result = self.check_server_file()
         self.logger.debug(f'Checking server file: {result}')
         if result:
+            self.logger.info('Launching Server')
             self.server = subprocess.Popen(cmd, creationflags=flags, env=os.environ.copy())
             await asyncio.sleep(2)
 
     async def start(self, role_override=None):
+        self.logger.info('Starting...')
         self.running = True
         self.client = client.Client(send_queue=self.client_send_queue, receive_queue=self.client_receive_queue, event_loop=self.event_loop,
                                     logger=self.logger)
@@ -164,8 +167,7 @@ class Envy:
 
         :return: int
         """
-        self.logger.debug('Connecting')
-        self.logger.debug(f'envy.connect: Purpose is {self.role}')
+        self.logger.info('Connecting')
         if self.role == Message_Purpose.SERVER:
             self.server_task = await self.start_server()
 
@@ -313,7 +315,7 @@ class Envy:
                 pass
 
         if self.restart_on_exit == True:
-            os.startfile(f"launch_envy.py", cwd=str(ENVYPATH), show_cmd=True)
+            os.startfile(f"launch_envy.pyw", cwd=str(ENVYPATH), show_cmd=True)
             quit()
 
 

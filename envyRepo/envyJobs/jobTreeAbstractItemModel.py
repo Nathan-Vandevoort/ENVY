@@ -456,7 +456,7 @@ class JobTreeItemModel(QAbstractItemModel):
             'Parameters': parameters,
         }
 
-        new_message = envyRepo.networkUtils.message.FunctionMessage(f'Job: {name} Allocation: {allocation}')
+        new_message = envyRepo.networkUtils.message.FunctionMessage(f'Job: {name} Allocation: {allocation_id}')
         new_message.set_function(job_type)
         new_message.format_arguments(json.dumps(data))
         new_message.set_target(Message_Purpose.CLIENT)

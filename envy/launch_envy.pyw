@@ -1,16 +1,22 @@
+import io
+
 # noinspection PyUnresolvedReferences
 from utils import config_bridge
 # noinspection PyUnresolvedReferences
 import envyRepo.prep_env  # this is important to prepare the virtual environment
-import asyncio
 import logging
 import os
+import sys
 from envyRepo.envyLib import envy_utils as eutils
-from envyRepo.envyCore.envyCore import Envy
+from envyRepo.envyLib import envy_logger
 from datetime import datetime
 import socket
+import qdarkstyle
+from envyRepo.envyUI.envyInstanceUI.envyMainWindow import EnvyMainWindow
+from qasync import QApplication, QEventLoop
+import io
 
-os.system('color')
+
 class CustomFormatter(logging.Formatter):
     # Define color codes
     grey = "\x1b[38;20m"
@@ -20,7 +26,7 @@ class CustomFormatter(logging.Formatter):
     reset = "\x1b[0m"
 
     # Define format
-    format = '%(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+    format = '%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
 
     FORMATS = {
         logging.DEBUG: grey + format + reset,
@@ -34,11 +40,6 @@ class CustomFormatter(logging.Formatter):
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
-
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(CustomFormatter())
 
 log_path = os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs', f'{socket.gethostname()}.log')
 if not os.path.isdir(os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs')):
@@ -55,17 +56,19 @@ with open(log_path, 'a') as file:
     file.close()
 
 log_handler = logging.FileHandler(log_path, 'a')
-log_handler.setFormatter(formatter)
+log_handler.setFormatter(CustomFormatter())
 
-logger = logging.getLogger(__name__)
-logger.addHandler(handler)
+stream = io.StringIO()
+logger = envy_logger.get_logger(stream, html=True, level=logging.DEBUG)
 logger.addHandler(log_handler)
-logger.setLevel(logging.DEBUG)
 
 if not os.path.isdir(os.path.join(config_bridge.Config.ENVYPATH, 'Jobs', 'Jobs')):
     eutils.make_job_directories()
 
-loop = asyncio.new_event_loop()
-envy = Envy(loop, logger=logger)
-envy_task = loop.create_task(envy.start())
+app = QApplication(sys.argv)
+loop = QEventLoop(app)
+app.setStyleSheet(qdarkstyle.load_stylesheet_pyside6())
+window = EnvyMainWindow(loop, app, logger, stream)
+window.show()
 loop.run_forever()
+sys.exit(app.exec())

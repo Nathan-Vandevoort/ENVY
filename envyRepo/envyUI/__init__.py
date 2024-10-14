@@ -9,6 +9,3 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 __all__ = ['jobTree', 'console_widget', 'mainWindow']
-
-from .mainWindow import MainWindow
-from .console_widget import ConsoleWidget

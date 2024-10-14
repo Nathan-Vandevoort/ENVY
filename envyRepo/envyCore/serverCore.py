@@ -13,6 +13,7 @@ import psutil
 ENVYPATH = os.environ['ENVYPATH']
 sys.path.insert(0, ENVYPATH)
 import envy.utils.config_bridge as config
+from datetime import datetime
 
 SRV = sys.modules.get('Server_Functions')
 
@@ -31,6 +32,10 @@ class Server:
         self.my_ip = socket.gethostbyname(self.hostname)
         self.running = False
         self.server_file = None
+        
+        # Set priority to high
+        process = psutil.Process(os.getpid())
+        process.nice(psutil.HIGH_PRIORITY_CLASS)
 
         configs = config.Config()
         self.port = configs.DISCOVERYPORT
@@ -302,7 +307,7 @@ class Server:
         parent = psutil.Process(os.getppid())
         while True:
             if not parent.is_running():
-                sys.exit()
+                quit(1)
             await asyncio.sleep(.5)
 
 if __name__ == '__main__':
@@ -331,12 +336,25 @@ if __name__ == '__main__':
             formatter = logging.Formatter(log_fmt)
             return formatter.format(record)
 
+    log_path = os.path.join(str(config.Config.ENVYPATH), 'Logs', f'SERVER_{socket.gethostname()}.log')
+    if not os.path.isdir(os.path.join(str(config.Config.ENVYPATH), 'Logs')):
+        os.makedirs(os.path.join(str(config.Config.ENVYPATH), 'Logs'))
 
-    handler = logging.StreamHandler()
-    handler.setFormatter(CustomFormatter())
+    if not os.path.isfile(log_path):
+        with open(log_path, 'w') as file:
+            file.close()
+    today = datetime.now()
+    current_time = today.strftime('%H:%M:%S')
+
+    with open(log_path, 'a') as file:
+        file.write(f'\n\n{today}\n{current_time}')
+        file.close()
+
+    log_handler = logging.FileHandler(log_path, 'a')
+    log_handler.setFormatter(CustomFormatter())
 
     logger = logging.getLogger(__name__)
-    logger.addHandler(handler)
+    logger.addHandler(log_handler)
     logger.setLevel(logging.DEBUG)
     receive_queue = Queue(maxsize=0)
     loop = asyncio.new_event_loop()
