@@ -1,6 +1,7 @@
 """
 ========================================================================================================================
 Name: maya_to_envy.py
+Author: Mauricio Gonzalez Soto
 ========================================================================================================================
 """
 import maya.api.OpenMaya as om
@@ -318,10 +319,10 @@ class MayaToEnvy(object):
         """Sets the start frame."""
         self.start_frame = frame
 
-    def set_tile_bounds(self, min: tuple, max: tuple) -> None:
+    def set_tile_bounds(self, minimum: tuple, maximum: tuple) -> None:
         """Sets the minimum and maximum coordinates for a tile"""
-        self.tile_bound_min = min
-        self.tile_bound_max = max
+        self.tile_bound_min = minimum
+        self.tile_bound_max = maximum
 
     def set_tiled_rendering_settings(self, min_bound=(0, 0), max_bound=(100, 100), image_output_prefix='<Scene>/<RenderLayer>/<Camera>_000'):
         self.tiled_rendering = True

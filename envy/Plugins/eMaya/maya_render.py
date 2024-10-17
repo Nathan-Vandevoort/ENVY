@@ -1,8 +1,10 @@
 """
 ========================================================================================================================
 Name: maya_render.py
+Author: Mauricio Gonzalez Soto
 ========================================================================================================================
 """
+import subprocess
 import asyncio
 import time
 import sys
@@ -51,7 +53,6 @@ class MayaRender(object):
         self.image_output_prefix = ''
 
         self.current_frame = 1
-        self.current_layer = 1
         self.progress = 0
         self.allocation_progress = 0
 
@@ -201,9 +202,7 @@ class MayaRender(object):
     async def calculate_render_progress(self, progress: int) -> None:
         """Calculates and print the render progress such as the current frame, layer."""
         if progress < self.progress:
-            if self.current_frame > self.end_frame:
-                self.current_frame = self.start_frame
-                self.current_layer += 1
+            self.current_frame += 1
 
         self.progress = progress
         remaining_tasks = len(self.task_list)
@@ -429,7 +428,8 @@ class MayaRender(object):
         self.render_subprocess = await asyncio.create_subprocess_exec(
             *command,
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE)
+            stderr=asyncio.subprocess.PIPE,
+            creationflags=subprocess.CREATE_NO_WINDOW)
 
     async def start_render_subprocess_tile(self) -> None:
         """Stats the render subprocess."""
@@ -451,4 +451,5 @@ class MayaRender(object):
         self.render_subprocess = await asyncio.create_subprocess_exec(
             *command,
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE)
+            stderr=asyncio.subprocess.PIPE,
+            creationflags=subprocess.CREATE_NO_WINDOW)
