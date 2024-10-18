@@ -102,7 +102,7 @@ class CameraWidget(QtWidgets.QWidget):
 
     def get_camera_name(self) -> str:
         """Gets the camera name."""
-        camera_name = self.camera_name_label.text()
+        camera_name = self.toolTip()
 
         return camera_name
 
@@ -126,7 +126,8 @@ class CameraWidget(QtWidgets.QWidget):
 
     def set_camera_name(self, name: str) -> None:
         """Sets the camera name."""
-        self.camera_name_label.setText(name)
+        self.camera_name_label.setText(name.split('|')[-1])
+        self.setToolTip(name)
 
     def set_start_frame(self, frame: int) -> None:
         """Sets the start frame."""

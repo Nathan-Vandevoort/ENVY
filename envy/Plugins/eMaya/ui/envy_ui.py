@@ -19,7 +19,6 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
-from functools import partial
 import webbrowser
 import sys
 import os
@@ -120,7 +119,7 @@ class EnvyUI(QtWidgets.QDialog):
         edit_menu.addAction('Reload', self.update_window)
 
         # Help menu.
-        help_menu = main_menu_bar.addMenu('Help')
+        help_menu = main_menu_bar.addMenu('Help on Envy')
         help_menu.addAction('Help', self.show_help)
 
     def create_widgets(self) -> None:
@@ -142,10 +141,12 @@ class EnvyUI(QtWidgets.QDialog):
 
         # Tiles X MSpinBox.
         self.tiles_x_spin_box = MSpinBox()
+        self.tiles_x_spin_box.setEnabled(False)
         self.tiles_x_spin_box.setRange(1, 100)
 
         # Tiles Y MSpinBox.
         self.tiles_y_spin_box = MSpinBox()
+        self.tiles_y_spin_box.setEnabled(False)
         self.tiles_y_spin_box.setRange(1, 100)
 
         # Export to Envy QPushButton.
@@ -154,7 +155,11 @@ class EnvyUI(QtWidgets.QDialog):
         self.export_to_envy_push_button.setStyleSheet('''
         QPushButton {
             background-color: rgb(30, 30, 30); 
-            border-radius: 5px;}''')
+            border-radius: 5px;}
+            
+        QPushButton:pressed {
+            background-color: rgb(50, 50, 50);
+            border: none;}''')
 
     def create_layouts(self) -> None:
         """Creates the layouts."""
@@ -233,23 +238,16 @@ class EnvyUI(QtWidgets.QDialog):
 
     def create_connections(self) -> None:
         """Creates the connections."""
-        self.export_to_envy_push_button.clicked.connect(self.export_to_envy_push_button_clicked)
         self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
         self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
+
+        self.use_tiled_rendering_check_box.toggled.connect(self.use_tiled_rendering_toggled_check_box)
+        self.export_to_envy_push_button.clicked.connect(self.export_to_envy_push_button_clicked)
 
     @staticmethod
     def show_help():
         """"""
         webbrowser.open('https://github.com/Nathan-Vandevoort/ENVY')
-
-    def create_call_backs(self) -> None:
-        """Creates the call-backs."""
-        om.MSceneMessage.addCallback(om.MSceneMessage.kAfterNew, self.update_window)
-        om.MSceneMessage.addCallback(om.MSceneMessage.kAfterOpen, self.update_window)
-
-    def create_script_jobs(self) -> None:
-        """Creates the script jobs."""
-        self.script_jobs.append(cmds.scriptJob(event=['DagObjectCreated', partial(self.update_window)]))
 
     def start_frame_spin_box_value_changed(self) -> None:
         """"""
@@ -258,6 +256,11 @@ class EnvyUI(QtWidgets.QDialog):
     def end_frame_spin_box_value_changed(self) -> None:
         """"""
         self.update_frame_range_spin_boxes_values()
+
+    def use_tiled_rendering_toggled_check_box(self, checked: bool) -> None:
+        """"""
+        self.tiles_x_spin_box.setEnabled(checked)
+        self.tiles_y_spin_box.setEnabled(checked)
 
     def export_to_envy_push_button_clicked(self):
         """Sets the Maya scene to Envy."""
@@ -288,7 +291,13 @@ class EnvyUI(QtWidgets.QDialog):
                             return
 
                         if use_tiled_rendering:
-                            image_output_prefix = '<Scene>/$RENDERLAYER/<Camera>_$TILEINDEX'
+                            image_output_prefix = cmds.getAttr('defaultRenderGlobals.imageFilePrefix')
+
+                            if image_output_prefix:
+                                image_output_prefix = f'{image_output_prefix}_$TILEINDEX'
+                            else:
+                                image_output_prefix = '<Scene>_<RenderLayer>_<Camera>/<Scene>_<RenderLayer>_<Camera>_$TILEINDEX'
+
                             divisions_x = self.tiles_x_spin_box.value()
                             divisions_y = self.tiles_y_spin_box.value()
                             divisions = self.compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y)
@@ -298,8 +307,7 @@ class EnvyUI(QtWidgets.QDialog):
                                 envy.set_tiled_rendering_settings(
                                     min_bound=min_max_pair[0],
                                     max_bound=min_max_pair[1],
-                                    image_output_prefix=image_output_prefix.replace('$RENDERLAYER', render_layer_name)
-                                )
+                                    image_output_prefix=image_output_prefix)
                                 envy.set_start_frame(start_frame)
                                 envy.set_end_frame(end_frame)
                                 envy.set_allocation(self.batch_size_spin_box.value())
