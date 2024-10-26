@@ -26,7 +26,6 @@ class Scheduler:
         self.logger.debug(f'Scheduler: allocating tasks for {computer_name}')
         for allocation in self.job_tree.pick_allocation():
             if allocation is None:
-                self.logger.debug('Scheduler: No more allocations to issue')
                 return False
             if self.check_allocation(allocation, computer=computer_name) is True:
                 self.logger.debug(f'Scheduler: Allocation ({allocation.name}) chosen for {computer_name}')

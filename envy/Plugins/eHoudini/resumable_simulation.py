@@ -2,7 +2,7 @@ import json, sys, os
 
 def set_environment(hip, job):
     hou.putenv('JOB', job)
-    hou.hipFile.load(hip)
+    hou.hipFile.load(hip, suppress_save_prompt=True, ignore_load_warnings=True)
 
 def set_parameters(parameter_dict: dict) -> None:
     for parm in parameter_dict:

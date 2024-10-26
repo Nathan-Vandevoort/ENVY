@@ -60,6 +60,7 @@ class EnvyMainWindow(QMainWindow):
         self.user_display_widget.append('ENVY')
 
         self.user_display_widget.setFontPointSize(12)
+        self.user_display_widget.append('Sign out if needed')
         self.user_display_widget.append('Created By: Nathan Vandevoort')
 
         self.user_display_widget.append(f'Initialized By: {username}')
