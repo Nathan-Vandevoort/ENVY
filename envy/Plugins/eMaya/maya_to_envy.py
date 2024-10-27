@@ -47,7 +47,9 @@ class MayaToEnvy(object):
         self.tiled_rendering = False
         self.tile_bound_min = (0, 0)
         self.tile_bound_max = (100, 100)
-        self.image_output_prefix = '<Scene>/<RenderLayer>/<Camera>_000'
+        self.image_output_prefix = ''
+
+        self.auto_save_maya_file = True
 
     def check_file_nodes_paths(self) -> list:
         """Checks the file nodes paths."""
@@ -156,7 +158,7 @@ class MayaToEnvy(object):
             'use_tiled_rendering': False
         }
 
-        if self.tiled_rendering is True:
+        if self.tiled_rendering:
             environment['use_tiled_rendering'] = True
             environment['tile_bound_min'] = self.tile_bound_min
             environment['tile_bound_max'] = self.tile_bound_max
@@ -290,18 +292,26 @@ class MayaToEnvy(object):
 
     def save_file(self) -> bool:
         """Saves the file."""
-        om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] File must be saved.')
+        if not cmds.file(query=True, modified=True):
+            return True
 
-        result = cmds.confirmDialog(
-            title='Export to Envy',
-            message='Maya file must be save it to export to Envy.\nDo you want to save it?',
-            button=['Yes', 'No'],
-            defaultButton='Yes',
-            cancelButton='No',
-            dismissString='No')
+        if self.auto_save_maya_file:
+            result = 'Yes'
+        else:
+            om.MGlobal.displayWarning(f'[{self.CLASS_NAME}] File must be saved.')
+
+            result = cmds.confirmDialog(
+                title='Export to Envy',
+                message='Maya file must be save it to export to Envy.\nDo you want to save it?',
+                button=['Yes', 'No'],
+                defaultButton='Yes',
+                cancelButton='No',
+                dismissString='No')
 
         if result == 'Yes':
             cmds.file(save=True)
+            om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] File saved.')
+
             return True
         else:
             om.MGlobal.displayError(f'[{self.CLASS_NAME}] Export to Envy aborted by the user. Maya file must be saved.')
@@ -310,6 +320,10 @@ class MayaToEnvy(object):
     def set_allocation(self, allocation: int) -> None:
         """Sets the allocation."""
         self.allocation = allocation
+
+    def set_auto_save_maya_file(self, save: bool) -> None:
+        """Sets the auto sava Maya file."""
+        self.auto_save_maya_file = save
 
     def set_end_frame(self, frame: int) -> None:
         """Sets the end frame."""
@@ -324,7 +338,8 @@ class MayaToEnvy(object):
         self.tile_bound_min = minimum
         self.tile_bound_max = maximum
 
-    def set_tiled_rendering_settings(self, min_bound=(0, 0), max_bound=(100, 100), image_output_prefix='<Scene>/<RenderLayer>/<Camera>_000'):
+    def set_tiled_rendering_settings(self, min_bound=(0, 0), max_bound=(100, 100), image_output_prefix=''):
+        """Sets the tiled rendering settings."""
         self.tiled_rendering = True
         self.tile_bound_min = min_bound
         self.tile_bound_max = max_bound
@@ -377,7 +392,3 @@ class MayaToEnvy(object):
             save_file = True
 
         return save_file
-
-
-if __name__ == '__main__':
-    maya_to_envy = MayaToEnvy()

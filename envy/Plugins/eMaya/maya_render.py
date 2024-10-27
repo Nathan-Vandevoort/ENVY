@@ -98,7 +98,8 @@ class MayaRender(object):
         self.maya_version = self.environment['maya_version']
 
         self.use_tiled_rendering = self.environment['use_tiled_rendering']
-        if self.use_tiled_rendering is True:
+
+        if self.use_tiled_rendering:
             self.tile_bound_min = self.environment['tile_bound_min']
             self.tile_bound_max = self.environment['tile_bound_max']
             self.image_output_prefix = self.environment['image_output_prefix']
@@ -322,26 +323,31 @@ class MayaRender(object):
 
         exit_code = await self.render_subprocess.wait()
 
+        self.logger.info(f'Exit code {exit_code}')
+
         if not self.user_terminated:
             if exit_code == 0:
                 await NV.finish_task_allocation(self.envy, self.allocation_id)
                 self.logger.info(f'{MayaRender.PLUGIN_NAME}: Render completed.')
             else:
-                if self.eval_return_code(exit_code) is True:
+                if self.eval_return_code(exit_code):
                     return
                 else:
-                    await NV.fail_task_allocation(self.envy, self.allocation_id, f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
+                    await NV.fail_task_allocation(
+                        self.envy,
+                        self.allocation_id,
+                        f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
+
                     self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Closing {MayaRender.PLUGIN_NAME}.')
 
     def eval_return_code(self, code):
-        if code == 3221225786:  # manual interrupt code (ctrl + c)
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} interrupt event')
+        if code == 3221225786:  # Manual interrupt code (ctrl + c)
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} interrupt event.')
             return True
-
-        elif code == 3221225477:  # invalid access error (I cant do shit about this so just try again I guess)
-            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} Invalid access error')
+        elif code == 3221225477:  # Invalid access error (I cant do shit about this so just try again I guess)
+            self.logger.error(f'{MayaRender.PLUGIN_NAME}: Code {code} Invalid access error.')
             return True
 
         return False

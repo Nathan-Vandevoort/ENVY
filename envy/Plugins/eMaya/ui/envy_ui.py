@@ -22,6 +22,7 @@ import maya.cmds as cmds
 import webbrowser
 import sys
 import os
+import re
 
 e_maya_ui_path = os.path.dirname(__file__)
 e_maya_path = os.path.dirname(e_maya_ui_path)
@@ -53,6 +54,10 @@ class EnvyUI(QtWidgets.QDialog):
     WINDOW_NAME = 'Envy'
     WINDOW_TITLE = 'EnvyUI'
 
+    ARNOLD = 'arnold'
+    REDSHIFT = 'redshift'
+    V_RAY = 'vray'
+
     window_instance = None
 
     def __init__(self, parent=maya_main_window()):
@@ -62,9 +67,12 @@ class EnvyUI(QtWidgets.QDialog):
 
         self.maya_to_envy = maya_to_envy.MayaToEnvy()
 
+        self.file_name_prefix_line_edit = None
         self.start_frame_spin_box = None
         self.end_frame_spin_box = None
         self.batch_size_spin_box = None
+        self.auto_save_file_check_box = None
+        self.increment_and_save_check_box = None
         self.use_tiled_rendering_check_box = None
         self.tiles_x_spin_box = None
         self.tiles_y_spin_box = None
@@ -119,11 +127,20 @@ class EnvyUI(QtWidgets.QDialog):
         edit_menu.addAction('Reload', self.update_window)
 
         # Help menu.
-        help_menu = main_menu_bar.addMenu('Help on Envy')
-        help_menu.addAction('Help', self.show_help)
+        help_menu = main_menu_bar.addMenu('Help')
+        help_menu.addAction('Help on Envy', self.show_help)
 
     def create_widgets(self) -> None:
         """Creates the widgets."""
+        # File name prefix QLineEdit.
+        self.file_name_prefix_line_edit = QtWidgets.QLineEdit()
+        self.file_name_prefix_line_edit.setReadOnly(True)
+        self.file_name_prefix_line_edit.setStyleSheet('''
+            QLineEdit {
+                background-color: rgb(40, 40, 40); 
+                border-radius: 5px;
+            }''')
+
         # Start frame MSpinBox.
         self.start_frame_spin_box = MSpinBox()
         self.start_frame_spin_box.setMaximum(10000)
@@ -135,6 +152,14 @@ class EnvyUI(QtWidgets.QDialog):
         # Batch size MSpinBox.
         self.batch_size_spin_box = MSpinBox()
         self.batch_size_spin_box.setMinimum(1)
+
+        # Auto sava file QCheckBox.
+        self.auto_save_file_check_box = QtWidgets.QCheckBox('Auto Save File')
+        self.auto_save_file_check_box.setChecked(True)
+
+        # Increment and save QCheckBox.
+        self.increment_and_save_check_box = QtWidgets.QCheckBox('Increment and Save')
+        self.increment_and_save_check_box.setChecked(True)
 
         # Use tiled rendering QCheckBox.
         self.use_tiled_rendering_check_box = QtWidgets.QCheckBox('Use Tiled Rendering')
@@ -196,10 +221,11 @@ class EnvyUI(QtWidgets.QDialog):
 
         # Render settings QFormLayout.
         render_settings_form_layout = QtWidgets.QFormLayout()
+        render_settings_form_layout.addRow('File Name Prefix: ', self.file_name_prefix_line_edit)
         render_settings_form_layout.addRow('Start Frame: ', self.start_frame_spin_box)
         render_settings_form_layout.addRow('End Frame: ', self.end_frame_spin_box)
         render_settings_form_layout.addRow('Batch Size: ', self.batch_size_spin_box)
-        render_settings_form_layout.setContentsMargins(80, 4, 4, 4)
+        render_settings_form_layout.setContentsMargins(30, 4, 4, 4)
         render_settings_form_layout.setSpacing(4)
         render_settings_group_box.setLayout(render_settings_form_layout)
 
@@ -215,8 +241,22 @@ class EnvyUI(QtWidgets.QDialog):
 
         # Advanced settings MFrameLayout.
         advanced_settings_frame_layout = frame_layout.MFrameLayout('Advanced Settings', main_right_widget)
-        advanced_settings_frame_layout.set_height(76)
+        advanced_settings_frame_layout.set_height(120)
         advanced_settings_main_v_box_layout.addWidget(advanced_settings_frame_layout)
+
+        # Save file QGroupBox.
+        save_file_group_box = QtWidgets.QGroupBox()
+        save_file_group_box.setStyleSheet(
+            'QGroupBox {background-color: rgb(60, 60, 60); border-radius: 5px;}')
+        advanced_settings_frame_layout.add_widget(save_file_group_box)
+
+        # Save file QFormLayout.
+        save_file_form_layout = QtWidgets.QFormLayout()
+        save_file_form_layout.addWidget(self.auto_save_file_check_box)
+        save_file_form_layout.addWidget(self.increment_and_save_check_box)
+        save_file_form_layout.setContentsMargins(112, 4, 4, 4)
+        save_file_form_layout.setSpacing(4)
+        save_file_group_box.setLayout(save_file_form_layout)
 
         # Tiled rendering QGroupBox.
         tiled_rendering_group_box = QtWidgets.QGroupBox()
@@ -229,7 +269,7 @@ class EnvyUI(QtWidgets.QDialog):
         tiled_rendering_form_layout.addWidget(self.use_tiled_rendering_check_box)
         tiled_rendering_form_layout.addRow('Tile X: ', self.tiles_x_spin_box)
         tiled_rendering_form_layout.addRow('Tile Y: ', self.tiles_y_spin_box)
-        tiled_rendering_form_layout.setContentsMargins(110, 4, 4, 4)
+        tiled_rendering_form_layout.setContentsMargins(80, 4, 4, 4)
         tiled_rendering_form_layout.setSpacing(4)
         tiled_rendering_group_box.setLayout(tiled_rendering_form_layout)
 
@@ -241,6 +281,7 @@ class EnvyUI(QtWidgets.QDialog):
         self.start_frame_spin_box.valueChanged.connect(self.start_frame_spin_box_value_changed)
         self.end_frame_spin_box.valueChanged.connect(self.end_frame_spin_box_value_changed)
 
+        self.auto_save_file_check_box.toggled.connect(self.auto_save_file_toggled_check_box)
         self.use_tiled_rendering_check_box.toggled.connect(self.use_tiled_rendering_toggled_check_box)
         self.export_to_envy_push_button.clicked.connect(self.export_to_envy_push_button_clicked)
 
@@ -257,6 +298,10 @@ class EnvyUI(QtWidgets.QDialog):
         """"""
         self.update_frame_range_spin_boxes_values()
 
+    def auto_save_file_toggled_check_box(self, checked: bool) -> None:
+        """"""
+        self.increment_and_save_check_box.setEnabled(checked)
+
     def use_tiled_rendering_toggled_check_box(self, checked: bool) -> None:
         """"""
         self.tiles_x_spin_box.setEnabled(checked)
@@ -266,6 +311,7 @@ class EnvyUI(QtWidgets.QDialog):
         """Sets the Maya scene to Envy."""
         jobs_exported = 0
         use_tiled_rendering = self.use_tiled_rendering_check_box.isChecked()
+        auto_save_file = self.auto_save_file_check_box.isChecked()
 
         for render_layer_widget in self.get_render_layers_items():  # FOR EACH LAYER
             if render_layer_widget.is_renderable():
@@ -286,24 +332,42 @@ class EnvyUI(QtWidgets.QDialog):
                             end_frame = self.end_frame_spin_box.value()
 
                         if end_frame < start_frame:
-                            om.MGlobal.displayError(
-                                f'[EnvyUI] Invalid frame range. Start frame: {start_frame} End frame: {end_frame}')
+                            message = f'Invalid frame range. Start frame: {start_frame} End frame: {end_frame}'
+
+                            om.MGlobal.displayError(message)
+
+                            message_box = QtWidgets.QMessageBox()
+                            message_box.setIcon(QtWidgets.QMessageBox.Critical)
+                            message_box.setText(message)
+                            message_box.setWindowTitle('Envy')
+                            message_box.exec_()
+
                             return
 
                         if use_tiled_rendering:
-                            image_output_prefix = cmds.getAttr('defaultRenderGlobals.imageFilePrefix')
+                            image_output_prefix = self.file_name_prefix_line_edit.text()
 
-                            if image_output_prefix:
-                                image_output_prefix = f'{image_output_prefix}_$TILEINDEX'
-                            else:
-                                image_output_prefix = '<Scene>_<RenderLayer>_<Camera>/<Scene>_<RenderLayer>_<Camera>_$TILEINDEX'
+                            if not image_output_prefix:
+                                message = 'There is no file name prefix set.'
 
+                                om.MGlobal.displayError(message)
+
+                                message_box = QtWidgets.QMessageBox()
+                                message_box.setIcon(QtWidgets.QMessageBox.Critical)
+                                message_box.setText(message)
+                                message_box.setWindowTitle('Envy')
+                                message_box.exec_()
+
+                                return
+
+                            image_output_prefix = f'{image_output_prefix}_$TILEINDEX'
                             divisions_x = self.tiles_x_spin_box.value()
                             divisions_y = self.tiles_y_spin_box.value()
                             divisions = self.compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y)
 
                             for i, min_max_pair in enumerate(divisions):
                                 envy = maya_to_envy.MayaToEnvy()
+                                envy.set_auto_save_maya_file(auto_save_file)
                                 envy.set_tiled_rendering_settings(
                                     min_bound=min_max_pair[0],
                                     max_bound=min_max_pair[1],
@@ -312,17 +376,52 @@ class EnvyUI(QtWidgets.QDialog):
                                 envy.set_end_frame(end_frame)
                                 envy.set_allocation(self.batch_size_spin_box.value())
                                 envy.export_to_envy(camera_name, render_layer_name, i)
+
                                 jobs_exported += 1
                         else:
                             envy = maya_to_envy.MayaToEnvy()
+                            envy.set_auto_save_maya_file(auto_save_file)
                             envy.set_start_frame(start_frame)
                             envy.set_end_frame(end_frame)
                             envy.set_allocation(self.batch_size_spin_box.value())
                             envy.export_to_envy(camera_name, render_layer_name, 0)
+
                             jobs_exported += 1
 
         if not jobs_exported:
-            om.MGlobal.displayWarning('[EnvyUI] No jobs exported.')
+            message = 'No jobs exported.'
+
+            om.MGlobal.displayError(message)
+
+            message_box = QtWidgets.QMessageBox()
+            message_box.setIcon(QtWidgets.QMessageBox.Critical)
+            message_box.setText(message)
+            message_box.setWindowTitle('Envy')
+            message_box.exec_()
+        else:
+            if auto_save_file:
+                if self.increment_and_save_check_box.isChecked():
+                    maya_file = cmds.file(query=True, sceneName=True)
+                    base_name, ext = os.path.splitext(maya_file)
+                    match = re.search(r'(\d+)(?!.*\d)', base_name)
+
+                    if match:
+                        num = match.group(1)
+                        new_num = str(int(num) + 1).zfill(len(num))
+                        new_base_name = base_name[:match.start()] + new_num
+                        new_maya_file = new_base_name + ext
+                    else:
+                        new_maya_file = f'{base_name}.0001{ext}'
+
+                    cmds.file(rename=new_maya_file)
+                    cmds.file(save=True)
+
+                    om.MGlobal.displayInfo(f'File saved as {new_maya_file}.')
+                else:
+                    if cmds.file(query=True, modified=True):
+                        cmds.file(save=True)
+
+                        om.MGlobal.displayInfo('File saved.')
 
     @staticmethod
     def compute_min_and_max_from_number_of_divisions(divisions_x, divisions_y) -> list:
@@ -342,7 +441,7 @@ class EnvyUI(QtWidgets.QDialog):
                 x_min = increment_x * division_x
                 x_max = increment_x * (division_x + 1)
 
-                min_max_pair_list.append(((x_min, y_min), (x_max, y_max)))
+                min_max_pair_list.append(((x_min, y_min), (x_max - 1, y_max - 1)))
 
         return min_max_pair_list
 
@@ -388,6 +487,27 @@ class EnvyUI(QtWidgets.QDialog):
     def update_window(self) -> None:
         """Updates the window."""
         self.create_render_layers_widgets()
+
+        current_render_engine = cmds.getAttr('defaultRenderGlobals.currentRenderer')
+
+        if current_render_engine == EnvyUI.ARNOLD:
+            window_title = 'Envy - Arnold'
+        elif current_render_engine == EnvyUI.REDSHIFT:
+            window_title = 'Envy - Redshift'
+        elif current_render_engine == EnvyUI.V_RAY:
+            window_title = 'Envy - V-Ray'
+        else:
+            window_title = f'Envy - {current_render_engine} (No Supported)'
+
+        self.setWindowTitle(window_title)
+
+        if current_render_engine == EnvyUI.V_RAY:
+            file_name_prefix = cmds.getAttr('vraySettings.fileNamePrefix')
+        else:
+            file_name_prefix = cmds.getAttr('defaultRenderGlobals.imageFilePrefix')
+
+        self.file_name_prefix_line_edit.setText(file_name_prefix)
+
         self.start_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.startFrame'))
         self.end_frame_spin_box.setValue(cmds.getAttr('defaultRenderGlobals.endFrame'))
 
