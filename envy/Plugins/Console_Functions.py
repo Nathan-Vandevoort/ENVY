@@ -18,12 +18,13 @@ abs_file = os.path.abspath(__file__)
 sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
 
 from utils.config_bridge import Config
-from envyRepo.networkUtils import message as m
-from envyRepo.networkUtils.message_purpose import Message_Purpose
-from envyRepo.envyLib import envy_utils as eutils
-from envyRepo.envyLib.colors import Colors as c
+from envy.lib.network import message as m
+from envy.lib import Message_Purpose
+from envy.lib.utils import utils as eutils
+from envy.lib.utils import Colors as c
 import shutil
 import json
+
 config = sys.modules.get('config_bridge')
 
 
@@ -39,7 +40,7 @@ async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     """
 
     if arg1 is None:  # Checks to see if arg1 is supplied during function call and if not prompt the user for arg1.
-        arg1 = input(f'{c.CYAN}What should Arg1 be (int)?{c.WHITE}')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/envyLib/Colors
+        arg1 = input(f'{c.CYAN}What should Arg1 be (int)?{c.WHITE}')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/utils/Colors
 
         try:  # Try to cast the argument to an integer
             arg1 = int(arg1)
@@ -47,20 +48,30 @@ async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
             console.display_error(f'Arg1 MUST be an integer: -> {e}')
             return
 
-    arg2 = input(f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
+    arg2 = input(
+        f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}'
+    )  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
 
-    classifier = await get_classifier(console)  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
-    valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/envyLib/envy_utils.py which validates that the user supplied classifier is a valid classifier
+    classifier = await get_classifier(
+        console
+    )  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
+    valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/utils/utils.py which validates that the user supplied classifier is a valid classifier
     if not valid:  # if the classifier is not valid tell the user and return
         console.display_error(f'Invalid classifier: {classifier}')
         return
 
-    new_message = m.FunctionMessage('EXAMPLE()')  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
-    new_message.set_target(Message_Purpose.CLIENT)  # Setting the target is important. Think about it like putting an address on a letter. The server will only execute functions with the target set to SERVER and vice versa with clients
+    new_message = m.FunctionMessage(
+        'EXAMPLE()'
+    )  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
+    new_message.set_target(
+        Message_Purpose.CLIENT
+    )  # Setting the target is important. Think about it like putting an address on a letter. The server will only execute functions with the target set to SERVER and vice versa with clients
     new_message.set_function('ENVY_EXAMPLE')  # setting the function to the name of the function in Envy_Functions.py that we want to call
     new_message.format_arguments(arg1, arg2=arg2)  # You set the arguments for the functions in here. As if you were doing it while calling the function
 
-    await send_to_clients(console, classifier, new_message)  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
+    await send_to_clients(
+        console, classifier, new_message
+    )  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
     # notice how in the above function we passed in our current console. Thats because ALL functions in Console_Functions.py need a reference to the current console even if its not used
 
 
@@ -186,11 +197,11 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     the server will then send copies of the function message to any clients which meet the classifier
     :param console: reference to console making the call
     :param classifier: (str) classifier
-    :param function_message: (networkUtils.message.FunctionMessage) A properly created FunctionMessage
+    :param function_message: (network.message.FunctionMessage) A properly created FunctionMessage
     :return: Void
     """
     message = m.Message(f'Pass on: {function_message}')
-    message.set_purpose(Message_Purpose.PASS_ON)
+    message.set_type(Message_Purpose.PASS_ON)
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)
@@ -256,7 +267,9 @@ async def version_mismatch(console, item_name: str, path_to_source: str, path_to
         return False
 
     if console.console_widget is None:
-        console.display_error(f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)')
+        console.display_error(
+            f'{item_name} version is mismatched from source. Would you like to update? (If you have customized {item_name} You will need to reimplement your customizations.)'
+        )
         result = input('Confirm (y/n)')
         result = result.rstrip().upper()
         if result == 'Y':
@@ -283,7 +296,9 @@ async def version_mismatch(console, item_name: str, path_to_source: str, path_to
             return False
 
     else:
-        reply = console.console_widget.show_confirmation(f'{item_name} version is mismatched from source.\nWould you like to update?\n(If you have customized {item_name} You will need to reimplement your customizations.)\nYou may need to reopen the console')
+        reply = console.console_widget.show_confirmation(
+            f'{item_name} version is mismatched from source.\nWould you like to update?\n(If you have customized {item_name} You will need to reimplement your customizations.)\nYou may need to reopen the console'
+        )
         if reply is True:
             if target_file_type == 'file':
                 if os.path.exists(path_to_target):
