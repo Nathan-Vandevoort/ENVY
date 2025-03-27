@@ -134,8 +134,8 @@ class MayaToEnvy(object):
             om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine {self.render_engine} not supported.')
             return
 
-        from envyRepo.envyJobs.enums import Purpose
-        import envyRepo.envyJobs.job as job
+        from envy.lib.jobs import Purpose
+        import envy.lib.jobs.job as job
 
         maya_file_name = Path(self.get_maya_file()).stem
         camera_short_name = cmds.ls(camera, shortNames=True)[0].replace(':', '')

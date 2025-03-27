@@ -1,18 +1,17 @@
-import utils.config_bridge as config
-import envyRepo.prep_env
+import envy.lib.utils.config as config
+import envy.lib.prep_env
 import os
 import sys
+
 REPOPATH = config.Config.REPOPATH
 sys.path.append(os.path.join(REPOPATH, os.path.pardir))
 import qdarkstyle
-from envyRepo.envyUI.mainWindow import MainWindow
+from envy.lib import MainWindow
 from qasync import QApplication, QEventLoop
-from PySide6.QtWidgets import QSplashScreen
-from PySide6.QtGui import QPixmap
 
-#import faulthandler
-#faulthandler.enable()
-#os.environ['QT_DEBUG_PLUGINS'] = '1'
+# import faulthandler
+# faulthandler.enable()
+# os.environ['QT_DEBUG_PLUGINS'] = '1'
 
 app = QApplication(sys.argv)
 

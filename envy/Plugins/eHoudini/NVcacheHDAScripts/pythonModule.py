@@ -17,8 +17,8 @@ import config_bridge as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
-from envyRepo.envyJobs import job as ej
-from envyRepo.envyJobs.enums import Purpose
+from envy.lib.jobs import job as ej
+from envy.lib.jobs import Purpose
 
 
 def createSimulationEnvyJob(node):
@@ -309,7 +309,7 @@ def createGenericEnvyJobs(myNode):
         generateDescriptiveFile = True
 
     # iterate over each job
-    envyJobsMultiParm = myNode.parm('envyJobs')
+    envyJobsMultiParm = myNode.parm('jobs')
     for i in range(envyJobsMultiParm.eval()):
         new_job = ej.Job(f'{job_name}_{str(i + 1).zfill(3)}')
         new_job.set_meta()

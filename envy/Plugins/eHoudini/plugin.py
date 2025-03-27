@@ -1,6 +1,7 @@
 """
 eHoudini.plugin.py: the handler for the houdini process
 """
+
 import asyncio
 import os
 import safe_exit
@@ -8,8 +9,8 @@ import subprocess
 import time
 import sys
 import json
-from envyRepo.envyJobs.enums import Status as Job_Status
-from envyRepo.envyLib import envy_utils as eutils
+from envy.lib.jobs import Status as Job_Status
+from envy.lib.utils import utils as eutils
 import re
 
 c = sys.modules.get('utils.config_bridge').Config
@@ -53,7 +54,7 @@ class Plugin:
             cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW
+            creationflags=subprocess.CREATE_NO_WINDOW,
         )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
@@ -68,8 +69,8 @@ class Plugin:
             cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW
-            )
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
 
@@ -83,7 +84,7 @@ class Plugin:
             cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW
+            creationflags=subprocess.CREATE_NO_WINDOW,
         )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
@@ -98,8 +99,8 @@ class Plugin:
             cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW
-            )
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
         self.logger.info(f'eHoudini: Started hython_process')
         return proc
 
@@ -148,7 +149,7 @@ class Plugin:
         await self.monitor_tasks()
 
         while self.hython_process.returncode is None:
-            await asyncio.sleep(.1)
+            await asyncio.sleep(0.1)
 
         self.logger.info(f'eHoudini: return code {self.hython_process.returncode}')
 
@@ -169,7 +170,7 @@ class Plugin:
 
         start_time = time.time()
         while self.hython_process.returncode is None:
-            time.sleep(.1)
+            time.sleep(0.1)
             if time.time() - start_time > timeout:
                 return False
             self.hython_process.terminate()
@@ -205,7 +206,7 @@ class Plugin:
     async def monitor_tasks(self):
         running = True
         while running:
-            await asyncio.sleep(.01)
+            await asyncio.sleep(0.01)
             for task in self.coroutines:
                 if task.done():
                     self.logger.debug(f'eHoudini: termination catalyst task -> {task.get_name()}')
@@ -281,7 +282,7 @@ class Plugin:
 
     async def monitor_envy(self) -> int:
         while self.envy.status == Job_Status.WORKING:
-            await asyncio.sleep(.5)
+            await asyncio.sleep(0.5)
         self.user_terminated = True
         return -1
 

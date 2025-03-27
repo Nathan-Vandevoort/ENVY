@@ -171,3 +171,19 @@ To put it simply the batch size is how many frames will Envy try to give each co
 
 For Example: if you have 100 frames to render and a batch size of 10 then 10 computers will be able to work on your job. This can be not optimal if you have 20 computers running envy as 10 of them wont have any work. 
 In this case you may want to set a lower batchsize such as 5. If you dont want to worry about batch size just leave it at 1.
+
+## Contributing
+Create a virtual environment
+```shell
+python -m venv venv
+```
+
+activate the virtual environment
+```shell
+venv/Scripts/activate
+```
+
+to install dependencies 
+```shell
+pip install .
+```

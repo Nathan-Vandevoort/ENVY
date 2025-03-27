@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+venv
 *.py[cod]
 *$py.class
 
@@ -13,8 +14,8 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+.run/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -44,6 +45,8 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.idea/*
+envy/Connections/*
 .nox/
 .coverage
 .coverage.*
@@ -170,3 +173,4 @@ cython_debug/
 /envy/HDAs/NV_jobSubmitter/backup/
 /envy/Connections/
 /envy/Jobs/
+/.run/

@@ -11,7 +11,7 @@ import sys
 import re
 import os
 
-from envyRepo.envyJobs.enums import Status
+from envy.lib.jobs import Status
 
 config = sys.modules.get('utils.config_bridge').Config
 NV = sys.modules.get('Envy_Functions')

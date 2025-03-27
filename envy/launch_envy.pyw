@@ -1,22 +1,18 @@
-import io
-
 # noinspection PyUnresolvedReferences
-from utils import config_bridge
 # noinspection PyUnresolvedReferences
-import envyRepo.prep_env  # this is important to prepare the virtual environment
+import envy.lib.prep_env  # this is important to prepare the virtual environment
 import logging
 import os
 import sys
-from envyRepo.envyLib import envy_utils as eutils
-from envyRepo.envyLib import envy_logger
+from envy.lib.utils import utils as eutils, logger, config
 from datetime import datetime
 import socket
 import qdarkstyle
-from envyRepo.envyUI.envyInstanceUI.envyMainWindow import EnvyMainWindow
+from envy.lib.gui.envyInstanceUI.envyMainWindow import EnvyMainWindow
 from qasync import QApplication, QEventLoop
 import io
 
-log_path = os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs', f'{socket.gethostname()}.log')
+log_path = os.path.join(str(config.Config.ENVYPATH), 'Logs', f'{socket.gethostname()}.log')
 if not os.path.isdir(os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs')):
     os.makedirs(os.path.join(str(config_bridge.Config.ENVYPATH), 'Logs'))
 
@@ -36,7 +32,7 @@ stream = io.StringIO()
 logger = envy_logger.get_logger(stream, html=True, level=logging.INFO)
 logger.addHandler(log_handler)
 
-if not os.path.isdir(os.path.join(config_bridge.Config.ENVYPATH, 'Jobs', 'Jobs')):
+if not os.path.isdir(os.path.join(config.Config.ENVYPATH, 'Jobs', 'Jobs')):
     eutils.make_job_directories()
 
 app = QApplication(sys.argv)

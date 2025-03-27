@@ -22,7 +22,7 @@ __version__ = "1.0.0"
 
 import os, subprocess
 import asyncio
-from envyRepo.envyJobs.enums import Status  # this module is in the ENVYREPO and provides useful information such as job status
+from envy.lib.jobs import Status  # this module is in the ENVYREPO and provides useful information such as job status
 import sys
 import json
 import time
