@@ -27,7 +27,7 @@ class MessageHandler:
             # Creates a copy of the queue to run over so there are no race conditions
             # where the queue grows mid-loop.
             if self._process_queue.not_empty:
-                process_list = list(self._process_queue)
+                process_list = list(self._process_queue.queue)
                 self._process_queue.empty()
                 end = False
                 for m in process_list:
