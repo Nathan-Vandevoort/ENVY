@@ -35,6 +35,11 @@ class ANSIFormatter(logging.Formatter):
             color = self.INFO
 
         log = f'{color}{self.prefix}{time} - {record.name}.{record.funcName} - {record.levelname} - {record.getMessage()}{self.reset}'
+
+        # If the log record has exception information include that.
+        if record.exc_info:
+            log += f'\n{self.formatException(record.exc_info)}'
+
         return log
 
 
