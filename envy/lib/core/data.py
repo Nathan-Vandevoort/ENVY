@@ -26,3 +26,9 @@ class ClientState:
     status: ClientStatus = ClientStatus.IDLE
     job_id: int | None = None
     task_id: int | None = None
+
+
+@dataclasses.dataclass
+class Console:
+    ip: str
+    socket: WebSocketServerProtocol

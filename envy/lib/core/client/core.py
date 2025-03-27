@@ -54,3 +54,15 @@ def on_disconnect() -> None:
     interpreter_path = sys.executable
     subprocess.Popen([interpreter_path, server_path])
 
+
+if __name__ == '__main__':
+    root_logger = logger.root
+    root_logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler()
+    handler.setFormatter(ANSIFormatter(prefix='Client'))
+    root_logger.addHandler(handler)
+
+    logging.getLogger('websockets').setLevel(logging.INFO)
+
+    client = Client()
+    client.start()

@@ -116,3 +116,14 @@ class Server:
             await asyncio.sleep(LOCK_INTERVAL)
 
 
+if __name__ == '__main__':
+    root_logger = logger.root
+    root_logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler()
+    handler.setFormatter(ANSIFormatter(prefix='Server'))
+    root_logger.addHandler(handler)
+
+    logging.getLogger('websockets').setLevel(logging.INFO)
+
+    server = Server()
+    server.start()
