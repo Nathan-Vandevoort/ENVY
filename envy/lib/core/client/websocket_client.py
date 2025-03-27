@@ -1,4 +1,5 @@
 import json
+import queue
 import typing
 
 import websockets
@@ -25,18 +26,18 @@ class WebsocketClient:
     def __init__(self):
         self.websocket: websockets.WebSocketClientProtocol | None = None
         self.client_state = ClientState(name=socket.gethostname())
-        self._send_queue = asyncio.Queue()
-        self._receive_queue = asyncio.Queue()
+        self._send_queue = queue.Queue()
+        self._receive_queue = queue.Queue()
         self.disconnection_callback: typing.Callable | None = None
 
         # Init task runner.
         self.task_runner = TaskRunner()
         self.task_runner.suppress_error(websockets.exceptions.ConnectionClosedError)
 
-    def send_queue(self) -> asyncio.Queue:
+    def send_queue(self) -> queue.Queue:
         return self._send_queue
 
-    def receive_queue(self) -> asyncio.Queue:
+    def receive_queue(self) -> queue.Queue:
         return self._receive_queue
 
     async def start(self) -> None:

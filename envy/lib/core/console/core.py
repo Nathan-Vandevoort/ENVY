@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import logging
+
 from envy.lib.core.console.websocket_console import WebsocketConsole
 from envy.lib.core.message_handler import MessageHandler
 from envy.lib.core.taskrunner import TaskRunner
@@ -23,6 +26,10 @@ class Console:
         self.message_handler.set_process_queue(self.receive_queue)
         self.message_handler.module = 'CONSOLE'
 
+    @property
+    def connected(self):
+        return self.websocket_console.connected
+
     async def start(self):
         logger.info(f'Starting console...')
         self.task_runner.create_task(self.websocket_console.start(), 'websocket console')
@@ -35,3 +42,7 @@ class Console:
             logger.debug(f'{m!r}')
             return None
         self.send_queue.put(m)
+
+    def run(self, command: str) -> None:
+        """Queues the command to be run."""
+        self.send_queue.put(command)

@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import queue
 import socket
 import typing
 from json import JSONDecodeError
@@ -25,7 +26,7 @@ class WebsocketServer:
         self.ip = socket.gethostbyname(socket.gethostname())
         self.server: typing.Awaitable[websockets.WebSocketServer] | None = None
         self._key = get_hash()
-        self._message_queue = asyncio.Queue()
+        self._message_queue = queue.Queue()
         self._clients: dict[str, Client] = {}
         self._consoles: dict[str, Console] = {}
 
@@ -146,18 +147,18 @@ class WebsocketServer:
             logger.warning(f'{console_name}: Connection closed with error ({e})')
 
     def unregister_client(self, client_name: str) -> None:
-        logger.debug(f'Unregistering client {client_name}...')
         if client_name not in self._clients:
             logger.warning(f'Cannot unregister client because client is not registered: {client_name}')
             return
         del self._clients[client_name]
+        logger.debug(f'Unregistered client {client_name}.')
 
     def unregister_console(self, console_name: str) -> None:
-        logger.debug(f'Unregistering console {console_name}...')
         if console_name not in self._consoles:
             logger.warning(f'Cannot unregister console because console is not registered: {console_name}')
             return
         del self._consoles[console_name]
+        logger.debug(f'Unregistered console {console_name}.')
 
     async def start(self):
         logger.debug(f'Started')

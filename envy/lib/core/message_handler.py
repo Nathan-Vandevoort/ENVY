@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import asyncio
+import queue
 from ast import PyCF_ALLOW_TOP_LEVEL_AWAIT
 
 from envy.lib.network import message
@@ -12,23 +13,32 @@ logger = logging.getLogger(__name__)
 
 class MessageHandler:
     def __init__(self):
-        self._process_queue: asyncio.Queue = asyncio.Queue()
+        self._process_queue: queue.Queue = queue.Queue()
         self.module = 'self'
 
-    def set_process_queue(self, queue: asyncio.Queue) -> None:
-        self._process_queue = queue
+    def set_process_queue(self, process_queue: queue.Queue) -> None:
+        self._process_queue = process_queue
 
     async def start(self):
         """Starts the execution loop"""
 
         logger.debug(f'Starting...')
         while True:
-            m = await self._process_queue.get()
-            if m is None:
-                logger.debug('Breaking execution loop')
-                break
-
-            await self._handle_message(m)
+            # Creates a copy of the queue to run over so there are no race conditions
+            # where the queue grows mid-loop.
+            if self._process_queue.not_empty:
+                process_list = list(self._process_queue)
+                self._process_queue.empty()
+                end = False
+                for m in process_list:
+                    if m is None:
+                        end = True
+                        break
+                    await self._handle_message(m)
+                if end:
+                    logger.debug('Breaking execution loop')
+                    break
+            await asyncio.sleep(.5)
 
     def stop(self):
         """

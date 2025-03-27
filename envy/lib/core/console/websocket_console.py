@@ -1,4 +1,5 @@
 import json
+import queue
 import typing
 
 import websockets
@@ -24,8 +25,8 @@ class WebsocketConsole:
 
     def __init__(self):
         self.websocket: websockets.WebSocketClientProtocol | None = None
-        self._send_queue = asyncio.Queue()
-        self._receive_queue = asyncio.Queue()
+        self._send_queue = queue.Queue()
+        self._receive_queue = queue.Queue()
         self.disconnection_callback: typing.Callable | None = None
 
         # Init task runner.
@@ -34,10 +35,10 @@ class WebsocketConsole:
 
         self.connected = False
 
-    def send_queue(self) -> asyncio.Queue:
+    def send_queue(self) -> queue.Queue:
         return self._send_queue
 
-    def receive_queue(self) -> asyncio.Queue:
+    def receive_queue(self) -> queue.Queue:
         return self._receive_queue
 
     async def start(self) -> None:
@@ -52,6 +53,8 @@ class WebsocketConsole:
                 await asyncio.sleep(5)
                 continue
 
+            logger.info(f'Connected!')
+            logger.debug(f'{server_ip=}')
             self.connected = True
             while self.websocket.open:
                 await asyncio.sleep(0.5)
