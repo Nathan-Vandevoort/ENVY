@@ -1,19 +1,16 @@
+import asyncio
 import json
+import logging
 import queue
 import typing
 
 import websockets
-import asyncio
-import socket
-
-import logging
 
 from envy.lib.core.taskrunner import TaskRunner
-from envy.lib.network.types import ConnectionType
-from envy.lib.network.message import Message, build_from_message_dict, MessageTarget
-from envy.lib.utils.utils import get_hash
 from envy.lib.db.utils import get_server_ip
-from envy.lib.core.data import ClientState
+from envy.lib.network.message import Message, build_from_message_dict, MessageTarget
+from envy.lib.network.types import ConnectionType
+from envy.lib.utils.utils import get_hash
 
 PORT = 3720
 TIMEOUT = 5
@@ -23,9 +20,8 @@ logger = logging.getLogger(__name__)
 
 class WebsocketClient:
 
-    def __init__(self):
+    def __init__(self, state_callback: typing.Callable):
         self.websocket: websockets.WebSocketClientProtocol | None = None
-        self.client_state = ClientState(name=socket.gethostname())
         self._send_queue = queue.Queue()
         self._receive_queue = queue.Queue()
         self.disconnection_callback: typing.Callable | None = None
@@ -33,6 +29,10 @@ class WebsocketClient:
         # Init task runner.
         self.task_runner = TaskRunner()
         self.task_runner.suppress_error(websockets.exceptions.ConnectionClosedError)
+
+        # State
+        self.connected = False
+        self.state_callback = state_callback
 
     def send_queue(self) -> queue.Queue:
         return self._send_queue
@@ -51,9 +51,13 @@ class WebsocketClient:
                 logger.debug(f'Failed to connect: {e}')
                 continue
 
+            self.connected = True
+            logger.info('Connected!')
+            logger.debug(f'{server_ip=}')
             while self.websocket.open:
                 await asyncio.sleep(0.5)
 
+            self.connected = False
             logger.error(f'Lost connection with server.')
             self.task_runner.stop()
             self.task_runner.create_task(self.consumer(), 'Consumer')
@@ -75,13 +79,14 @@ class WebsocketClient:
         # TODO: update exceptions
         uri = f"ws://{server_ip}:{PORT}/{ConnectionType.CLIENT}"
         logger.info(f'Connecting to {server_ip}')
+        state = self.state_callback()
 
         headers = {
             'passkey': get_hash(),
-            'name': self.client_state.name,
-            'status': self.client_state.status.value,
-            'job': self.client_state.job_id,
-            'task': self.client_state.task_id,
+            'name': state.name,
+            'status': state.status.value,
+            'job': state.job_id,
+            'task': state.task_id,
         }
 
         websocket = await websockets.connect(uri, extra_headers=headers, timeout=TIMEOUT)
@@ -131,5 +136,5 @@ class WebsocketClient:
                 logger.debug(f'message = {message_object.as_dict()}')
                 continue
 
-            await self._receive_queue.put(message_object)
+            self._receive_queue.put(message_object)
             logger.debug(f'Processed message {message_object!r}')
