@@ -12,20 +12,12 @@ class ClientStatus(Enum):
 
 @dataclasses.dataclass
 class Client:
-    ip: str
-    socket: WebSocketServerProtocol
-    status: ClientStatus
-    job: int | None
-    task: int | None
-
-
-@dataclasses.dataclass
-class ClientState:
     name: str
-    connected: bool = False
-    status: ClientStatus = ClientStatus.IDLE
+    status: ClientStatus
     job_id: int | None = None
     task_id: int | None = None
+    ip: str | None = None
+    socket: WebSocketServerProtocol | None = None
 
 
 @dataclasses.dataclass

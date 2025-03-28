@@ -13,7 +13,7 @@ from envy.lib.network.types import ConnectionType
 from envy.lib.network.message import Message, build_from_message_dict, MessageTarget
 from envy.lib.utils.utils import get_hash
 from envy.lib.db.utils import get_server_ip
-from envy.lib.core.data import ClientState
+from envy.lib.core.data import Client
 
 PORT = 3720
 TIMEOUT = 5

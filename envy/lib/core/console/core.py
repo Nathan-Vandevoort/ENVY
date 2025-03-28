@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import socket
 from abc import abstractmethod
 
 from envy.lib.core.console.websocket_console import WebsocketConsole
@@ -27,6 +28,9 @@ class Console:
         self.message_handler.flush_interval = 0.05
         self.message_handler.set_process_queue(self.receive_queue)
 
+        # State
+        self.name = socket.gethostname()
+
     @property
     def connected(self):
         return self.websocket_console.connected
@@ -37,7 +41,7 @@ class Console:
         self.task_runner.create_task(self.message_handler.start(), 'message handler')
         self.task_runner.start()
 
-    def send_message(self, m: Message) -> None:
+    def send(self, m: Message) -> None:
         if not issubclass(type(m), Message):
             logger.error(f'Invalid message.')
             logger.debug(f'{m!r}')

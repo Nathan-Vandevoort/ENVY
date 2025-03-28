@@ -8,7 +8,9 @@ from envy.Plugins import Envy_Functions  # noqa
 from envy.lib.core.taskrunner import TaskRunner
 from envy.lib.core.message_handler import MessageHandler
 from envy.lib.core.client.websocket_client import WebsocketClient
-from envy.lib.core.data import ClientState, ClientStatus
+from envy.lib.core.data import Client as ClientState
+from envy.lib.core.data import ClientStatus
+from envy.lib.network.message import FunctionMessage, Message
 from envy.lib.utils.logger import ANSIFormatter
 
 logger = logging.getLogger(__name__)
@@ -28,7 +30,7 @@ class Client:
         process_queue = self._websocket_client.receive_queue()
         self._message_handler.set_process_queue(process_queue)
 
-        #State
+        # State
         self.name: str = socket.gethostname()
         self.status: ClientStatus = ClientStatus.IDLE
         self.job_id: int | None = None
@@ -50,13 +52,19 @@ class Client:
     def state(self) -> ClientState:
         state = ClientState(
             name=self.name,
-            connected=self.connected,
             status=self.status,
             job_id=self.job_id,
             task_id=self.task_id,
-                            )
+        )
         return state
 
+    def send(self, message: Message) -> None:
+        if not issubclass(type(message), Message):
+            logger.error(f'Discarding invalid message.')
+            logger.debug(f'{message.as_dict()=}')
+            return
+        logger.debug(f'Sending {message}.')
+        self._websocket_client.send_queue().put(message)
 
     def on_disconnect(self) -> None:
         """A callback to be run when the client disconnects from the server."""

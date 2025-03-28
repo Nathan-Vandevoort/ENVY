@@ -89,28 +89,28 @@ class WebsocketServer:
             self.unregister_console(connection_name)
 
     def register_client(self, ip: str, websocket: WebSocketServerProtocol, headers: dict) -> bool:
-        try:
-            name = headers.get('name')
-            status = headers.get('status')
-            job = headers.get('job')
-            task = headers.get('task')
-        except ValueError as e:
-            logger.error(f'Failed to register client: {e}')
-            logger.debug(f'Headers were: {headers}')
+        name = headers.get('name')
+        status = headers.get('status')
+        job = headers.get('job')
+        task = headers.get('task')
+
+        if None in (name, status, job, task):
+            logger.error(f'Failed to register client - Invalid headers.')
             return False
 
         try:
             status = ClientStatus(status)
         except ValueError as e:
             logger.error(f'{name} has an invalid status: {status}')
-            raise ValueError from e
+            return False
 
         new_client = Client(
+            name=name,
             ip=ip,
             socket=websocket,
             status=status,
-            job=job,
-            task=task,
+            job_id=job,
+            task_id=task,
         )
 
         self._clients[name] = new_client
@@ -120,7 +120,6 @@ class WebsocketServer:
     def register_console(self, console: str, ip: str, websocket: WebSocketServerProtocol) -> bool:
         self._consoles[console] = Console(ip=ip, socket=websocket)
         logger.info(f'Registered console: {console}')
-        # TODO: Should the server write clients to the database?
         # await SRV.send_clients_to_console(self)
         return True
 

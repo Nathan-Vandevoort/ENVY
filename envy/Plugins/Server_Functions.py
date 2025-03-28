@@ -1,22 +1,45 @@
 import logging
-import sys, os
+
 import websockets
 
-from envy.lib.core.data import Client
+from envy.lib.core.data import Client, ClientStatus
 from envy.lib.network.message import Message, FunctionMessage
-from envy.lib.network.message import MessageTarget, MessageType
-import json
+from envy.lib.network.message import MessageTarget
 
 logger = logging.getLogger(__name__)
+
+
+async def update_client_state(server, state: dict) -> None:
+    status_string = state.get('status')
+    if status_string:
+        status = ClientStatus(status_string)
+    else:
+        status = None
+    name = state.get('name')
+    task_id = state.get('task_id')
+    job_id = state.get('job_id')
+
+    if None in (status, task_id, job_id, name):
+        logger.debug(f'{status=}, {task_id=}, {job_id=}')
+        raise ValueError(f'malformed state')
+
+    client_state = server.clients[name]
+
+    # Only update the attributes which will realistically update
+    client_state.task_id = task_id
+    client_state.job_id = job_id
+    client_state.status = status
+
+
+async def send_client_state(server, client: str) -> None:
+    client_data = server.clients.get(client)
+    if not client_data:
+        raise ValueError(f'client does not exist')
 
 
 async def send_to_console(server, console: str, message: (Message, FunctionMessage)) -> None:
     """
     send a network.message object to a console
-    :param server: reference to server calling the function
-    :param console: (str) name of console to send message to
-    :param message: network.message object to send to client
-    :return: Void
     """
     server.logger.debug(f'sending message: {message} to console: {console}')
     ws = server.consoles[console]['Socket']
@@ -27,10 +50,6 @@ async def send_to_console(server, console: str, message: (Message, FunctionMessa
 async def send_to_client(server, client_name: str, message: (Message, FunctionMessage)) -> None:
     """
     Send a network.message object to a client
-    :param server: reference to server calling the function
-    :param client_name: (str) name of client to send message to
-    :param message: network.message object to send to client
-
     :raises RuntimeError: If the message failed to send
     """
 
@@ -49,83 +68,9 @@ async def send_to_client(server, client_name: str, message: (Message, FunctionMe
         raise RuntimeError(f'failed to send message to {client_name}')
 
 
-async def send_attribute_to_client(server, client: str, attribute: str, buffer_name: str) -> None:
-    """
-    Sends the value of any attribute on the server object to any client
-    :param server: reference to server calling the function
-    :param client: (str) name of client to send message to
-    :param attribute: (str) name of attribute to send
-    :param buffer_name: (str) name of buffer on client you want to fill
-    :return: Void
-    """
-    attribute = getattr(server, attribute)
-    message = FunctionMessage(f'send_attribute_to_client(): {attribute}')
-    message.set_type(MessageType.FUNCTION_MESSAGE)
-    message.set_target(MessageTarget.CLIENT)
-    message.set_function('fill_buffer')
-    message.format_arguments(buffer_name, attribute)
-    message.set_name(message.as_function())
-    await send_to_client(server, client, message)
-
-
-async def send_clients_to_console(server, target_consoles: (str, list) = None) -> None:
-    """
-    Send all currently connected clients to a particular console or a list of consoles
-    :param server: reference to server calling the function
-    :param target_consoles: (str) or (list) name of consoles to send to
-    :return: Void
-    """
-    if isinstance(target_consoles, str):
-        target_consoles = [target_consoles]
-
-    if not target_consoles:
-        target_consoles = list(server.consoles)
-
-    clients = server.clients
-    clients = {k: {k2: v2 for k2, v2 in v.items() if k2 != 'Socket'} for k, v in clients.items()}
-
-    server.logger.debug(f'sending (clients) to console: {target_consoles}')
-    for console in target_consoles:
-        message = FunctionMessage(f'send_clients_to_console()')
-        message.set_target(MessageTarget.CONSOLE)
-        message.set_function('set_clients')
-        message.format_arguments(data=clients)
-        await send_to_console(server, console, message)
-
-
-async def send_attribute_to_console(server, attribute: str, buffer_name: str, target_consoles: (str, list) = None) -> None:
-    """
-    Sends the value of any attribute on the server object to any client
-    :param server: reference to server calling the function
-    :param attribute: (str) name of attribute to send
-    :param buffer_name: (str) name of buffer on console you want to fill
-    :param target_consoles: (str) | (list) of console names
-    :return: Void
-    """
-    if isinstance(target_consoles, str):
-        target_consoles = [target_consoles]
-
-    if not target_consoles:
-        target_consoles = list(server.consoles)
-
-    server.logger.debug(f'sending ({attribute}) to console: {target_consoles}')
-    attribute = getattr(server, attribute)
-    message = FunctionMessage(f'set server name')
-    message.set_type(MessageType.FUNCTION_MESSAGE)
-    message.set_target(MessageTarget.CONSOLE)
-    message.set_function('fill_buffer')
-    message.format_arguments(buffer_name, attribute)
-    message.set_name(message.as_function())
-    for console in target_consoles:
-        await send_to_console(server, console, message)
-
-
 async def send_to_consoles(server, message: (Message, FunctionMessage)) -> None:
     """
     sends a message to every console connected to the server
-    :param server: a reference to the server object calling
-    :param message: (network.message.Message) | (network.message.FunctionMessage)
-    :return: Void
     """
     for console in server.consoles:
         try:
@@ -137,42 +82,14 @@ async def send_to_consoles(server, message: (Message, FunctionMessage)) -> None:
 async def send_to_clients(server, clients: list, message: (Message, FunctionMessage)) -> None:
     """
     sends a message to every client connected to the server
-    :param server: reference to the server making the function call
-    :param clients: list of client names to send message to
-    :param message: (network.message.Message) | (network.message.FunctionMessage)
-    :return: Void
     """
     for client in clients:
         await send_to_client(server, client, message)
 
 
-async def stop_client(server, client: str, hold_until: bool = False) -> None:
-    new_message = FunctionMessage(f'Stop_Working -> {client}')
-    new_message.set_target(MessageTarget.CLIENT)
-    new_message.set_function('stop_working')
-    new_message.format_arguments(hold_until)
-
-    await send_to_client(server, client, new_message)
-
-
-async def update_client_attribute(server, client: str, attribute_name: str, attribute_value: any) -> None:
-    """
-    updates any client_attribute with any value
-    :param server: reference to the server making the call
-    :param client: client which is being updated
-    :param attribute_name: name of attribute to update
-    :param attribute_value: value to update to
-    :return: Void
-    """
-    server.clients[client][attribute_name] = attribute_value
-
-
 async def mark_task_as_finished(server, task_id: int) -> None:
     """
     Marks a task as finished in the scheduler
-    :param server: reference to the server making the call
-    :param task_id: task ID to mark as finished
-    :return: Void
     """
     new_message = FunctionMessage('mark_task_as_finished()')
     new_message.set_target(MessageTarget.CONSOLE)
@@ -194,10 +111,6 @@ async def mark_job_as_finished(server, job_id: int, from_console: bool = False) 
 async def mark_allocation_as_finished(server, allocation_id: int, from_console: bool = False) -> None:
     """
     Marks an allocation of tasks as finished in the scheduler
-    :param server: Reference to the server making the call
-    :param allocation_id: Allocation ID to mark as finished
-    :param from_console: (bool) specifies if this function is a command from the console or just an envy instance reporting its completion
-    :return: Void
     """
     new_message = FunctionMessage('mark_allocation_as_finished()')
     new_message.set_target(MessageTarget.CONSOLE)
@@ -218,10 +131,6 @@ async def mark_allocation_as_started(server, allocation_id: int, computer: str) 
 async def mark_task_as_started(server, task_id: int, computer: str) -> None:
     """
     Marks a task as started in the scheduler
-    :param server: Reference to the server making the call
-    :param task_id: ID of the task to mark as started
-    :param computer: name of the computer starting the task
-    :return: Void
     """
 
     new_message = FunctionMessage('mark_task_as_started()')
