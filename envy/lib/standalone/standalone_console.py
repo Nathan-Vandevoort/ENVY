@@ -1,34 +1,54 @@
+import sys
 import asyncio
 import logging
 
 from envy.lib.core.console.core import Console
-from envy.lib.core.taskrunner import TaskRunner
+from envy.lib.utils.logger import ANSIFormatter
 
 logger = logging.getLogger(__name__)
 
 
-class StandaloneConsole:
-
-    def __init__(self) -> None:
-
-        # Init console core.
-        self.console = Console()
-
-        # Init task runner.
-        self.task_runner = TaskRunner()
+class StandaloneConsole(Console):
 
     def start(self) -> None:
-        self.task_runner.create_task(self.console.start(), 'Console Core')
-        logger.debug(f'running')
-        self.task_runner.start()
+        self.task_runner.create_task(self.gather_input(), 'Gather Input')
+        super().start()
+
+    async def gather_input(self):
+        logger.debug(f'Gathering input...')
+        while True:
+            user_input = await self.input(f'User Input: ')
+            user_input = user_input.strip()
+
+            if not self.connected:
+                logger.warning('Console is not connected to Envy network.')
+            self.run(user_input)
+
+    @staticmethod
+    async def input(input_string: str) -> str:
+        """Acts as an async version if the input() function"""
+        await asyncio.to_thread(write_and_flush, input_string)
+        return await asyncio.to_thread(sys.stdin.readline)
 
 
-if __name__ == '__main__':
+def write_and_flush(s: str) -> None:
+    """Writes a string to the stdout and then flushes the buffer."""
+    sys.stdout.write(f'{s}')
+    sys.stdout.flush()
+    return None
+
+
+def main() -> None:
+    root_logger = logger.root
+    root_logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
-    prefix = "[Standalone Console]"
-    formatter = f'{prefix} %(asctime)s - %(name)s.%(funcName)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.DEBUG, format=formatter)
+    handler.setFormatter(ANSIFormatter(prefix='Console'))
+    root_logger.addHandler(handler)
     logging.getLogger('websockets').setLevel(logging.WARNING)
 
     console = StandaloneConsole()
     console.start()
+
+
+if __name__ == '__main__':
+    main()
