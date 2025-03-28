@@ -4,6 +4,7 @@ import subprocess
 import logging
 import sys
 
+from envy.Plugins import Envy_Functions  # noqa
 from envy.lib.core.taskrunner import TaskRunner
 from envy.lib.core.message_handler import MessageHandler
 from envy.lib.core.client.websocket_client import WebsocketClient
@@ -24,10 +25,9 @@ class Client:
         self._websocket_client.disconnection_callback = on_disconnect
 
         # Init message handler.
-        self._message_handler = MessageHandler()
+        self._message_handler = MessageHandler(self, 'envy.Plugins.Envy_Functions')
         process_queue = self._websocket_client.receive_queue()
         self._message_handler.set_process_queue(process_queue)
-        self._message_handler.module = 'NV'
 
     def start(self) -> None:
         logger.info(f'Starting client...')
@@ -42,6 +42,7 @@ class Client:
 def on_disconnect() -> None:
     """A callback to be run when the client disconnects from the server."""
 
+    # Get path of server executable.
     logger.debug(f'Running on disconnect callback...')
     my_dir = os.path.dirname(__file__)
     dir_pieces = my_dir.split(os.path.sep)
@@ -55,14 +56,17 @@ def on_disconnect() -> None:
     subprocess.Popen([interpreter_path, server_path])
 
 
-if __name__ == '__main__':
+def main() -> None:
     root_logger = logger.root
     root_logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
     handler.setFormatter(ANSIFormatter(prefix='Client'))
     root_logger.addHandler(handler)
-
     logging.getLogger('websockets').setLevel(logging.INFO)
 
     client = Client()
     client.start()
+
+
+if __name__ == '__main__':
+    main()

@@ -4,7 +4,7 @@
 Console_Functions.py: A "standard library" for Envy functions.
 Any function written in here can be executed by any console
 All functions in here must be async
-the first argument in every function MUST be a reference to the console instance calling the function even if you dont use it.
+the first argument in every function MUST be a reference to the console instance calling the function even if you don't use it.
 Check out EXAMPLE to see how to write your own functions
 feel free to use any of the existing functions as a template to build your own!
 """
@@ -12,23 +12,22 @@ feel free to use any of the existing functions as a template to build your own!
 __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.12"
-import sys, os
 
-abs_file = os.path.abspath(__file__)
-sys.path.append(os.path.join(os.path.dirname(abs_file), os.pardir, os.pardir))
+import logging
 
-from utils.config_bridge import Config
+from envy.lib.core.console.core import Console
 from envy.lib.network import message as m
-from envy.lib import Message_Purpose
+from envy.lib.network.message import MessageTarget, MessageType
 from envy.lib.utils import utils as eutils
-from envy.lib.utils import Colors as c
-import shutil
-import json
 
-config = sys.modules.get('config_bridge')
+logger = logging.getLogger(__name__)
 
 
-async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
+async def debug(console: Console) -> None:
+    logger.info('WAHOOOOOOOOOO')
+
+
+async def CONSOLE_EXAMPLE(console: Console, arg1: int = None) -> None:
     """
     An example function to show users how to write their own console functions
     anything you write in here is executed by the console I recommend not requiring arguments and instead having the user pass them in with inputs
@@ -40,17 +39,15 @@ async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     """
 
     if arg1 is None:  # Checks to see if arg1 is supplied during function call and if not prompt the user for arg1.
-        arg1 = input(f'{c.CYAN}What should Arg1 be (int)?{c.WHITE}')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/utils/Colors
+        arg1 = input(f'What should Arg1 be (int)?')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/utils/Colors
 
         try:  # Try to cast the argument to an integer
             arg1 = int(arg1)
-        except Exception as e:  # if it's not the right type inform the user its wrong and return and print why it couldnt be casted to an int
+        except Exception as e:  # if it's not the right type inform the user its wrong and return and print why it couldn't be cast to an int
             console.display_error(f'Arg1 MUST be an integer: -> {e}')
             return
 
-    arg2 = input(
-        f'{c.CYAN}What should Arg2 be (str)?{c.WHITE}'
-    )  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
+    arg2 = input(f'What should Arg2 be (str)?')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
 
     classifier = await get_classifier(
         console
@@ -64,7 +61,7 @@ async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
         'EXAMPLE()'
     )  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
     new_message.set_target(
-        Message_Purpose.CLIENT
+        MessageTarget.CLIENT
     )  # Setting the target is important. Think about it like putting an address on a letter. The server will only execute functions with the target set to SERVER and vice versa with clients
     new_message.set_function('ENVY_EXAMPLE')  # setting the function to the name of the function in Envy_Functions.py that we want to call
     new_message.format_arguments(arg1, arg2=arg2)  # You set the arguments for the functions in here. As if you were doing it while calling the function
@@ -72,7 +69,7 @@ async def CONSOLE_EXAMPLE(console, arg1: int = None) -> None:
     await send_to_clients(
         console, classifier, new_message
     )  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
-    # notice how in the above function we passed in our current console. Thats because ALL functions in Console_Functions.py need a reference to the current console even if its not used
+    # notice how in the above function we passed in our current console. That's because ALL functions in Console_Functions.py need a reference to the current console even if it's not used
 
 
 async def fill_buffer(console, buffer_name: str, data: any) -> None:
@@ -86,31 +83,32 @@ async def fill_buffer(console, buffer_name: str, data: any) -> None:
     setattr(console, buffer_name, data)
 
 
-async def install_maya_plugin(console) -> None:
-    """
-    installs the Maya plugin
-    :param console: reference to the console calling the function
-    """
-    maya_user_folder = 'Z:/maya'
-    envy_plugin_path = os.path.join(Config.ENVYPATH, 'Plugins', 'eMaya', 'envy.py')
-    console.logger.info(envy_plugin_path)
-    if not os.path.exists(maya_user_folder):
-        console.display_error('Maya plugin installation failed: Maya user folder not found.')
-        return
-    elif not os.path.exists(envy_plugin_path):
-        console.display_error('Maya plugin installation failed: Envy plugin not found.')
-        return
-
-    for folder in os.listdir(maya_user_folder):
-        if folder.isdigit():
-            maya_plugins_folder = os.path.join(maya_user_folder, folder, 'plug-ins')
-
-            if not os.path.exists(maya_plugins_folder):
-                os.mkdir(maya_plugins_folder)
-
-            shutil.copy(envy_plugin_path, maya_plugins_folder)
-
-    console.display_info('Maya plugin installed successfully.')
+# async def install_maya_plugin(console) -> None:
+#     """
+#     installs the Maya plugin
+#     :param console: reference to the console calling the function
+#     """
+#     maya_user_folder = 'Z:/maya'
+#     envy_plugin_path = os.path.join(Config.ENVYPATH, 'Plugins', 'eMaya', 'envy.py')
+#     console.logger.info(envy_plugin_path)
+#     if not os.path.exists(maya_user_folder):
+#         console.display_error('Maya plugin installation failed: Maya user folder not found.')
+#         return
+#     elif not os.path.exists(envy_plugin_path):
+#         console.display_error('Maya plugin installation failed: Envy plugin not found.')
+#         return
+#
+#     for folder in os.listdir(maya_user_folder):
+#         if folder.isdigit():
+#             maya_plugins_folder = os.path.join(maya_user_folder, folder, 'plug-ins')
+#
+#             if not os.path.exists(maya_plugins_folder):
+#                 os.mkdir(maya_plugins_folder)
+#
+#             shutil.copy(envy_plugin_path, maya_plugins_folder)
+#
+#     console.display_info('Maya plugin installed successfully.')
+#
 
 
 async def print_clients(console) -> None:
@@ -129,7 +127,7 @@ async def sign_out(console) -> None:
         console.display_error(f'Invalid classifier: {classifier}')
         return
     function_message = m.FunctionMessage('sign_out()')
-    function_message.set_target(Message_Purpose.CLIENT)
+    function_message.set_target(MessageTarget.CLIENT)
     function_message.set_function('sign_out')
     await send_to_clients(console, classifier, function_message)
 
@@ -141,7 +139,7 @@ async def request_clients(console) -> None:
     :return: Void
     """
     function_message = m.FunctionMessage('request clients')
-    function_message.set_target(Message_Purpose.SERVER)
+    function_message.set_target(MessageTarget.SERVER)
     function_message.set_function('send_clients_to_console')
     function_message.format_arguments(target_consoles=console.hostname)
     console.send(function_message)
@@ -163,14 +161,14 @@ async def restart_envy(console, force=False) -> None:
     else:
         classifier = '*'
     function_message = m.FunctionMessage('restart_envy()')
-    function_message.set_target(Message_Purpose.CLIENT)
+    function_message.set_target(MessageTarget.CLIENT)
     function_message.set_function('restart_envy')
     await send_to_clients(console, classifier, function_message)
 
 
 async def get_classifier(console):
     console.display_info('Classifier (What computers to affect)?')
-    classifier = await console.next_input(f"{c.CYAN}UserInput: {c.WHITE}")
+    classifier = await console.next_input(f"UserInput: ")
     return classifier
 
 
@@ -186,7 +184,7 @@ async def debug_envy(console) -> None:
         console.display_error(f'Invalid classifier: {classifier}')
         return
     function_message = m.FunctionMessage('debug_envy()')
-    function_message.set_target(Message_Purpose.CLIENT)
+    function_message.set_target(MessageTarget.CLIENT)
     function_message.set_function('example')
     await send_to_clients(console, classifier, function_message)
 
@@ -201,7 +199,7 @@ async def send_to_clients(console, classifier: str, function_message: m.Function
     :return: Void
     """
     message = m.Message(f'Pass on: {function_message}')
-    message.set_type(Message_Purpose.PASS_ON)
+    message.set_type(MessageType.PASS_ON)
     message.set_data(function_message.as_dict())
     message.set_message(classifier)
     console.send(message)

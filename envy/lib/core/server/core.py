@@ -5,45 +5,16 @@ import logging
 import os
 import sys
 
-import websockets.exceptions
-
 import envy
-from envy.Plugins import Server_Functions as SRV
 from envy.lib.core import taskrunner
-from envy.lib.core.message_handler import MessageHandler
+from envy.lib.core.server.server_message_handler import ServerMessageHandler
 from envy.lib.core.server.websocket_server import WebsocketServer
 from envy.lib.db import db
-from envy.lib.network import message
 from envy.lib.utils.logger import ANSIFormatter
-from envy.lib.utils.utils import get_applicable_clients
 
 LOCK_INTERVAL = 5
 
 logger = logging.getLogger(__name__)
-
-
-class ServerMessageHandler(MessageHandler):
-
-    def __init__(self, srv: Server):
-        super().__init__()
-        self.server = srv
-
-    async def _handle_message(self, m: message.Message | message.FunctionMessage) -> None:
-        if m.get_type() == message.MessageType.FUNCTION_MESSAGE:
-            await self._execute_function_message(m)
-
-        elif m.get_type() == message.MessageType.PASS_ON:
-            try:
-                await self._pass_on(m)
-            except RuntimeError:
-                logger.debug(f'Failed to pass on message {m}')
-
-    async def _pass_on(self, m: message.Message):
-        logger.debug(f'Passing on message: ({m})')
-        function_message = message.build_from_message_dict(m.get_data())
-        classifier = m.get_message()
-        send_targets = get_applicable_clients(classifier, list(self.server.clients))
-        await SRV.send_to_clients(self, send_targets, function_message)
 
 
 class Server:
@@ -58,10 +29,9 @@ class Server:
         self.websocket_server = WebsocketServer()
 
         # Init message handler.
-        self.message_handler = ServerMessageHandler(self)
+        self.message_handler = ServerMessageHandler(self, 'envy.Plugins.Server_Functions')
         process_queue = self.websocket_server.get_output_queue()
         self.message_handler.set_process_queue(process_queue)
-        self.message_handler.module = 'SRV'
 
         # Init database.
         self._init_database()
@@ -116,14 +86,17 @@ class Server:
             await asyncio.sleep(LOCK_INTERVAL)
 
 
-if __name__ == '__main__':
+def main() -> None:
     root_logger = logger.root
     root_logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
     handler.setFormatter(ANSIFormatter(prefix='Server'))
     root_logger.addHandler(handler)
-
     logging.getLogger('websockets').setLevel(logging.INFO)
 
     server = Server()
     server.start()
+
+
+if __name__ == '__main__':
+    main()
