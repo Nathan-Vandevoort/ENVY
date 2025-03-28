@@ -17,7 +17,7 @@ import logging
 
 from envy.lib.core.console.core import Console
 from envy.lib.network import message as m
-from envy.lib.network.message import MessageTarget, MessageType
+from envy.lib.network.message import MessageTarget, MessageType, FunctionMessage
 from envy.lib.utils import utils as eutils
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,13 @@ logger = logging.getLogger(__name__)
 
 async def debug(console: Console) -> None:
     logger.info('WAHOOOOOOOOOO')
+
+
+async def get_state(console: Console, client: str = None) -> None:
+    if not client:
+        client = await console.input('Which client:')
+    new_message = FunctionMessage(f'Get state: {client}')
+    new_message.set_target(MessageTarget.CLIENT)
 
 
 async def CONSOLE_EXAMPLE(console: Console, arg1: int = None) -> None:
@@ -38,37 +45,29 @@ async def CONSOLE_EXAMPLE(console: Console, arg1: int = None) -> None:
     :return: Void
     """
 
-    if arg1 is None:  # Checks to see if arg1 is supplied during function call and if not prompt the user for arg1.
-        arg1 = input(f'What should Arg1 be (int)?')  # prompting the user for arg1. Notice the colors which are stored in the ENVYREPO/utils/Colors
+    if arg1 is None:
+        arg1 = input(f'What should Arg1 be (int)?')
 
-        try:  # Try to cast the argument to an integer
+        try:
             arg1 = int(arg1)
-        except Exception as e:  # if it's not the right type inform the user its wrong and return and print why it couldn't be cast to an int
+        except Exception as e:
             console.display_error(f'Arg1 MUST be an integer: -> {e}')
             return
 
-    arg2 = input(f'What should Arg2 be (str)?')  # prompt the user for arg2. This argument cannot be passed in at call time because the function isn't expecting it as an argument
+    arg2 = input(f'What should Arg2 be (str)?')
 
-    classifier = await get_classifier(
-        console
-    )  # a convenience function which prompts the user for a classifier or "which computers should I send this message to" If you are sending this message to the server this is unnecessary
-    valid = eutils.validate_classifier(classifier)  # a function within REPOPATH/utils/utils.py which validates that the user supplied classifier is a valid classifier
-    if not valid:  # if the classifier is not valid tell the user and return
+    classifier = await get_classifier(console)
+    valid = eutils.validate_classifier(classifier)
+    if not valid:
         console.display_error(f'Invalid classifier: {classifier}')
         return
 
-    new_message = m.FunctionMessage(
-        'EXAMPLE()'
-    )  # Create a new function message. A function message is the standard way to get envy (commonly referred to as client) or the server to do something.
-    new_message.set_target(
-        MessageTarget.CLIENT
-    )  # Setting the target is important. Think about it like putting an address on a letter. The server will only execute functions with the target set to SERVER and vice versa with clients
-    new_message.set_function('ENVY_EXAMPLE')  # setting the function to the name of the function in Envy_Functions.py that we want to call
-    new_message.format_arguments(arg1, arg2=arg2)  # You set the arguments for the functions in here. As if you were doing it while calling the function
+    new_message = m.FunctionMessage('EXAMPLE()')
+    new_message.set_target(MessageTarget.CLIENT)
+    new_message.set_function('ENVY_EXAMPLE')
+    new_message.format_arguments(arg1, arg2=arg2)
 
-    await send_to_clients(
-        console, classifier, new_message
-    )  # a convenience function which wraps the function message in a normal message and tells the server to pass on the function message to all clients who match the classifier
+    await send_to_clients(console, classifier, new_message)
     # notice how in the above function we passed in our current console. That's because ALL functions in Console_Functions.py need a reference to the current console even if it's not used
 
 

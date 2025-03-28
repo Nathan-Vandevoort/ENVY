@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from abc import abstractmethod
 
 from envy.lib.core.console.websocket_console import WebsocketConsole
 from envy.lib.core.message_handler import MessageHandler
@@ -54,3 +55,8 @@ class Console:
         new_message.set_target(MessageTarget.CONSOLE)
         new_message.set_function(command)
         self.receive_queue.put(new_message)
+
+    @abstractmethod
+    async def input(self, s: str) -> str:
+        """Gets user input from the console"""
+        ...

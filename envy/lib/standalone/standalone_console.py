@@ -24,9 +24,7 @@ class StandaloneConsole(Console):
                 logger.warning('Console is not connected to Envy network.')
             self.run(user_input)
 
-    @staticmethod
-    async def input(input_string: str) -> str:
-        """Acts as an async version if the input() function"""
+    async def input(self, input_string: str) -> str:
         await asyncio.to_thread(write_and_flush, input_string)
         return await asyncio.to_thread(sys.stdin.readline)
 
