@@ -4,7 +4,7 @@ import logging
 import os
 
 import envy
-import envy.lib.jobs.job as job
+import envy.Legacy.jobs.job as job
 
 logger = logging.getLogger(__name__)
 

@@ -4,6 +4,7 @@ import logging
 import socket
 from abc import abstractmethod
 
+from envy.lib.core.data import Client
 from envy.lib.core.console.websocket_console import WebsocketConsole
 from envy.lib.core.message_handler import MessageHandler
 from envy.lib.core.taskrunner import TaskRunner
@@ -30,6 +31,7 @@ class Console:
 
         # State
         self.name = socket.gethostname()
+        self.clients: dict[str:Client] = {}
 
     @property
     def connected(self):

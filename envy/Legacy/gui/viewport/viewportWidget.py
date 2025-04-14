@@ -1,8 +1,7 @@
 from PySide6.QtWidgets import QGraphicsView, QApplication, QMainWindow
-from PySide6.QtCore import Qt, Slot
 from PySide6.QtGui import QPainter
-from envy.lib.gui.viewport.nodeScene import NodeScene
-from envy.lib.gui.viewport import ViewportController
+from envy.Legacy.gui.viewport.nodeScene import NodeScene
+from envy.Legacy.gui.viewport import ViewportController
 import sys
 
 
@@ -19,13 +18,13 @@ class ViewportWidget(QGraphicsView):
 
 
 if __name__ == '__main__':
+
     class MainWindow(QMainWindow):
         def __init__(self):
             super().__init__()
             self.setBaseSize(1600, 1600)
             self.viewport_widget = ViewportWidget(parent=self)
             self.setCentralWidget(self.viewport_widget)
-
 
     app = QApplication(sys.argv)
     window = MainWindow()

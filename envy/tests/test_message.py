@@ -4,7 +4,6 @@ from envy.lib.core.message import FunctionMessage, Message, MessageTarget, Messa
 
 logger = logging.getLogger(__name__)
 
-
 def test_build_message_from_dict():
     input_messages = (
         Message(

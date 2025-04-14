@@ -1,89 +1,40 @@
 from __future__ import annotations
 
-from typing import Any
-
-from .enums import MessageType, MessageTarget
-
-import json
+import dataclasses
 import logging
+import json
+
+from .enums import MessageTarget, MessageType
 
 logger = logging.getLogger(__name__)
 
 
+@dataclasses.dataclass
 class Message:
-
-    def __init__(
-        self,
-        name: str,
-        message_type: MessageType,
-        target: MessageTarget,
-        message: Any,
-        data: Any = None,
-    ):
-        self.name = name
-        self.type: MessageType = message_type
-        self.target = target
-        self.message = message
-        self.data = data
+    message_type: MessageType
+    message_target: MessageTarget
+    function: str
+    data: dict = {}
+    args: list = []
+    kwargs: dict = {}
 
     def encode(self) -> str:
-        """
-        encodes the current message object into a json string
-        """
-        message_dict = self.as_dict()
-        json_string = json.dumps(message_dict)
-        return json_string
-
-    def as_dict(self) -> dict:
-        """
-        returns the current state of the Message object as a dictionary
-        :return: dict version of message
-        """
-        result = {
-            'Message_Purpose': self.type,
-            'Message': self.message,
-            'Name': self.name,
-            'Data': self.data,
-            'Target': self.target,
+        message_data = {
+            "Message_Type": self.message_type.value,
+            "Target": self.message_target.value,
+            "Data": self.data,
+            "function": self.function,
+            "args": self.args,
+            "kwargs": self.kwargs,
         }
-        return result
 
-    def __format__(self, format_spec):
-        return self.name
+        try:
+            encoded_message_data = json.dumps(message_data, indent=4)
+        except TypeError as e:
+            logger.error("Failed to serialize message")
+            raise TypeError from e
 
-
-class FunctionMessage(Message):
-    def __init__(
-        self,
-        name: str,
-        target: MessageTarget,
-        function: str,
-        message: Any = None,
-        data: Any = None,
-        *args,
-        **kwargs,
-    ):
-        super().__init__(name, message_type=MessageType.FUNCTION_MESSAGE, target=target, message=message, data=data)
-        self.function: str = function
-        self.args = args
-        self.kwargs = kwargs
-
-    def as_dict(self) -> dict:
-        """
-        returns the current state of the message object as a dictionary
-        :return: (dict) representation of FunctionMessage object
-        """
-        return_dict = {
-            'Message_Purpose': self.type,
-            'Message': self.message,
-            'Name': self.name,
-            'Target': self.target,
-            'Function': self.function,
-            'Args': self.args,
-            'Kwargs': self.kwargs,
-            'Data': self.data,
-        }
-        return return_dict
+        return encoded_message_data
 
     def as_function(self, inject_self: bool = True) -> str:
         """
@@ -92,93 +43,75 @@ class FunctionMessage(Message):
         :return: (str) formatted function
         """
 
-        # error out if function was never set
-        if not self.function:
-            raise ValueError('Function was never set')
-
-        # ensure types of args
         formatted_args = []
-        for arg in self.args:
-            validated_arg = arg
-
-            if isinstance(arg, str):  # if you are a string make sure you have quotes
-                validated_arg = f"'{arg}'"
-
-            if isinstance(arg, dict):
-                validated_arg = f"'{json.dumps(arg)}'"
-
-            formatted_args.append(str(validated_arg))
-
-        # if inject_self is true
         if inject_self:
             formatted_args.insert(0, 'self')
+
+        # ensure types of args
+        for arg in self.args:
+            validated_arg = arg
+            if isinstance(arg, str):  # if you are a string make sure you have quotes
+                validated_arg = f"'{arg}'"
+            if isinstance(arg, dict):
+                validated_arg = f"'{json.dumps(arg)}'"
+            formatted_args.append(str(validated_arg))
 
         # ensure types of kwargs
         formatted_kwargs = []
         for key, value in self.kwargs.items():
             processed_value = value
-
             if isinstance(value, str):  # if the value is a string make sure there are quotes
                 processed_value = f"'{value}'"
-
             formatted_kwargs.append(f"{key}={processed_value}")
 
         formatted_args_string = ', '.join(formatted_args)
         formatted_kwargs_string = ', '.join(formatted_kwargs)
         complete_argument_string = ', '.join([formatted_args_string, formatted_kwargs_string])
-        formatted_string = f"{self.function}({complete_argument_string})"
+        function_string = f"{self.function}({complete_argument_string})"
 
-        return formatted_string
+        return function_string
 
+    @staticmethod
+    def decode(encoded_message_data: str) -> Message | None:
 
-def build_from_message_dict(input_dict: dict) -> Message | FunctionMessage:
-    """
-    Given a dictionary which was created from a message object, build a new message object with payload set to message from the dict
-    :param input_dict: (dict) a dictionary which represents a message object
-    :return: Message or FunctionMessage
+        try:
+            message_data = json.loads(encoded_message_data)
+        except json.JSONDecodeError:
+            logger.error("Failed to decode message.")
+            logger.debug(f"{encoded_message_data}")
+            return None
 
-    :raises ValueError: If the input is invalid dict cannot be turned into a message object
-    """
+        message_type = message_data.get("Message_Type")
+        message_target = message_data.get("Message_Target")
+        function = message_data.get("Message_Function")
+        data = message_data.get("Message_Data")
+        args = message_data.get("args")
+        kwargs = message_data.get("kwargs")
 
-    logger.debug(f'input_dict: {input_dict}')
-    if 'Message_Purpose' not in input_dict:
-        raise ValueError(f'Message_Purpose Key cannot be found in {input_dict}, are you sure this is a message dictionary?')
+        # Exclude args and kwargs from the check because they aren't necessary.
+        datas = (message_type, message_target, function, data)
+        idx = datas.index(None) if None in datas else None
+        if idx:
+            logger.error("None value in message data.")
+            logger.debug(f"{datas=}")
+            return None
 
-    if 'Message' not in input_dict:
-        raise ValueError(f'Message Key cannot be found in {input_dict}, are you sure this is a message dictionary?')
+        # Rebuild enums.
+        try:
+            message_type = MessageType(message_type)
+            message_target = MessageTarget(message_target)
+        except ValueError:
+            logger.error("Failed to rebuild enums.")
+            logger.debug(f"{message_type=}, {message_target=}")
+            return None
 
-    purpose = input_dict['Message_Purpose']
-    message = input_dict['Message']
-    name = input_dict['Name']
-    data = input_dict['Data']
-    target = input_dict['Target']
-
-    # If purpose is Message_Purpose.Function_Message then return a FunctionMessage
-    if purpose == MessageType.FUNCTION_MESSAGE:
-        function = input_dict['Function']
-        args = input_dict['Args']
-        kwargs = input_dict['Kwargs']
-
-        new_func_message = FunctionMessage(
-            name,
-            target=target,
-            function=function,
-            message=message,
-            data=data,
-        )
-
-        # Set args and kwargs manually so unpacking doesn't try to read args as a keyword argument.
-        new_func_message.args = args
-        new_func_message.kwargs = kwargs
-
-        return new_func_message
-
-    else:
         new_message = Message(
-            name,
-            message_type=purpose,
-            message=message,
+            message_type=message_type,
+            message_target=message_target,
+            function=function,
             data=data,
-            target=target,
+            args=args,
+            kwargs=kwargs,
         )
+
         return new_message

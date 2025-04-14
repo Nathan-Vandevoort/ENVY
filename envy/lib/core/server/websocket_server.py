@@ -1,16 +1,13 @@
-import asyncio
-import json
 import logging
 import queue
 import socket
 import typing
-from json import JSONDecodeError
 
 import websockets
 from websockets.server import WebSocketServerProtocol
 
 from envy.lib.core.data import Client, ClientStatus, Console
-from envy.lib.network import message as envy_message
+from envy.lib.core.message import Message
 from envy.lib.utils.utils import get_hash
 
 logger = logging.getLogger(__name__)
@@ -28,7 +25,14 @@ class WebsocketServer:
         self._key = get_hash()
         self._message_queue = queue.Queue()
         self._clients: dict[str, Client] = {}
+        self._sockets: dict[str, WebSocketServerProtocol] = {}
         self._consoles: dict[str, Console] = {}
+
+        # callbacks
+        self.register_client_callback: typing.Callable | None = None
+        self.register_console_callback: typing.Callable | None = None
+        self.unregister_client_callback: typing.Callable | None = None
+        self.unregister_console_callback: typing.Callable | None = None
 
     def get_output_queue(self):
         return self._message_queue
@@ -88,43 +92,60 @@ class WebsocketServer:
             await self.console_consumer(connection_name)
             self.unregister_console(connection_name)
 
-    def register_client(self, ip: str, websocket: WebSocketServerProtocol, headers: dict) -> bool:
+    def register_client(self, ip: str, websocket: WebSocketServerProtocol, headers: websockets.Headers) -> bool:
         name = headers.get('name')
         status = headers.get('status')
         job = headers.get('job')
         task = headers.get('task')
 
-        if None in (name, status, job, task):
+        if None in (name, status):
             logger.error(f'Failed to register client - Invalid headers.')
+            logger.debug(f'{headers=}')
             return False
+
+        if not isinstance(name, str):
+            logger.error(f'Failed to register client - Invalid name')
+            logger.debug(f'{name=}')
+            return False
+
+        if job and task:
+            try:
+                validated_job = int(job)
+                validated_task = int(task)
+            except TypeError:
+                logger.error(f'Failed to register client - Invalid Job or Task ID')
+                logger.debug(f'{job=}, {task=}')
+                return False
 
         try:
             status = ClientStatus(status)
-        except ValueError as e:
+        except ValueError:
             logger.error(f'{name} has an invalid status: {status}')
             return False
 
         new_client = Client(
             name=name,
             ip=ip,
-            socket=websocket,
             status=status,
-            job_id=job,
-            task_id=task,
+            job_id=validated_job,
+            task_id=validated_task,
         )
 
         self._clients[name] = new_client
+        self._sockets[name] = websocket
         logger.info(f'Registered client: {name}')
+        self._run_callback(self.register_client_callback, new_client)
         return True
 
     def register_console(self, console: str, ip: str, websocket: WebSocketServerProtocol) -> bool:
-        self._consoles[console] = Console(ip=ip, socket=websocket)
+        new_console = Console(ip=ip, socket=websocket)
+        self._consoles[console] = new_console
         logger.info(f'Registered console: {console}')
-        # await SRV.send_clients_to_console(self)
+        self._run_callback(self.register_console_callback, new_console)
         return True
 
     async def client_consumer(self, client_name: str) -> None:
-        websocket = self._clients[client_name].socket
+        websocket = self._sockets[client_name]
         try:
             async for message in websocket:
                 logger.debug(f'{client_name}: {message}')
@@ -150,6 +171,8 @@ class WebsocketServer:
             logger.warning(f'Cannot unregister client because client is not registered: {client_name}')
             return
         del self._clients[client_name]
+        del self._sockets[client_name]
+        self._run_callback(self.unregister_client_callback, client_name)
         logger.debug(f'Unregistered client {client_name}.')
 
     def unregister_console(self, console_name: str) -> None:
@@ -157,6 +180,7 @@ class WebsocketServer:
             logger.warning(f'Cannot unregister console because console is not registered: {console_name}')
             return
         del self._consoles[console_name]
+        self._run_callback(self.unregister_console_callback, console_name)
         logger.debug(f'Unregistered console {console_name}.')
 
     async def start(self):
@@ -173,17 +197,15 @@ class WebsocketServer:
     def stop(self):
         raise InterruptedError('stop signal received')
 
-    def _handle_message(self, message: str):
-        try:
-            message_as_dict = json.loads(message)
-        except JSONDecodeError as e:
-            logger.warning(f'Failed to decode message: {e}')
+    def _handle_message(self, m: websockets.Data):
+        message = Message.decode(str(m))
+        if not message:
             return
+        self._message_queue.put(message)
 
-        try:
-            message_object = envy_message.build_from_message_dict(message_as_dict)
-        except ValueError as e:
-            logger.warning(f'Failed to build Message: {e}')
+    @staticmethod
+    def _run_callback(callback: typing.Callable | None, *args, **kwargs) -> None:
+        if not callback:
+            logger.debug(f'callback is not registered')
             return
-
-        self._message_queue.put(message_object)
+        callback(*args, **kwargs)

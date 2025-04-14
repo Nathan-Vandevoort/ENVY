@@ -13,7 +13,8 @@ dependencies = [
     'qasync<1',
     'QDarkStyle<4',
     'safe-exit<1',
-    'websockets<14'
+    'websockets<14',
+    'dataclasses-json<1'
 ]
 requires-python = '>=3.9'
 authors = [
@@ -39,3 +40,6 @@ version_variables = ["envy/__init__.py:__version__"]
 [tool.black]
 skip-string-normalization = true
 line-length = 180
+
+[tool.isort]
+profile = "black"

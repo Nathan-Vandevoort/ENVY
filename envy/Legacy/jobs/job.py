@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 
 import envy
-from envy.lib.jobs.enums import Purpose
+from envy.Legacy.jobs.enums import Purpose
 from envy.lib.utils.utils import DummyLogger
 
 logger = logging.getLogger(__name__)
@@ -271,9 +271,7 @@ def job_from_sqlite(job_as_sql_tuple: tuple, logger: logging.Logger = None) -> J
 
     logger.debug('Building Job from sql tuple')
 
-    job_id, name, purpose, job_type, metadata, job_range, status, environment, dependencies, parameters = (
-        job_as_sql_tuple
-    )
+    job_id, name, purpose, job_type, metadata, job_range, status, environment, dependencies, parameters = job_as_sql_tuple
 
     metadata = json.loads(metadata)
     environment = json.loads(environment)

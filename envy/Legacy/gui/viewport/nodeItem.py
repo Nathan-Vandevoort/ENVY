@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsSceneHoverEvent
-from PySide6.QtGui import QBrush, QPen, QColor, QHoverEvent
+from PySide6.QtGui import QBrush, QPen, QColor
 from PySide6.QtCore import Qt
-from envy.lib.jobs import enums
+from envy.Legacy.jobs import enums
 import numpy as np
 import random
+
 
 class NodeItem(QGraphicsEllipseItem):
     def __init__(self, radius, computer):

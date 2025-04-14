@@ -6,7 +6,6 @@ import enum
 
 logger = logging.getLogger(__name__)
 
-
 class MessageType(str, enum.Enum):
     PASS_ON = enum.auto()
     HEALTH_CHECK = enum.auto()

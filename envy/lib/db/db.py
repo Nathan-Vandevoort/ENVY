@@ -1,11 +1,9 @@
 import json
 import logging
-import os
 import sqlite3
 
-import envy
-from envy.lib.jobs import job as j
-from envy.lib.jobs.enums import Status
+from envy.Legacy.jobs import job as j
+from envy.Legacy.jobs.enums import Status
 from envy.lib.utils import utils as eutils
 
 logger = logging.getLogger(__name__)

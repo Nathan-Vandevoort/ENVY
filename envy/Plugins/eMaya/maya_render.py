@@ -4,6 +4,7 @@ Name: maya_render.py
 Author: Mauricio Gonzalez Soto
 ========================================================================================================================
 """
+
 import subprocess
 import asyncio
 import time
@@ -11,7 +12,7 @@ import sys
 import re
 import os
 
-from envy.lib.jobs import Status
+from envy.Legacy.jobs import Status
 
 config = sys.modules.get('utils.config_bridge').Config
 NV = sys.modules.get('Envy_Functions')
@@ -212,12 +213,7 @@ class MayaRender(object):
         current_task_progress = self.progress * (1 / self.number_of_tasks)
         self.allocation_progress = int(completed_task_progress + current_task_progress)
 
-        self.logger.info(
-            f'{MayaRender.PLUGIN_NAME}: '
-            f'Layer: {self.render_layer} | '
-            f'Camera: {self.camera} | '
-            f'Frame: {self.current_frame} | '
-            f'Progress: {self.progress}%')
+        self.logger.info(f'{MayaRender.PLUGIN_NAME}: ' f'Layer: {self.render_layer} | ' f'Camera: {self.camera} | ' f'Frame: {self.current_frame} | ' f'Progress: {self.progress}%')
 
     async def monitor_render_progress(self):
         """Monitors the render progress."""
@@ -261,7 +257,7 @@ class MayaRender(object):
     async def monitor_envy(self) -> int:
         """Monitors Envy."""
         while self.envy.status == Status.WORKING:
-            await asyncio.sleep(.5)
+            await asyncio.sleep(0.5)
 
         await self.end_coroutines()
         await self.terminate_render_subprocess()
@@ -333,10 +329,7 @@ class MayaRender(object):
                 if self.eval_return_code(exit_code):
                     return
                 else:
-                    await NV.fail_task_allocation(
-                        self.envy,
-                        self.allocation_id,
-                        f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
+                    await NV.fail_task_allocation(self.envy, self.allocation_id, f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}')
 
                     self.logger.error(f'{MayaRender.PLUGIN_NAME}: Render failed. Error {exit_code}.')
 
@@ -411,7 +404,7 @@ class MayaRender(object):
 
         start_time = time.time()
         while self.render_subprocess.returncode is None:
-            time.sleep(.1)
+            time.sleep(0.1)
             if time.time() - start_time > timeout:
                 return False
             self.render_subprocess.terminate()
@@ -421,41 +414,57 @@ class MayaRender(object):
         """Stats the render subprocess."""
         command = [
             MayaRender.MAYA_RENDER_EXE_PATH,
-            '-cam', self.camera,
-            '-rl', self.render_layer,
-            '-s', str(self.start_frame),
-            '-e', str(self.end_frame),
-            '-proj', self.project_path,
-            '-postFrame', 'print("FINISHED");',
-            self.maya_file]
+            '-cam',
+            self.camera,
+            '-rl',
+            self.render_layer,
+            '-s',
+            str(self.start_frame),
+            '-e',
+            str(self.end_frame),
+            '-proj',
+            self.project_path,
+            '-postFrame',
+            'print("FINISHED");',
+            self.maya_file,
+        ]
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess: {command}')
 
         self.render_subprocess = await asyncio.create_subprocess_exec(
-            *command,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW)
+            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW
+        )
 
     async def start_render_subprocess_tile(self) -> None:
         """Stats the render subprocess."""
         command = [
             MayaRender.MAYA_RENDER_EXE_PATH,
-            '-r', self.render_engine,
-            '-cam', self.camera,
-            '-rl', self.render_layer,
-            '-s', str(self.start_frame),
-            '-e', str(self.end_frame),
-            '-proj', self.project_path,
-            '-im', self.image_output_prefix,
-            '-reg', f'{self.tile_bound_min[0]}', f'{self.tile_bound_max[0]}', f'{self.tile_bound_min[1]}', f'{self.tile_bound_max[1]}',
-            '-postFrame', 'print("FINISHED");',
-            self.maya_file]
+            '-r',
+            self.render_engine,
+            '-cam',
+            self.camera,
+            '-rl',
+            self.render_layer,
+            '-s',
+            str(self.start_frame),
+            '-e',
+            str(self.end_frame),
+            '-proj',
+            self.project_path,
+            '-im',
+            self.image_output_prefix,
+            '-reg',
+            f'{self.tile_bound_min[0]}',
+            f'{self.tile_bound_max[0]}',
+            f'{self.tile_bound_min[1]}',
+            f'{self.tile_bound_max[1]}',
+            '-postFrame',
+            'print("FINISHED");',
+            self.maya_file,
+        ]
 
         self.envy.logger.info(f'{MayaRender.PLUGIN_NAME}: Starting render subprocess tiled: {command}')
 
         self.render_subprocess = await asyncio.create_subprocess_exec(
-            *command,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW)
+            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW
+        )

@@ -1,19 +1,17 @@
+import asyncio
 import json
+import logging
 import queue
+import socket
 import typing
 
 import websockets
-import asyncio
-import socket
 
-import logging
-
+from envy.lib.core.message import Message, build_from_message_dict, MessageTarget
 from envy.lib.core.taskrunner import TaskRunner
-from envy.lib.network.types import ConnectionType
-from envy.lib.network.message import Message, build_from_message_dict, MessageTarget
-from envy.lib.utils.utils import get_hash
 from envy.lib.db.utils import get_server_ip
-from envy.lib.core.data import Client
+from envy.lib.network.types import ConnectionType
+from envy.lib.utils.utils import get_hash
 
 PORT = 3720
 TIMEOUT = 5
@@ -78,6 +76,7 @@ class WebsocketConsole:
         :raises websockets.InvalidHandshake: If the connection failed.
         :raises asyncio.TimeoutError: If the connection timed out.
         """
+
         # TODO: update exceptions
         uri = f"ws://{server_ip}:{PORT}/{ConnectionType.CONSOLE}"
         logger.info(f'Connecting to {server_ip}')
@@ -85,7 +84,7 @@ class WebsocketConsole:
         headers = {'passkey': get_hash(), 'name': socket.gethostname()}
 
         websocket = await websockets.connect(uri, extra_headers=headers, timeout=TIMEOUT)
-        self.websocket = websocket
+        return websocket
 
     async def disconnect(self) -> None:
         """
@@ -110,8 +109,9 @@ class WebsocketConsole:
         """
 
         async for m in self.websocket:
+            logger.debug(f'{m=}')
             try:
-                json.loads(m)
+                message_dict = json.loads(m)
             except json.JSONDecodeError as e:
                 logger.warning(f'Failed to parse message {e}')
                 continue
@@ -120,16 +120,17 @@ class WebsocketConsole:
                 continue
 
             try:
-                message_object = build_from_message_dict(m)
+                message_object = build_from_message_dict(message_dict)
             except ValueError:
                 logger.error(f'Skipping invalid message.')
-                logger.debug(f'message = {m}')
+                logger.debug(f'message = {message_dict}')
                 continue
 
-            if message_object.get_target() != MessageTarget.CONSOLE:
+            if message_object.target != MessageTarget.CONSOLE:
                 logger.error(f'Non-console message detected.')
                 logger.debug(f'message = {message_object.as_dict()}')
                 continue
 
-            await self._receive_queue.put(message_object)
+            logger.debug(f'Received {message_object}')
+            self._receive_queue.put(message_object)
             logger.debug(f'Processed message {message_object!r}')

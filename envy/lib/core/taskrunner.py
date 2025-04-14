@@ -1,7 +1,6 @@
 import typing
 import asyncio
 import logging
-import traceback
 
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ class TaskRunner:
         except RuntimeError:
             self.event_loop = asyncio.get_event_loop()
 
-        self.exit_callback: typing.Callable = None
+        self.exit_callback: typing.Callable | None = None
         self.running = False
 
         # Flags
@@ -28,7 +27,7 @@ class TaskRunner:
     def suppress_error(self, e: type[Exception]) -> None:
         self._suppress_error_list.append(e)
 
-    def create_task(self, task: asyncio.coroutines, name: str, callback: typing.Callable = None) -> None:
+    def create_task(self, task: asyncio._CoroutineLike, name: str, callback: typing.Callable | None = None) -> None:
         new_task = self.event_loop.create_task(task, name=name)
         logger.debug(f'Created task: {name}')
         if callback:

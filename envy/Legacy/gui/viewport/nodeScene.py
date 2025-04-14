@@ -1,11 +1,12 @@
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QGraphicsScene
 from PySide6.QtGui import QColor
-from envy.lib.gui.viewport.nodeItem import NodeItem
+from envy.Legacy.gui.viewport.nodeItem import NodeItem
 import random
 import numpy as np
 
 #  possible idea is to always have the spacial partitions be sized to the whole screen and just move the nodes to where the window is
+
 
 class Tile:
     def __init__(self, x: int, y: int, length: int):
@@ -29,6 +30,7 @@ class Tile:
 
     def __repr__(self):
         return f'Tile: {self.index}'
+
 
 class NodeScene(QGraphicsScene):
     def __init__(self):
@@ -70,7 +72,7 @@ class NodeScene(QGraphicsScene):
             for j, x in enumerate(range(self.num_tiles_x)):
                 new_tile = Tile(x * self.tile_size, y * self.tile_size, self.tile_size)
                 new_tile.index = (y * self.num_tiles_x) + x
-                new_tile.color = QColor.fromHslF(random.random(), 1, .5, 1)
+                new_tile.color = QColor.fromHslF(random.random(), 1, 0.5, 1)
                 self.tiles.append(new_tile)
 
         for i, node_name in enumerate(self.nodes):
@@ -105,7 +107,7 @@ class NodeScene(QGraphicsScene):
     def update_position(self, item: NodeItem) -> tuple:
         if self.time_step == 0:
             item.v *= item.damp
-        new_P = (item.P + item.v)
+        new_P = item.P + item.v
 
         if new_P[0] > self.width():  # right side collision
             slope = item.v[1] / item.v[0]
@@ -185,7 +187,7 @@ class NodeScene(QGraphicsScene):
                 if tile != new_tile:
                     change_set.add((index, new_index, node))
 
-                #node.color = new_tile.color
+                # node.color = new_tile.color
 
             for item in change_set:
                 old_tile = self.tiles[item[0]]

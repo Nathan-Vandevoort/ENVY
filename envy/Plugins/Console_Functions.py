@@ -1,37 +1,100 @@
 import logging
 
 from envy.lib.core.console.core import Console
-from envy.lib.network import message as m
-from envy.lib.network.message import MessageTarget, MessageType, FunctionMessage
+from envy.lib.core.data import ClientStatus, Client
+from envy.lib.core.message import Message, MessageTarget, MessageType
 
 logger = logging.getLogger(__name__)
 
 
-async def debug(console: Console) -> None:
-    logger.info('WAHOOOOOOOOOO')
+async def clients(console: Console) -> None:
+    logger.info(f'Clients:')
+    for client in console.clients:
+        logger.info(console.clients[client])
+
+
+async def register_clients(console: Console, clients: tuple[dict]) -> None:
+    for client in clients:
+        status_string = client.get('status')
+        if status_string:
+            status = ClientStatus(status_string)
+        else:
+            status = None
+        name = client.get('name')
+        task_id = client.get('task_id')
+        job_id = client.get('job_id')
+
+        if None in (status, task_id, job_id, name):
+            logger.debug(f'{status=}, {task_id=}, {job_id=}, {name=}')
+            raise ValueError(f'malformed state')
+
+        logger.debug(f'Registering client: {name}')
+        new_client = Client(
+            name=name,
+            status=status,
+            job_id=job_id,
+            task_id=task_id,
+        )
+        console.clients[name] = new_client
+
+
+async def unregister_clients(console: Console, clients: tuple[str]) -> None:
+    for client in clients:
+        logger.debug(f'Unregistering client: {client}')
+        if client in console.clients:
+            del console.clients[client]
+
+
+async def update_client(console: Console, states: tuple[dict]) -> None:
+    for state in states:
+        status_string = state.get('status')
+        if status_string:
+            status = ClientStatus(status_string)
+        else:
+            status = None
+        name = state.get('name')
+        task_id = state.get('task_id')
+        job_id = state.get('job_id')
+
+        if None in (status, task_id, job_id, name):
+            logger.debug(f'{status=}, {task_id=}, {job_id=}, {name=}')
+            raise ValueError(f'malformed state')
+
+        client_state = console.clients[name]
+
+        # Only update the attributes which will realistically update
+        client_state.task_id = task_id
+        client_state.job_id = job_id
+        client_state.status = status
 
 
 async def get_state(console: Console, client: str = None) -> None:
     if not client:
         client = await console.input('Which client:')
 
-    new_message = FunctionMessage(f'Get state: {client}')
-    new_message.set_target(MessageTarget.CLIENT)
-    new_message.set_function(f'send_client_state')
-    new_message.format_arguments(target=console.name)
-
+    new_message = FunctionMessage(
+        f'Get state: {client}',
+        target=MessageTarget.SERVER,
+        function='send_client_state',
+        client=client,
+        console=console.name,
+    )
     console.send(new_message)
 
 
-async def send_to_clients(console: Console, classifier: str, function_message: m.FunctionMessage) -> None:
+async def send_to_clients(console: Console, classifier: str, function_message: FunctionMessage) -> None:
     """
     Sends a single message to the server with a message.FunctionMessage within.
     the server will then send copies of the function message to any clients which meet the classifier
     """
-    message = m.Message(f'Pass on: {function_message}')
-    message.set_type(MessageType.PASS_ON)
-    message.set_data(function_message.as_dict())
-    message.set_message(classifier)
+
+    message = Message(
+        f'Pass on: {function_message}',
+        message_type=MessageType.PASS_ON,
+        data=function_message.as_dict(),
+        message=classifier,
+        target=MessageTarget.SERVER,
+    )
     console.send(message)
 
 

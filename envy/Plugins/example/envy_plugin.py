@@ -20,12 +20,13 @@ __author__ = "Nathan Vandevoort"
 __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
-import os, subprocess
+import os
 import asyncio
-from envy.lib.jobs import Status  # this module is in the ENVYREPO and provides useful information such as job status
+from envy.Legacy.jobs import Status  # this module is in the ENVYREPO and provides useful information such as job status
 import sys
 import json
 import time
+
 NV = sys.modules.get('Envy_Functions')  # This gets the Envy_Functions module and assigns it to the variable NV. This allows you to call the envy_functions functions easily
 
 
@@ -62,14 +63,18 @@ class Example_Plugin_Handler:
         :return: Void
         """
         plugin_path = os.path.join(os.path.dirname(self.my_path), 'test_process.py')
-        self.process = await asyncio.create_subprocess_exec(f'python',  plugin_path, json.dumps(self.tasks), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)  # notice how I'm using asyncios create subprocess and not the subprocess modules
+        self.process = await asyncio.create_subprocess_exec(
+            f'python', plugin_path, json.dumps(self.tasks), stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )  # notice how I'm using asyncios create subprocess and not the subprocess modules
 
     async def monitor_subprocess_output(self) -> int:
         """
         This coroutine monitors the stdout of the process I'm calling and reports back percentages
         :return: Void
         """
-        async for line in self.process.stdout:  # because I'm using asyncio's create subprocess method I can iterate over the stdout with an async for loop. This is important to not block envy
+        async for (
+            line
+        ) in self.process.stdout:  # because I'm using asyncio's create subprocess method I can iterate over the stdout with an async for loop. This is important to not block envy
             await self.parse_line(line)
         return await self.process.wait()
 
@@ -79,7 +84,7 @@ class Example_Plugin_Handler:
         :return: (int) an exit code. Honestly I didn't finish implimenting this so the exit code is not used.
         """
         while self.envy.status == Status.WORKING:
-            await asyncio.sleep(.5)  # this sleep is important. If you have never used asyncio before the `await asyncio.sleep` ensures that the while loop is not blocking
+            await asyncio.sleep(0.5)  # this sleep is important. If you have never used asyncio before the `await asyncio.sleep` ensures that the while loop is not blocking
         return -1
 
     async def send_progress(self) -> None:
@@ -104,7 +109,7 @@ class Example_Plugin_Handler:
         """
         running = True
         while running:
-            await asyncio.sleep(.01)
+            await asyncio.sleep(0.01)
             for task in self.coroutines:
                 if task.done():
                     self.envy.logger.debug(f'Example Plugin: termination catalyst task -> {task.get_name()}')
@@ -130,7 +135,7 @@ class Example_Plugin_Handler:
 
         start_time = time.time()
         while self.process.returncode is None:
-            time.sleep(.1)
+            time.sleep(0.1)
             if time.time() - start_time > timeout:
                 return False
             self.process.terminate()
@@ -183,4 +188,3 @@ class Example_Plugin_Handler:
             await NV.finish_task_allocation(self.envy, self.allocation_id)
         else:  # if the process exited with an error code give the console the error code and mark the allocation as failed
             await NV.fail_task_allocation(self.envy, self.allocation_id, str(self.process.returncode))
-

@@ -6,8 +6,8 @@ from PySide6.QtCore import Qt, QAbstractItemModel, QModelIndex
 from anytree import Resolver
 
 import envy.lib.network.message
-from envy.lib.jobs import jobItem
-from envy.lib.jobs.enums import Status as Job_Status
+from envy.Legacy.jobs import jobItem
+from envy.Legacy.jobs.enums import Status as Job_Status
 from envy.lib.network.message import MessageTarget
 
 logger = logging.getLogger(__name__)

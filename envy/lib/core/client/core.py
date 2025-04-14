@@ -4,7 +4,6 @@ import subprocess
 import logging
 import sys
 
-from envy.Plugins import Envy_Functions  # noqa
 from envy.lib.core.taskrunner import TaskRunner
 from envy.lib.core.message_handler import MessageHandler
 from envy.lib.core.client.websocket_client import WebsocketClient
@@ -20,6 +19,7 @@ class Client:
     def __init__(self):
         # Init task runner.
         self._task_runner = TaskRunner()
+        self._task_runner.suppress_error(OSError)
 
         # Init websocket client.
         self._websocket_client = WebsocketClient(self.state)

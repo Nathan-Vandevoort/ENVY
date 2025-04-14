@@ -1,26 +1,12 @@
-import asyncio
-import socket
-import websockets
+import json
+from enum import Enum
 
-from envy.lib.utils.utils import get_hash
-from envy.lib.db.utils import get_server_ip
-
-ip = socket.gethostbyname(socket.gethostname())
-
-print(get_server_ip())
-uri = f"ws://{get_server_ip()}:3720/client"
-headers = {
-    'passkey': get_hash(),
-    'name': 'host',
-    'job': None,
-    'task': None,
-}
+myList = [0, 1, 2, 3, 4]
 
 
-async def run():
-    websocket = await websockets.connect(uri, extra_headers=headers)
+class myEnum(Enum):
+    a = "1"
+    b = "2"
 
 
-asyncio.run(run())
-
-print(ip)
+newval = myEnum(3)

@@ -10,8 +10,7 @@ import sys
 import websockets
 
 import envy.lib.network.message as m
-from envy.lib.jobs import scheduler
-from envy.lib.jobs.enums import Status
+from envy.Legacy.jobs.enums import Status
 from envy.lib.network.messagepurpose import MessagePurpose
 from envy.lib.utils import utils as eutils
 from envy.lib.utils import config

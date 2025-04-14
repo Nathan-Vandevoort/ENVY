@@ -4,10 +4,10 @@ import sys
 
 import anytree
 
-import envy.lib.jobs.ingestor as ingestor
+import envy.Legacy.jobs.ingestor as ingestor
 from envy.lib.db import db
-from envy.lib.jobs.enums import Status
-from envy.lib.jobs.jobTreeAbstractItemModel import JobTreeItemModel as JobTree
+from envy.Legacy.jobs.enums import Status
+from envy.Legacy.jobs.jobTreeAbstractItemModel import JobTreeItemModel as JobTree
 
 SRV = sys.modules.get('Server_Functions')
 

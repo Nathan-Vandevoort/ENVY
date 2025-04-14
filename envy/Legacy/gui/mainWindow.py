@@ -10,13 +10,13 @@ __copyright__ = "Copyright 2024, Nathan Vandevoort"
 __version__ = "1.0.0"
 
 import envy.lib.prep_env
-import asyncio, sys
-from PySide6.QtCore import Qt, QRect, QEvent, QPoint, QThread
-from PySide6.QtGui import QCursor, QVector2D, QTransform
-from PySide6.QtWidgets import QMainWindow, QWidget, QSizeGrip, QVBoxLayout, QHBoxLayout, QTextEdit, QTreeView, QSplitter, QApplication
-from envy.lib.gui import console_widget
-from envy.lib.gui.jobTree import jobTreeWidget
-from envy.lib.gui.viewport import viewportWidget
+import asyncio
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QCursor
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QApplication
+from envy.Legacy.gui import console_widget
+from envy.Legacy.gui.jobTree import jobTreeWidget
+from envy.Legacy.gui.viewport import viewportWidget
 
 
 class MainWindow(QMainWindow):
@@ -25,12 +25,11 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # set the window flag to frameless
-        #self.setWindowFlags(Qt.FramelessWindowHint)
+        # self.setWindowFlags(Qt.FramelessWindowHint)
         self.qapp = application
 
         # Envy backend
         self.event_loop = event_loop
-
 
         # mouse Attrs
         self.mousePos = None
@@ -73,21 +72,39 @@ class MainWindow(QMainWindow):
         self.job_tree_widget.finish_job_element.connect(self.console_widget.send_message)  # job view -> console when user marks job as finished
 
         self.console_widget.jobs_finish_job.connect(self.job_tree_widget.controller.mark_job_as_finished)  # console -> job view. when a job is marked finished update the view
-        self.console_widget.jobs_sync_job.connect(self.job_tree_widget.controller.sync_job)  # console -> job tree. When the server ingests a new job send a signal to the console to sync that new job
-        self.console_widget.jobs_start_task.connect(self.job_tree_widget.controller.mark_task_as_started)  # console -> job tree. Tells the job tree that a client has started a different task
+        self.console_widget.jobs_sync_job.connect(
+            self.job_tree_widget.controller.sync_job
+        )  # console -> job tree. When the server ingests a new job send a signal to the console to sync that new job
+        self.console_widget.jobs_start_task.connect(
+            self.job_tree_widget.controller.mark_task_as_started
+        )  # console -> job tree. Tells the job tree that a client has started a different task
         self.console_widget.jobs_finish_task.connect(self.job_tree_widget.controller.mark_task_as_finished)  # console -> job tree. Tells the tree that a task has been finished
-        self.console_widget.jobs_start_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_started)  # console -> job tree. Tells the tree a new allocation has been started
-        self.console_widget.jobs_finish_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_finished)  # console -> job tree. tells the tree that an allocation has been finished
+        self.console_widget.jobs_start_allocation.connect(
+            self.job_tree_widget.controller.mark_allocation_as_started
+        )  # console -> job tree. Tells the tree a new allocation has been started
+        self.console_widget.jobs_finish_allocation.connect(
+            self.job_tree_widget.controller.mark_allocation_as_finished
+        )  # console -> job tree. tells the tree that an allocation has been finished
         self.console_widget.jobs_fail_task.connect(self.job_tree_widget.controller.mark_task_as_failed)  # console -> jobTree. marks the task as failed and provides the reason
-        self.console_widget.jobs_fail_allocation.connect(self.job_tree_widget.controller.mark_allocation_as_failed)  # console -> jobTree. marks the allocation as failed and provides the reason
-        self.console_widget.jobs_update_allocation_progress.connect(self.job_tree_widget.controller.update_allocation_progress)  # console -> jobTree updates the progress of an allocation
+        self.console_widget.jobs_fail_allocation.connect(
+            self.job_tree_widget.controller.mark_allocation_as_failed
+        )  # console -> jobTree. marks the allocation as failed and provides the reason
+        self.console_widget.jobs_update_allocation_progress.connect(
+            self.job_tree_widget.controller.update_allocation_progress
+        )  # console -> jobTree updates the progress of an allocation
 
         self.console_widget.register_client.connect(self.viewport_widget.controller.register_client)  # console -> viewport telling the viewport hey I just got a new client
-        self.console_widget.unregister_client.connect(self.viewport_widget.controller.unregister_client)  # console -> viewport telling the viewport hey I just lost connection to a client
+        self.console_widget.unregister_client.connect(
+            self.viewport_widget.controller.unregister_client
+        )  # console -> viewport telling the viewport hey I just lost connection to a client
         self.console_widget.set_clients.connect(self.viewport_widget.controller.set_clients)  # console -> viewport telling the viewport to sync to new clients
 
-        self.console_widget.disconnected_with_server.connect(self.viewport_widget.controller.disconnected_with_server)  # console -> viewport, saying hey I'm disconnected from the server
-        self.console_widget.disconnected_with_server.connect(self.job_tree_widget.controller.disconnected_with_server)  # console -> jobTree, saying hey I'm disconnected from the server
+        self.console_widget.disconnected_with_server.connect(
+            self.viewport_widget.controller.disconnected_with_server
+        )  # console -> viewport, saying hey I'm disconnected from the server
+        self.console_widget.disconnected_with_server.connect(
+            self.job_tree_widget.controller.disconnected_with_server
+        )  # console -> jobTree, saying hey I'm disconnected from the server
         self.console_widget.connected_with_server.connect(self.viewport_widget.controller.connected_with_server)  # console -> viewport, saying hey I'm connected with the server
         self.console_widget.connected_with_server.connect(self.job_tree_widget.controller.connected_with_server)  # console -> jobTree, saying hey I'm connected with the server
 

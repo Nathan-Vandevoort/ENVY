@@ -9,7 +9,7 @@ import subprocess
 import time
 import sys
 import json
-from envy.lib.jobs import Status as Job_Status
+from envy.Legacy.jobs import Status as Job_Status
 from envy.lib.utils import utils as eutils
 import re
 

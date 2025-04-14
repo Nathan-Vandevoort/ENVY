@@ -4,6 +4,7 @@ Name: maya_to_envy.py
 Author: Mauricio Gonzalez Soto
 ========================================================================================================================
 """
+
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 
@@ -134,8 +135,8 @@ class MayaToEnvy(object):
             om.MGlobal.displayError(f'{[self.CLASS_NAME]} Render engine {self.render_engine} not supported.')
             return
 
-        from envy.lib.jobs import Purpose
-        import envy.lib.jobs.job as job
+        from envy.Legacy.jobs import Purpose
+        import envy.Legacy.jobs.job as job
 
         maya_file_name = Path(self.get_maya_file()).stem
         camera_short_name = cmds.ls(camera, shortNames=True)[0].replace(':', '')
@@ -155,7 +156,7 @@ class MayaToEnvy(object):
             'render_engine': self.get_render_engine(),
             'render_layer': render_layer,
             'camera': camera,
-            'use_tiled_rendering': False
+            'use_tiled_rendering': False,
         }
 
         if self.tiled_rendering:
@@ -167,15 +168,17 @@ class MayaToEnvy(object):
         render_job.set_environment(environment)
         render_job.write()
 
-        om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Exporting to Envy...\n'
-                               f'\tmaya_file: {self.get_maya_file()}\n'
-                               f'\tproject_path: {self.get_project_path()}\n'
-                               f'\trender_engine: {self.get_render_engine()}\n'
-                               f'\trender_layer: {render_layer}\n'
-                               f'\tcamera: {camera}\n'
-                               f'\tstart_frame: {self.start_frame}\n'
-                               f'\tend_frame: {self.end_frame}\n'
-                               f'\tallocation: {self.allocation}\n')
+        om.MGlobal.displayInfo(
+            f'[{self.CLASS_NAME}] Exporting to Envy...\n'
+            f'\tmaya_file: {self.get_maya_file()}\n'
+            f'\tproject_path: {self.get_project_path()}\n'
+            f'\trender_engine: {self.get_render_engine()}\n'
+            f'\trender_layer: {render_layer}\n'
+            f'\tcamera: {camera}\n'
+            f'\tstart_frame: {self.start_frame}\n'
+            f'\tend_frame: {self.end_frame}\n'
+            f'\tallocation: {self.allocation}\n'
+        )
 
         om.MGlobal.displayInfo(f'[{self.CLASS_NAME}] Exported job to envy.')
 
@@ -306,7 +309,8 @@ class MayaToEnvy(object):
                 button=['Yes', 'No'],
                 defaultButton='Yes',
                 cancelButton='No',
-                dismissString='No')
+                dismissString='No',
+            )
 
         if result == 'Yes':
             cmds.file(save=True)

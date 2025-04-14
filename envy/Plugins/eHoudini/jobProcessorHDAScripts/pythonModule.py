@@ -17,16 +17,18 @@ import config_bridge as config
 
 ENVYBINPATH = config.Config.REPOPATH
 sys.path.append(ENVYBINPATH)
-from envy.lib.jobs import job as ej
-from envy.lib.jobs import Purpose
+from envy.Legacy.jobs import job as ej
+from envy.Legacy.jobs import Purpose
 
 
 def createSimulationEnvyJob(node):
-    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
-                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
-                                                 suppress=hou.confirmType.BackgroundSave,
-                                                 default_choice=0,
-                                                 close_choice=2)
+    selection = hou.ui.displayCustomConfirmation(
+        'Save Hip File? \n(Otherwise hWedge could not work as intended)',
+        buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+        suppress=hou.confirmType.BackgroundSave,
+        default_choice=0,
+        close_choice=2,
+    )
     if selection == 0:
         hou.hipFile.save()
 
@@ -139,24 +141,15 @@ def createSimulationEnvyJob(node):
             checkpoint_file_path_value_parm.set(checkpoint_file_path_value)
             checkpoint_file_path_value = checkpoint_file_path_value_parm.eval()
             checkpoint_file_path_value = f'{checkpoint_file_path_value}$HIPNAME.$OS.$JOBID.$STARTFRAMETOKEN.$SF4.sim'
-            checkpoint_file_path = (
-                checkpoint_file_path.path(),
-                checkpoint_file_path_value
-            )
+            checkpoint_file_path = (checkpoint_file_path.path(), checkpoint_file_path_value)
 
             checkpoint_trail_length_value_parm = node.parm('advanced_simulation_checkpointTrailLength_value')
             checkpoint_trail_length_value = checkpoint_trail_length_value_parm.eval()
-            checkpoint_trail_length = (
-                checkpoint_trail_length.path(),
-                checkpoint_trail_length_value
-            )
+            checkpoint_trail_length = (checkpoint_trail_length.path(), checkpoint_trail_length_value)
 
             checkpoint_interval_value_parm = node.parm('advanced_simulation_checkpointInterval_value')
             checkpoint_interval_value = checkpoint_interval_value_parm.eval()
-            checkpoint_interval = (
-                checkpoint_interval.path(),
-                checkpoint_interval_value
-            )
+            checkpoint_interval = (checkpoint_interval.path(), checkpoint_interval_value)
 
             environment['Job_Type'] = 'resumable_simulation'
             environment['Dopnet_Initial_State_Parm'] = initial_state.path()
@@ -190,8 +183,7 @@ def createSimulationEnvyJob(node):
         new_job.write()
 
 
-def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str,
-                           job_index: int) -> dict | None:
+def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_namespace: str, job_index: int) -> dict | None:
     NVC = node.parm('nvcToken').eval()
     parameters = {}
     for j in range(parameter_edits_multiparm.eval()):
@@ -202,8 +194,7 @@ def dictFromParameterEdits(node, parameter_edits_multiparm: hou.parm, parm_names
         # check that parameter_parm points to something
         parameter_parm = parameter_parm_parm.getReferencedParm()
         if parameter_parm_parm == parameter_parm:
-            hou.ui.displayMessage(
-                f"Invalid Parameter Reference: {parameter_parm_parm.name()} ({parameter_parm_parm.rawValue()})")
+            hou.ui.displayMessage(f"Invalid Parameter Reference: {parameter_parm_parm.name()} ({parameter_parm_parm.rawValue()})")
             return None
 
         rawValueString = value_parm.rawValue()
@@ -242,8 +233,7 @@ def setRenderParametersFromNode(node):
     target_button_parm.revertToDefaults()
     target_button_parm.deleteAllKeyframes()
     rop_target_button = render_node.parm('execute')
-    target_button_parm.set(f"`ch('{rop_target_button.path()}')`", language=hou.exprLanguage.Hscript,
-                           follow_parm_reference=False)
+    target_button_parm.set(f"`ch('{rop_target_button.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     #  Start Frame
     start_frame_parm.revertToDefaults()
@@ -251,8 +241,7 @@ def setRenderParametersFromNode(node):
     start_frame_parm.deleteAllKeyframes()
     start_frame_value_parm.deleteAllKeyframes()
     rop_start_frame_parm = render_node.parm('f1')
-    start_frame_parm.set(f"`ch('{rop_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                         follow_parm_reference=False)
+    start_frame_parm.set(f"`ch('{rop_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     start_frame_value_parm.set(rop_start_frame_parm.evalAsString())
 
     #  End Frame
@@ -261,8 +250,7 @@ def setRenderParametersFromNode(node):
     end_frame_parm.deleteAllKeyframes()
     end_frame_value_parm.deleteAllKeyframes()
     rop_end_frame_parm = render_node.parm('f2')
-    end_frame_parm.set(f"`ch('{rop_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                       follow_parm_reference=False)
+    end_frame_parm.set(f"`ch('{rop_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     end_frame_value_parm.set(rop_end_frame_parm.evalAsString())
 
     # Attempt to set post frame script settings
@@ -280,11 +268,13 @@ def setRenderParametersFromNode(node):
 
 
 def writeRenderJob(node):
-    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
-                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
-                                                 suppress=hou.confirmType.BackgroundSave,
-                                                 default_choice=0,
-                                                 close_choice=2)
+    selection = hou.ui.displayCustomConfirmation(
+        'Save Hip File? \n(Otherwise hWedge could not work as intended)',
+        buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+        suppress=hou.confirmType.BackgroundSave,
+        default_choice=0,
+        close_choice=2,
+    )
     if selection == 0:
         hou.hipFile.save()
 
@@ -382,8 +372,7 @@ def setSimulationParametersFromNode(node):
     target_button_parm.revertToDefaults()
     target_button_parm.deleteAllKeyframes()
     file_cache_target_button = cache_node.parm('execute')
-    target_button_parm.set(f"`ch('{file_cache_target_button.path()}')`", language=hou.exprLanguage.Hscript,
-                           follow_parm_reference=False)
+    target_button_parm.set(f"`ch('{file_cache_target_button.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     #  Start Frame
     start_frame_parm.revertToDefaults()
@@ -391,8 +380,7 @@ def setSimulationParametersFromNode(node):
     start_frame_parm.deleteAllKeyframes()
     start_frame_value_parm.deleteAllKeyframes()
     file_cache_start_frame_parm = cache_node.parm('f1')
-    start_frame_parm.set(f"`ch('{file_cache_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                         follow_parm_reference=False)
+    start_frame_parm.set(f"`ch('{file_cache_start_frame_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     start_frame_value_parm.set(file_cache_start_frame_parm.evalAsString())
 
     #  End Frame
@@ -401,8 +389,7 @@ def setSimulationParametersFromNode(node):
     end_frame_parm.deleteAllKeyframes()
     end_frame_value_parm.deleteAllKeyframes()
     file_cache_end_frame_parm = cache_node.parm('f2')
-    end_frame_parm.set(f"`ch('{file_cache_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                       follow_parm_reference=False)
+    end_frame_parm.set(f"`ch('{file_cache_end_frame_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     end_frame_value_parm.set(file_cache_end_frame_parm.evalAsString())
 
     #  Substeps
@@ -411,8 +398,7 @@ def setSimulationParametersFromNode(node):
     substeps_parm.deleteAllKeyframes()
     substeps_value_parm.deleteAllKeyframes()
     file_cache_substeps_parm = cache_node.parm('substeps')
-    substeps_parm.set(f"`ch('{file_cache_substeps_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                      follow_parm_reference=False)
+    substeps_parm.set(f"`ch('{file_cache_substeps_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     substeps_value_parm.set(file_cache_substeps_parm.evalAsString())
 
     #  Version
@@ -421,8 +407,7 @@ def setSimulationParametersFromNode(node):
     version_parm.deleteAllKeyframes()
     version_value_parm.deleteAllKeyframes()
     file_cache_version_parm = cache_node.parm('version')
-    version_parm.set(f"`ch('{file_cache_version_parm.path()}')`", language=hou.exprLanguage.Hscript,
-                     follow_parm_reference=False)
+    version_parm.set(f"`ch('{file_cache_version_parm.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
     version_value_parm.set(file_cache_version_parm.evalAsString())
 
     # Attempt to set post frame script settings
@@ -438,12 +423,15 @@ def setSimulationParametersFromNode(node):
     except Exception:
         return
 
+
 def createGenericEnvyJobs(node):
-    selection = hou.ui.displayCustomConfirmation('Save Hip File? \n(Otherwise hWedge could not work as intended)',
-                                                 buttons=('Save and continue', 'Continue without saving', 'Cancel'),
-                                                 suppress=hou.confirmType.BackgroundSave,
-                                                 default_choice=0,
-                                                 close_choice=2)
+    selection = hou.ui.displayCustomConfirmation(
+        'Save Hip File? \n(Otherwise hWedge could not work as intended)',
+        buttons=('Save and continue', 'Continue without saving', 'Cancel'),
+        suppress=hou.confirmType.BackgroundSave,
+        default_choice=0,
+        close_choice=2,
+    )
     if selection == 0:
         hou.hipFile.save()
 
@@ -460,7 +448,7 @@ def createGenericEnvyJobs(node):
     generateDescriptiveFile = False
     nvNode = None
 
-    if (node.parm('descriptiveFileBool').eval() == 1):
+    if node.parm('descriptiveFileBool').eval() == 1:
         generateDescriptiveFile = True
 
     # iterate over each job
@@ -646,29 +634,24 @@ def setAdvancedSimulationResumableSettings(node):
     # get dopnet initial state param
     dopnet_initial_state = dopnet_node.parm('initialstate')
     dopnet_initial_state.deleteAllKeyframes()
-    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", language=hou.exprLanguage.Hscript,
-                           follow_parm_reference=False)
+    initial_state_parm.set(f"`chs('{dopnet_initial_state.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     # get dopnet start frame parm
     dopnet_start_frame = dopnet_node.parm('startframe')
     dopnet_start_frame.deleteAllKeyframes()
-    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", language=hou.exprLanguage.Hscript,
-                                follow_parm_reference=False)
+    dopnet_start_frame_parm.set(f"`chs('{dopnet_start_frame.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     # get checkpoint file param
     dopnet_checkpoint_file = dopnet_node.parm('explicitcachename')
     dopnet_checkpoint_file.deleteAllKeyframes()
-    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", language=hou.exprLanguage.Hscript,
-                                  follow_parm_reference=False)
+    checkpoint_file_path_parm.set(f"`chs('{dopnet_checkpoint_file.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     # get checkpoint trail length parm
     dopnet_trail_length = dopnet_node.parm('explicitcachensteps')
     dopnet_trail_length.deleteAllKeyframes()
-    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', language=hou.exprLanguage.Hscript,
-                                     follow_parm_reference=False)
+    checkpoint_trail_length_parm.set(f'`chs("{dopnet_trail_length.path()}")`', language=hou.exprLanguage.Hscript, follow_parm_reference=False)
 
     # get checkpoint interval
     dopnet_checkpoint_interval = dopnet_node.parm('explicitcachecheckpointspacing')
     dopnet_checkpoint_interval.deleteAllKeyframes()
-    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", language=hou.exprLanguage.Hscript,
-                                 follow_parm_reference=False)
+    checkpoint_interval_parm.set(f"`chs('{dopnet_checkpoint_interval.path()}')`", language=hou.exprLanguage.Hscript, follow_parm_reference=False)

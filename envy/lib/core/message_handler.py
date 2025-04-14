@@ -64,6 +64,7 @@ class MessageHandler:
         self._process_queue.put(None)
 
     async def _handle_message(self, m: message.Message | message.FunctionMessage) -> None:
+        logger.debug(f'Handling: {m}')
         if isinstance(m, message.FunctionMessage):
             await self._execute_function_message(m)
         else:

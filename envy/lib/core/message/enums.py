@@ -3,15 +3,8 @@ import enum
 
 class MessageType(str, enum.Enum):
     PASS_ON = enum.auto()
-    HEALTH_CHECK = enum.auto()
     ERROR = enum.auto()
     FUNCTION_MESSAGE = enum.auto()
-
-    def __str__(self):
-        return self.value
-
-    def __format__(self, format_spec):
-        return self.value
 
 
 class MessageTarget(str, enum.Enum):
@@ -19,8 +12,18 @@ class MessageTarget(str, enum.Enum):
     SERVER = enum.auto()
     CONSOLE = enum.auto()
 
-    def __str__(self):
-        return self.value
 
-    def __format__(self, format_spec):
-        return self.value
+class ClientMessageType(enum.Enum):
+    START_PLUGIN = enum.auto()
+    STOP_PLUGIN = enum.auto()
+    GET_STATE = enum.auto()
+    CANCEL_FRAME = enum.auto()
+    CANCEL_TASK = enum.auto()
+
+
+class ServerMessageType(enum.Enum):
+    UPDATE_CLIENT_STATE = enum.auto()
+
+
+class ConsoleMessageType(enum.Enum):
+    UPDATE_CLIENT_STATE = enum.auto()

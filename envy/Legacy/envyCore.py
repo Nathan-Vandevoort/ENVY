@@ -9,7 +9,7 @@ import time
 from envy.lib import prep_env
 from envy.lib.utils.utils import DummyLogger
 from envy.lib.network import message as m
-from envy.lib.jobs import Status
+from envy.Legacy.jobs import Status
 import subprocess
 import envy.lib.utils.config as config
 import safe_exit

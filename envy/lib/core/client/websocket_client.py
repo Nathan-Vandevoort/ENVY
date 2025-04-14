@@ -8,7 +8,7 @@ import websockets
 
 from envy.lib.core.taskrunner import TaskRunner
 from envy.lib.db.utils import get_server_ip
-from envy.lib.network.message import Message, build_from_message_dict, MessageTarget
+from envy.lib.core.message import Message, MessageTarget
 from envy.lib.network.types import ConnectionType
 from envy.lib.utils.utils import get_hash
 
@@ -51,21 +51,25 @@ class WebsocketClient:
                 logger.debug(f'Failed to connect: {e}')
                 continue
 
-            self.connected = True
             logger.info('Connected!')
+            self.connected = True
             logger.debug(f'{server_ip=}')
-            while self.websocket.open:
-                await asyncio.sleep(0.5)
+
+            if self.websocket:
+                self.task_runner.create_task(self.consumer(self.websocket), 'Consumer')
+                self.task_runner.start()
+                while self.websocket.open:
+                    await asyncio.sleep(0.5)
+            else:
+                logger.error('Websocket connected without returning a websocket object.')
+                logger.error('This state should not be reachable')
 
             self.connected = False
             logger.error(f'Lost connection with server.')
             self.task_runner.stop()
-            self.task_runner.create_task(self.consumer(), 'Consumer')
-            self.task_runner.start()
 
     def send_message(self, m: Message) -> None:
-        logger.info(f'Adding message ({m.name}) to queue')
-        logger.debug(f'Message: {m.as_dict()}')
+        logger.info(f'Adding message ({m.function}) to queue')
         self._send_queue.put(m)
 
     async def connect(self, server_ip: str) -> None:
@@ -106,7 +110,7 @@ class WebsocketClient:
         self.websocket = None
         logger.info('Connection closed')
 
-    async def consumer(self) -> None:
+    async def consumer(self, websocket: websockets.WebSocketClientProtocol) -> None:
         """
         This function takes messages from the websocket, processes them,
         then puts them in the receive queue.
@@ -114,27 +118,15 @@ class WebsocketClient:
         This is a long-running function.
         """
 
-        async for m in self.websocket:
-            try:
-                json.loads(m)
-            except json.JSONDecodeError as e:
-                logger.warning(f'Failed to parse message {e}')
-                continue
-            except TypeError as e:
-                logger.error(f'{e}')
+        async for m in websocket:
+            message = Message.decode(str(m))
+            if not message:
                 continue
 
-            try:
-                message_object = build_from_message_dict(m)
-            except ValueError:
-                logger.error(f'Skipping invalid message.')
-                logger.debug(f'message = {m}')
-                continue
-
-            if message_object.get_target() != MessageTarget.CLIENT:
+            if message.message_target != MessageTarget.CLIENT:
                 logger.error(f'Non-client message detected.')
-                logger.debug(f'message = {message_object.as_dict()}')
+                logger.debug(f'{message=!r}')
                 continue
 
-            self._receive_queue.put(message_object)
-            logger.debug(f'Processed message {message_object!r}')
+            self._receive_queue.put(message)
+            logger.debug(f'Processed message {message!r}')

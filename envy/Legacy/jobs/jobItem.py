@@ -1,5 +1,5 @@
 from anytree import NodeMixin
-from envy.lib.jobs import enums
+from envy.Legacy.jobs import enums
 
 
 class JobItem(NodeMixin):
