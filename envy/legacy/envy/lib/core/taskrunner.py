@@ -10,14 +10,10 @@ class TaskRunner:
 
     def __init__(self):
         self._tasks: typing.Set[asyncio.Task] = set()
-        self.check_interval = 2
+        self.check_interval = 0.2
         self._suppress_error_list = []
 
-        try:
-            self.event_loop = asyncio.get_running_loop()
-        except RuntimeError:
-            self.event_loop = asyncio.get_event_loop()
-
+        self.event_loop = asyncio.get_event_loop()
         self.exit_callback: typing.Callable | None = None
         self.running = False
 

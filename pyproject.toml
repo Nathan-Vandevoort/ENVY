@@ -5,22 +5,17 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = 'Envy'
 version = '3.0.0'
+readme = 'README.md'
 dependencies = [
-    'anytree<3',
-    'numpy<3',
-    'psutil<7',
-    'PySide6>6.7',
+    'PySide6<7',
     'qasync<1',
-    'QDarkStyle<4',
-    'safe-exit<1',
     'websockets<14',
-    'dataclasses-json<1'
+    'pydantic<3'
 ]
 requires-python = '>=3.9'
 authors = [
     {name = 'Nathan Vandevoort', email = 'nathan.v.2021@gmail.com'},
 ]
-readme = 'README.md'
 
 [project.optional-dependencies]
 dev = [
@@ -28,18 +23,13 @@ dev = [
     'python-semantic-release>=9',
 ]
 
-[project.scripts]
-envy = "envy.lib.core.client.core:main"
-envy_console = "envy.lib.standalone.standalone_console:main"
-envy_server = "envy.lib.core.server.core:main"
-
 [tool.semantic_release]
 version_toml = ['pyproject.toml:project.version']
 version_variables = ["envy/__init__.py:__version__"]
 
 [tool.black]
 skip-string-normalization = true
-line-length = 180
+line-length = 120
 
 [tool.isort]
 profile = "black"
