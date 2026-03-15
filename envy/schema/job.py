@@ -68,7 +68,7 @@ class Job(Message):
 
     priority: int = 50
     batch_size: int = 1
-    plugin: Plugin
+    plugin: str
     plugin_data: PluginData
 
     tasks: tuple[Task, ...] = ()

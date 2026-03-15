@@ -1,8 +1,8 @@
+import abc
 from pydantic import BaseModel
-from abc import ABC, abstractmethod
 
 
-class PluginData(BaseModel, ABC):
+class PluginData(BaseModel, abc.ABC):
     """
     The base class for PluginData.
 
@@ -10,10 +10,10 @@ class PluginData(BaseModel, ABC):
     would need to do it's job.
     """
 
-    pass
+    ...
 
 
-class Plugin(ABC):
+class Plugin(abc.ABC):
     """
     The base class for a plugin.
 
@@ -28,10 +28,10 @@ class Plugin(ABC):
     def set_plugin_data(self, data: PluginData) -> None:
         self.data = data
 
-    @abstractmethod
+    @abc.abstractmethod
     def start(self) -> None:
         if not self.data:
             raise AttributeError(f"PluginData was never provided. make sure call set_plugin_data before calling start.")
 
-    @abstractmethod
+    @abc.abstractmethod
     def stop(self) -> None: ...

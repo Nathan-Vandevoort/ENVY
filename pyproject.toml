@@ -15,6 +15,7 @@ authors = [
 
 dependencies = [
     "pydantic>=2,<3",
+    "websockets>=16,<17"
 ]
 
 [project.scripts]
@@ -43,10 +44,8 @@ line-length = 120
 
 [tool.isort]
 profile = "black"
-known_first_party = ["acme"]
+known_first_party = []
 # If you need to exclude files from having their imports sorted
 extend_skip_glob  = [
-    "acme/somefile.py",
-    "acme/somedir/*",
 ]
 
