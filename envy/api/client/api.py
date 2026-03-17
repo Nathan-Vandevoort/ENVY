@@ -18,31 +18,26 @@ class RPCClient:
     server: Server | None = None
     _model_cache: dict[str, type[BaseModel]] = {}
 
-    @classmethod
-    async def echo_job_properties(cls, job: Job, message="something") -> None:
-        message = cls._format_message("echo_job_properties", job, message=message)
-        return await cls._send_message(message)
+    async def echo_job_properties(self, job: Job, message="something") -> None:
+        message = self._format_message("echo_job_properties", job, message=message)
+        return await self._send_message(message)
 
-    @classmethod
-    async def echo_task(cls, task: Task, message="something") -> None:
-        message = cls._format_message("echo_task", task, message=message)
-        return await cls._send_message(message)
+    async def echo_task(self, task: Task, message="something") -> None:
+        message = self._format_message("echo_task", task, message=message)
+        return await self._send_message(message)
 
-    @classmethod
-    def _format_message(cls, func_name: str, *args, **kwargs) -> RPCRequest:
+    def _format_message(self, func_name: str, *args, **kwargs) -> RPCRequest:
         envelope = RPCRequest(func_name=func_name, args=args, kwargs=kwargs)
         return envelope
 
-    @classmethod
-    async def _send_message(cls, message: RPCRequest) -> Any:
-        if not cls.server:
+    async def _send_message(self, message: RPCRequest) -> Any:
+        if not self.server:
             raise ValueError("a server must be registered before calling the API")
 
-        return await cls.server.send(message)
+        return await self.server.send(message)
 
-    @classmethod
-    def register_server(cls, server: Server) -> None:
-        cls.server = server
+    def register_server(self, server: Server) -> None:
+        self.server = server
 
     @classmethod
     def get_validation_model(cls, func_name: str) -> type[BaseModel]:
@@ -65,8 +60,6 @@ class RPCClient:
 
             default = ... if param.default is inspect.Parameter.empty else param.default
             fields[name] = (annotation, default)
-
-        logger.debug(f"{fields=}")
 
         model = create_model(f"{func_name}_args", **fields)
         cls._model_cache[func_name] = model

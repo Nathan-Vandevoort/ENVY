@@ -1,7 +1,7 @@
 import asyncio
 from envy.schema import Task
 from envy.schema.job import FrameRange
-from envy.api.server.api import RPCRequest, parse_request
+from envy.api.client.api import RPCRequest, parse_request
 
 import logging
 

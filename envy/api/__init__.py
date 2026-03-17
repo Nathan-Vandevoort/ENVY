@@ -1,1 +1,1 @@
-from .data import EnvelopeKinds, RPCResponse, RPCRequest
+from .data import RPCKinds, RPCResponse, RPCRequest
