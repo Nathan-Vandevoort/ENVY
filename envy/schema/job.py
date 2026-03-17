@@ -3,7 +3,7 @@ import re
 import enum
 
 from .base import Message
-from .plugin import Plugin, PluginData
+from .plugin import PluginData
 
 
 class FrameRange(Message):
