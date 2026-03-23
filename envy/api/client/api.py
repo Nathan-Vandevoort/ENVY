@@ -2,7 +2,7 @@ import logging
 from typing import Any
 
 from envy.schema import Job, Task
-from envy.server.network.base import Server as NetworkingServer
+from envy.core.server.network.base import Server as NetworkingServer
 
 from ..data import RPCRequest
 from ..base import RPCBase
@@ -37,7 +37,7 @@ class RPCClient(RPCBase):
         if not self.server:
             raise ValueError("a server must be registered before calling the API")
 
-        return await self.server.send(message)
+        return await self.server.send(self, message)
 
     def _format_message(self, func_name: str, *args, **kwargs) -> RPCRequest:
         envelope = RPCRequest(func_name=func_name, args=args, kwargs=kwargs)
