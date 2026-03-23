@@ -10,18 +10,15 @@ from ..base import RPCBase
 logger = logging.getLogger(__name__)
 
 
-class Client:
+class Server:
 
     async def echo_task(self, task: Task, message="something") -> Task:
         return task
 
 
-class RPCClient(RPCBase):
+class RPCServer(RPCBase):
 
-    def __init__(self, server: NetworkingServer, name: str, ip: str) -> None:
-        self.server = server
-        self.name = name
-        self.ip = ip
+    server: NetworkingServer | None = None
 
     async def echo_job_properties(self, job: Job, message="something") -> str:
         message = self._format_message("echo_job_properties", job, message=message)

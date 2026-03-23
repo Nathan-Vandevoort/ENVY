@@ -14,6 +14,3 @@ class RPCResponse(Message):
     func_name: str
     result: Optional[Any]
     error: Optional[str]
-
-
-RPCKinds = Union[RPCRequest, RPCResponse]

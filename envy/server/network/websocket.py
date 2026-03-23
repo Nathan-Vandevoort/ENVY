@@ -1,30 +1,38 @@
 import asyncio
-import dataclasses
+import json
 import logging
-from typing import Any, Queue
+from typing import Any, Callable
+import uuid
 
 from websockets.asyncio import server
 
-from envy.api.server.api import RPCRequest, RPCResponse
+from envy.api import RPCRequest, RPCResponse
+from envy.api.exceptions import RPCError
+from envy.api.client import RPCClient
+from envy.api.console import RPCConsole
 
-from .base import ClientConnection, ConsoleConnection, Server
-from envy.schema import Message
+from .base import Server
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class WebsocketClientConnection(ClientConnection):
-    socket: server.ServerConnection
+class WebsocketRPCClient(RPCClient):
+
+    def __init__(self, server: Server, name: str, ip: str, socket: server.ServerConnection) -> None:
+        super().__init__(server, name, ip)
+
+        self.socket = socket
 
 
-@dataclasses.dataclass
-class WebsocketConsoleConnection(ConsoleConnection):
-    socket: server.ServerConnection
+class WebsocketRPCConsole(RPCConsole):
+
+    def __init__(self, server: Server, name: str, ip: str, socket: server.ServerConnection) -> None:
+        super().__init__(server, name, ip)
+
+        self.socket = socket
 
 
 class WebsocketServer(Server):
-
 
     def start(self) -> None:
         self.running = True
@@ -33,9 +41,10 @@ class WebsocketServer(Server):
 
         self.running = False
 
-    async def _send(self, message: RPCRequest) -> None:
-                
+    async def _send(self, client: WebsocketRPCClient, message: RPCRequest | RPCResponse) -> None:
 
+        socket = client.socket
+        await socket.send(message.model_dump_json())
 
     async def _start(self) -> None:
         async with server.serve(self._handler, "", 8001) as s:
@@ -52,7 +61,7 @@ class WebsocketServer(Server):
             client = self.register_client(connection)
             consumer_task = asyncio.create_task(self._client_consumer(client))
             producer_task = asyncio.create_task(self._client_producer(client))
-            done, pending = await asyncio.wait(
+            _, pending = await asyncio.wait(
                 [consumer_task, producer_task],
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -65,23 +74,34 @@ class WebsocketServer(Server):
         else:
             raise ValueError(f"recieved connection has an unknown path {connection.request.path!r}")
 
-    async def _client_consumer(self, client: WebsocketClientConnection) -> None:
+    async def _client_consumer(self, client: WebsocketRPCClient) -> None:
         async for raw_data in client.socket:
-            message = self._parse_message(raw_data)
-            if message:
-                self.receive_queue.put(message)
+            message = self.receive(str(raw_data))
 
-    async def _client_producer(self, client: WebsocketClientConnection) -> None:
+    async def _client_producer(self, client: WebsocketRPCClient) -> None:
         while True:
             if not self.send_queue.empty():
                 message = self.send_queue.get(block=False)
                 await client.socket.send(message.model_dump_json())
 
-    def _parse_message(self, raw_message: str) -> RPCRequest | RPCResponse:
+    def _parse_message(self, raw_data: str) -> Callable | Any | RPCError:
 
-        # Parse RPCResponse.
-        pass
-        
+        data = json.loads(raw_data)
+
+        kind = data["kind"]
+        if kind == RPCRequest.kind:
+            message = RPCClient.parse_request(data)
+        elif kind == RPCRequest.kind:
+            message = RPCClient.parse_response(data)
+        else:
+            raise ValueError(f"Unknown kind {raw_data!r}")
+
+        return message
+
+    def _get_message_id(self, raw_data: str) -> uuid.UUID:
+        data = json.loads(raw_data)
+
+        return data["message_id"]
 
     def _validate_connection(self, connection: server.ServerConnection) -> bool:
 
@@ -104,7 +124,7 @@ class WebsocketServer(Server):
 
         return True
 
-    def register_client(self, connection: server.ServerConnection) -> WebsocketClientConnection:
+    def register_client(self, connection: server.ServerConnection) -> WebsocketRPCClient:
 
         # _validate_connection should have already checked all this. If an error is thrown here that means that method has a bug.
         assert connection.request is not None
@@ -113,7 +133,7 @@ class WebsocketServer(Server):
         # An assumption is made here the connection is using ipv4
         ip, _ = connection.remote_address[0]
 
-        new_client = WebsocketClientConnection(socket=connection, name=name, ip=ip)
+        new_client = WebsocketRPCClient(self, name, ip, connection)
         self.clients.add(new_client)
 
         return new_client

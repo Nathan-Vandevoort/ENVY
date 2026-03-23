@@ -1,3 +1,6 @@
+import dataclasses
+from typing import Callable
+from uuid import UUID
 from collections.abc import MutableSet
 from typing import TypeVar, Generic, Any, Iterator
 
@@ -56,3 +59,9 @@ class KeyedSet(MutableSet, Generic[T]):
 
     def __iter__(self) -> Iterator[T]:
         return iter(self._data.values())
+
+
+@dataclasses.dataclass
+class Request:
+    func: Callable
+    message_id: UUID

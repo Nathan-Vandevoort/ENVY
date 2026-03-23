@@ -3,37 +3,26 @@ import asyncio
 import logging
 import queue
 import uuid
-from typing import Any
-import dataclasses
+from typing import Any, Callable
 
-from envy.api.data import RPCRequest
-from envy.common.types import KeyedSet
-from envy.schema import Message
+from envy.api.client import RPCClient
+from envy.api.console import RPCConsole
+from envy.api.exceptions import RPCError
+from envy.api import RPCRequest, RPCResponse
+from envy.common.types import KeyedSet, Request
 
 logger = logging.getLogger(__name__)
-
-
-@dataclasses.dataclass
-class ClientConnection:
-    name: str
-    ip: str
-
-
-@dataclasses.dataclass
-class ConsoleConnection:
-    name: str
-    ip: str
 
 
 class Server(abc.ABC):
 
     def __init__(self) -> None:
         self.running = False
-        self.receive_queue = queue.Queue()
-        self.send_queue = queue.Queue()
+        self.receive_queue: queue.Queue[Request] = queue.Queue()
+        self.send_queue: queue.Queue[RPCRequest | RPCResponse] = queue.Queue()
 
-        self.clients = KeyedSet("name", ClientConnection)
-        self.console = KeyedSet("name", ConsoleConnection)
+        self.clients = KeyedSet("name", RPCClient)
+        self.console = KeyedSet("name", RPCConsole)
 
         self._pending_requests: dict[uuid.UUID, asyncio.Future] = {}
 
@@ -43,42 +32,57 @@ class Server(abc.ABC):
     @abc.abstractmethod
     def stop(self) -> None: ...
 
-    async def send(self, message: RPCRequest) -> Any:
-        """Send"""
+    async def send(self, client: RPCClient, message: RPCRequest | RPCResponse) -> Any:
 
-        loop = asyncio.get_running_loop()
-        future = loop.create_future()
+        if isinstance(message, RPCRequest):
+            loop = asyncio.get_running_loop()
+            future = loop.create_future()
 
-        self._pending_requests[message.message_id] = future
+            self._pending_requests[message.message_id] = future
+            await self._send(client, message)
 
-        await self._send(message)
+            response = await future
+            if response.error:
+                raise response.error
+            return response.result
 
-        response = await future
-
-        if response.error:
-            raise Exception(f"Server Error: {response.error}")
-
-        return response.result
-
-    @abc.abstractmethod
-    async def _send(self, message: RPCRequest) -> None: ...
+        await self._send(client, message)
 
     @abc.abstractmethod
+    async def _send(self, client: Any, message: RPCRequest | RPCResponse) -> None: ...
+
     def receive(self, data: Any) -> None:
         message = self._parse_message(data)
-        self.receive_queue.put(message)
+        message_id = self._get_message_id(data)
+
+        # A callable can never be recieved as a result. So data must represent a request.
+        if isinstance(message, Callable):
+            request = Request(func=message, message_id=message_id)
+            self.receive_queue.put(request)
+            return
+
+        future = self._pending_requests[message_id]
+
+        if isinstance(message, RPCError):
+            future.set_exception(message)
+            return
+
+        future.set_result(message)
 
     @abc.abstractmethod
-    def _parse_message(self, data: Any) -> Message: ...
+    def _parse_message(self, raw_data: Any) -> Callable | Any | RPCError: ...
 
     @abc.abstractmethod
-    def register_client(self, connection: Any) -> ClientConnection:
+    def _get_message_id(self, raw_data: Any) -> uuid.UUID: ...
+
+    @abc.abstractmethod
+    def register_client(self, connection: Any) -> RPCClient:
         """Register a connection with the server. The connection gets added in self.clients."""
 
         ...
 
     @abc.abstractmethod
-    def register_console(self, connection: Any) -> ConsoleConnection:
+    def register_console(self, connection: Any) -> RPCConsole:
         """Register a connection with the server. The connection gets added in self.clients."""
 
         ...
