@@ -5,10 +5,10 @@ import queue
 import uuid
 from typing import Any, Callable
 
+from envy.api import RPCRequest, RPCResponse
 from envy.api.client import RPCClient
 from envy.api.console import RPCConsole
 from envy.api.exceptions import RPCError
-from envy.api import RPCRequest, RPCResponse
 from envy.common.types import KeyedSet, Request
 
 logger = logging.getLogger(__name__)

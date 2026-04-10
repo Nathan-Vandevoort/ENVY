@@ -1,8 +1,7 @@
 import dataclasses
-from typing import Callable
-from uuid import UUID
 from collections.abc import MutableSet
-from typing import TypeVar, Generic, Any, Iterator
+from typing import Any, Callable, Generic, Iterator, TypeVar
+from uuid import UUID
 
 T = TypeVar("T")
 

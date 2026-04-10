@@ -32,7 +32,6 @@ dev = [
     "black",
 ]
 
-
 [tool.setuptools]
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 platforms = ["Linux", "Windows"]
@@ -44,8 +43,5 @@ line-length = 120
 
 [tool.isort]
 profile = "black"
-known_first_party = []
-# If you need to exclude files from having their imports sorted
-extend_skip_glob  = [
-]
+line_ending = "\r\n"
 

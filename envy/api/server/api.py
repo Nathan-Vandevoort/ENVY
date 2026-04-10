@@ -1,11 +1,11 @@
 import logging
 from typing import Any
 
-from envy.schema import Job, Task
 from envy.core.client.base import Client as NetworkingClient
+from envy.schema import Job, Task
 
-from ..data import RPCRequest
 from ..base import RPCBase
+from ..data import RPCRequest
 
 logger = logging.getLogger(__name__)
 

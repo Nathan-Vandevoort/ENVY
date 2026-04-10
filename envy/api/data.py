@@ -1,4 +1,5 @@
-from typing import Any, Optional, Literal, Union
+from typing import Any, Literal, Optional, Union
+
 from envy.schema import Message
 
 

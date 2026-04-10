@@ -1,5 +1,3 @@
 from .base import Message
-
-from .job import Task, Job, Status, FrameRange
-
+from .job import FrameRange, Job, Status, Task
 from .plugin import Plugin

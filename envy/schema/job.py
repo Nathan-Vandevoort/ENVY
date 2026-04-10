@@ -1,6 +1,6 @@
-from contextlib import suppress
-import re
 import enum
+import re
+from contextlib import suppress
 
 from .base import Message
 from .plugin import PluginData
@@ -47,6 +47,7 @@ class Task(Message):
     """
 
     id: int
+    job_id: int
     frame_range: FrameRange
     progress: float = 0.0
     status: Status = Status.PENDING

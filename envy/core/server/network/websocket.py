@@ -1,15 +1,15 @@
 import asyncio
 import json
 import logging
-from typing import Any, Callable
 import uuid
+from typing import Any, Callable
 
 from websockets.asyncio import server
 
 from envy.api import RPCRequest, RPCResponse
-from envy.api.exceptions import RPCError
 from envy.api.client import RPCClient
 from envy.api.console import RPCConsole
+from envy.api.exceptions import RPCError
 
 from .base import Server
 

@@ -3,11 +3,11 @@ import asyncio
 import logging
 import queue
 import uuid
-from typing import Any, Callable, Final
+from typing import Any, Callable
 
-from envy.api.server import RPCServer
-from envy.api.exceptions import RPCError
 from envy.api import RPCRequest, RPCResponse
+from envy.api.exceptions import RPCError
+from envy.api.server import RPCServer
 from envy.common.types import Request
 
 logger = logging.getLogger(__name__)
@@ -20,8 +20,6 @@ class Client(abc.ABC):
         self.receive_queue: queue.Queue[Request] = queue.Queue()
         self.send_queue: queue.Queue[RPCRequest | RPCResponse] = queue.Queue()
 
-        self.server: RPCServer | None = None
-
         self._pending_requests: dict[uuid.UUID, asyncio.Future] = {}
 
     @abc.abstractmethod
@@ -29,6 +27,9 @@ class Client(abc.ABC):
 
     @abc.abstractmethod
     def stop(self) -> None: ...
+
+    @abc.abstractmethod
+    async def connect(self) -> RPCServer: ...
 
     async def send(self, message: RPCRequest | RPCResponse) -> Any:
 

@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from uuid import UUID, uuid4
 
-from uuid import uuid4, UUID
+from pydantic import BaseModel, Field
 
 
 class Message(BaseModel):

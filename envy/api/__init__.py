@@ -1,1 +1,1 @@
-from .data import RPCResponse, RPCRequest
+from .data import RPCRequest, RPCResponse

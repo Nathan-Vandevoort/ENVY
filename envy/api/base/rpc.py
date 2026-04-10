@@ -1,15 +1,14 @@
-from abc import ABC
 import inspect
 import logging
-from pydantic import BaseModel, create_model, TypeAdapter, type_adapter
+from abc import ABC
+from functools import partial
 from typing import Any, Callable
 
-from functools import partial
+from pydantic import BaseModel, TypeAdapter, create_model, type_adapter
 
 from envy.api.data import RPCRequest, RPCResponse
 
 from ..exceptions import RPCError
-
 
 logger = logging.getLogger(__name__)
 
